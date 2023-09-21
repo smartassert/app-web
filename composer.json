@@ -71,7 +71,8 @@
         "test": [
             "@test-unit",
             "@test-functional"
-        ]
+        ],
+        "functional-setup": []
     },
     "conflict": {
         "symfony/symfony": "*"
