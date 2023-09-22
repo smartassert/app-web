@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,7 +30,14 @@ class SignInController
     public function index(Request $request): Response
     {
         if (Request::METHOD_POST === $request->getMethod()) {
-            return new RedirectResponse($this->router->generate('sign-in'));
+            return new Response(
+                null,
+                302,
+                [
+                    'location' => $this->router->generate('sign-in'),
+                    'content-type' => null,
+                ]
+            );
         }
 
         return new Response($this->twig->render('sign_in/index.html.twig'));
