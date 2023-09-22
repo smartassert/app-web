@@ -11,18 +11,23 @@
         "symfony/dotenv": "6.3.*",
         "symfony/flex": "^2",
         "symfony/framework-bundle": "6.3.*",
+        "symfony/monolog-bundle": "^3.8",
         "symfony/runtime": "6.3.*",
         "symfony/twig-bundle": "6.3.*",
         "symfony/yaml": "6.3.*"
     },
     "require-dev": {
+        "guzzlehttp/psr7": "^2.6",
+        "mockery/mockery": "^1.6",
         "phpstan/extension-installer": "^1.3",
         "phpstan/phpstan": "^1.10",
+        "phpstan/phpstan-mockery": "^1.1",
         "phpstan/phpstan-symfony": "^1.3",
         "phpunit/phpunit": "^9.6",
+        "smartassert/symfony-test-client": "^1.0",
         "squizlabs/php_codesniffer": "dev-master#7c452b0ff35ab2cf1d0c60965fea3e79f621b2d2",
-        "symfony/phpunit-bridge": "^6.3",
-        "symfony/maker-bundle": "^1.51"
+        "symfony/maker-bundle": "^1.51",
+        "symfony/phpunit-bridge": "^6.3"
     },
     "config": {
         "allow-plugins": {
