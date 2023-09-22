@@ -1,0 +1,23 @@
+services:
+  app:
+    profiles: ["integration"]
+    build:
+      context: ../..
+    container_name: app
+    restart: unless-stopped
+
+  app-http:
+    image: caddy:2.4.5-alpine
+    profiles: ["integration"]
+    container_name: app-http
+    restart: unless-stopped
+    environment:
+      DOMAIN: ${CADDY_DOMAIN:-localhost}
+      TLS_INTERNAL: ${CADDY_TLS_INTERNAL:-internal}
+    ports:
+      - "443:443"
+    links:
+      - app:app
+    volumes:
+      - ./http-config/caddy-app/index.php:/app/public/index.php
+      - ./http-config/caddy-app/Caddyfile:/etc/caddy/Caddyfile
