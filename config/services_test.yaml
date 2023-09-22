@@ -18,6 +18,9 @@ services:
 
   GuzzleHttp\Psr7\HttpFactory: ~
 
+  Psr\Http\Message\RequestFactoryInterface:
+    alias: GuzzleHttp\Psr7\HttpFactory
+
   Psr\Http\Message\ServerRequestFactoryInterface:
     alias: GuzzleHttp\Psr7\HttpFactory
 
@@ -30,15 +33,15 @@ services:
   Psr\Http\Message\ResponseFactoryInterface:
     alias: GuzzleHttp\Psr7\HttpFactory
 
-#  app.tests.integration.http.client:
-#    public: true
-#    class: GuzzleHttp\Client
-#    arguments:
-#      $config:
-#        base_uri: "https://localhost/"
-#        verify: false
-#
-#  SmartAssert\SymfonyTestClient\HttpClient:
-#    public: true
-#    arguments:
-#      $httpClient: '@app.tests.integration.http.client'
+  app.tests.integration.http.client:
+    public: true
+    class: GuzzleHttp\Client
+    arguments:
+      $config:
+        base_uri: "https://localhost/"
+        verify: false
+
+  SmartAssert\SymfonyTestClient\HttpClient:
+    public: true
+    arguments:
+      $httpClient: '@app.tests.integration.http.client'

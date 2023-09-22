@@ -24,6 +24,7 @@ COPY src /app/src
 COPY config/bundles.php config/services.yaml /app/config/
 COPY config/packages/*.yaml /app/config/packages/
 COPY config/routes.yaml /app/config/
+COPY templates /app/templates
 
 RUN mkdir -p /app/var/log \
   && chown -R www-data:www-data /app/var/log \
