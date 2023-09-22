@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -25,7 +27,7 @@ class SignInController
      * @throws SyntaxError
      * @throws LoaderError
      */
-    #[Route('/sign-in/', name: 'sign-in', methods: ['GET','POST'])]
+    #[Route('/sign-in/', name: 'sign-in', methods: ['GET', 'POST'])]
     public function index(Request $request): Response
     {
         if (Request::METHOD_POST === $request->getMethod()) {
