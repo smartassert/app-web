@@ -48,4 +48,9 @@ readonly class Client
             http_build_query($payload)
         );
     }
+
+    public function makeDashboardReadRequest(string $method = 'GET'): ResponseInterface
+    {
+        return $this->client->makeRequest($method, $this->router->generate('dashboard'));
+    }
 }
