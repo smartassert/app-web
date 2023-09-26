@@ -49,8 +49,13 @@ readonly class Client
         );
     }
 
-    public function makeDashboardReadRequest(string $method = 'GET'): ResponseInterface
+    public function makeDashboardReadRequest(?string $token, string $method = 'GET'): ResponseInterface
     {
-        return $this->client->makeRequest($method, $this->router->generate('dashboard'));
+        $headers = [];
+        if (is_string($token)) {
+            $headers['Authorization'] = 'Bearer ' . $token;
+        }
+
+        return $this->client->makeRequest($method, $this->router->generate('dashboard'), $headers);
     }
 }
