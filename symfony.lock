@@ -25,6 +25,9 @@
             "tests/bootstrap.php"
         ]
     },
+    "smartassert/test-authenticaton-provider-bundle": {
+        "version": "2.0"
+    },
     "squizlabs/php_codesniffer": {
         "version": "3.9999999",
         "recipe": {

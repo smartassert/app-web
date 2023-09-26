@@ -60,6 +60,8 @@ services:
     profiles: ["integration"]
     build:
       context: ../..
+      args:
+        API_CLIENT_BASE_URL: http://api-gateway-http
     container_name: app
     restart: unless-stopped
 

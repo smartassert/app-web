@@ -7,6 +7,8 @@
         "php": ">=8.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "guzzlehttp/guzzle": "^7.8",
+        "guzzlehttp/psr7": "*",
         "smartassert/api-client": "^1.0",
         "smartassert/security-token-extractor": "^1.0",
         "symfony/console": "6.3.*",
@@ -20,8 +22,6 @@
         "symfony/yaml": "6.3.*"
     },
     "require-dev": {
-        "guzzlehttp/guzzle": "^7.8",
-        "guzzlehttp/psr7": "^2.6",
         "mockery/mockery": "^1.6",
         "phpstan/extension-installer": "^1.3",
         "phpstan/phpstan": "^1.10",
@@ -29,6 +29,7 @@
         "phpstan/phpstan-symfony": "^1.3",
         "phpunit/phpunit": "^9.6",
         "smartassert/symfony-test-client": "^1.0",
+        "smartassert/test-authenticaton-provider-bundle": "*",
         "squizlabs/php_codesniffer": "dev-master#7c452b0ff35ab2cf1d0c60965fea3e79f621b2d2",
         "symfony/maker-bundle": "^1.51",
         "symfony/phpunit-bridge": "^6.3"
@@ -83,7 +84,12 @@
             "@test-unit",
             "@test-functional"
         ],
-        "functional-setup": [],
+        "functional-start": "docker-compose -f ./tests/build/docker-compose.yml --profile functional up -d",
+        "functional-setup": [
+            "@functional-start",
+            "sleep 2",
+            "@users-setup"
+        ],
         "users-db-setup": [
             "docker-compose -f tests/build/docker-compose.yml exec -T users-service php bin/console doctrine:database:create --if-not-exists",
             "docker-compose -f tests/build/docker-compose.yml exec -T users-service php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration"

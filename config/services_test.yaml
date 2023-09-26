@@ -1,6 +1,6 @@
-#parameters:
-#  test_authentication_provider_bundle_frontend_token_provider_users:
-#    'user@example.com': 'password'
+parameters:
+  test_authentication_provider_bundle_frontend_token_provider_users:
+    'user@example.com': 'password'
 
 services:
   _defaults:
@@ -37,3 +37,7 @@ services:
     public: true
     arguments:
       $httpClient: '@app.tests.integration.http.client'
+
+  SmartAssert\UsersClient\Client:
+    arguments:
+      $baseUrl: 'http://localhost:9080'
