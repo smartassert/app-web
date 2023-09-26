@@ -84,12 +84,28 @@
             "@test-functional"
         ],
         "functional-setup": [],
+        "users-db-setup": [
+            "docker-compose -f tests/build/docker-compose.yml exec -T users-service php bin/console doctrine:database:create --if-not-exists",
+            "docker-compose -f tests/build/docker-compose.yml exec -T users-service php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration"
+        ],
+        "users-generate-jwt-keys": "docker-compose -f tests/build/docker-compose.yml exec -T users-service php bin/console lexik:jwt:generate-keypair --overwrite --no-interaction",
+        "users-create-user": [
+            "curl --header 'Authorization: primary_admin_token' --data 'email=user@example.com&password=password' http://localhost:9080/user/create",
+            ""
+        ],
+        "users-setup": [
+            "@users-db-setup",
+            "@users-generate-jwt-keys",
+            "@users-create-user"
+        ],
         "integration-build": "docker-compose -f tests/build/docker-compose.yml build app",
         "integration-pull": "docker-compose -f tests/build/docker-compose.yml pull",
         "integration-up": "docker-compose -f ./tests/build/docker-compose.yml --profile functional --profile integration up -d",
         "integration-setup": [
             "@integration-build",
-            "@integration-up"
+            "@integration-up",
+            "sleep 2",
+            "@users-setup"
         ],
         "integration-status": "docker-compose -f ./tests/build/docker-compose.yml --profile functional --profile integration ps",
         "integration-logs": "docker-compose -f tests/build/docker-compose.yml logs",
