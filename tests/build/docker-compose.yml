@@ -1,4 +1,12 @@
 services:
+  postgres:
+    env_file: .env
+    image: postgres:12.5-alpine
+    profiles: ["functional"]
+    container_name: postgres
+    ports:
+      - "5432:5432"
+
   app:
     profiles: ["integration"]
     build:
