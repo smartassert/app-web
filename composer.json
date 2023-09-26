@@ -7,6 +7,7 @@
         "php": ">=8.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "smartassert/api-client": "^1.0",
         "smartassert/security-token-extractor": "^1.0",
         "symfony/console": "6.3.*",
         "symfony/dotenv": "6.3.*",
