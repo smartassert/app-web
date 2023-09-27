@@ -10,9 +10,15 @@
 
 <div class="example-wrapper">
     <h1>Sign in</h1>
-    {% if 'empty-user-identifier' in app.flashes|keys %}
+    {% if app.flashes('empty-user-identifier') %}
         <div class="error">
             Email address empty!
+        </div>
+    {% endif %}
+
+    {% if app.flashes('empty-password') %}
+        <div class="error">
+            Password empty!
         </div>
     {% endif %}
 
