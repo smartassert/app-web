@@ -31,7 +31,7 @@ class SignInWriteTest extends AbstractSignInWriteTest
     /**
      * @dataProvider writeEmptyFieldDataProvider
      */
-    public function testWriteEmptyField(?string $userIdentifier, ?string $password, ?string $expected): void
+    public function testWriteEmptyField(?string $userIdentifier, ?string $password, string $expected): void
     {
         $sessionHandler = self::getContainer()->get(SessionHandler::class);
         \assert($sessionHandler instanceof SessionHandler);
@@ -39,9 +39,9 @@ class SignInWriteTest extends AbstractSignInWriteTest
         $session = $sessionHandler->create();
         $sessionHandler->persist(self::$kernelBrowser, $session);
 
-        self::$staticApplicationClient->makeSignInPageWriteRequest('user@example.com', null);
+        self::$staticApplicationClient->makeSignInPageWriteRequest($userIdentifier, $password);
 
-        self::assertTrue($session->getFlashBag()->has('empty-password'));
+        self::assertTrue($session->getFlashBag()->has($expected));
     }
 
     /**
