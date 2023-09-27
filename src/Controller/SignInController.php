@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Security\UserCredentials;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\NetworkExceptionInterface;
 use Psr\Http\Client\RequestExceptionInterface;
@@ -47,7 +48,7 @@ class SignInController extends AbstractController
      * @throws RequestExceptionInterface
      */
     #[Route('/sign-in/', name: 'sign-in', methods: ['GET', 'POST'])]
-    public function index(Request $request, UsersClient $usersClient): Response
+    public function index(UserCredentials $userCredentials, Request $request, UsersClient $usersClient): Response
     {
         if (Request::METHOD_POST === $request->getMethod()) {
             $response = new Response(
@@ -59,13 +60,15 @@ class SignInController extends AbstractController
                 ]
             );
 
-            $userIdentifier = $request->request->get('user-identifier');
-            if (!is_string($userIdentifier) || '' === $userIdentifier) {
+            $userIdentifier = $userCredentials->userIdentifier;
+            if (null === $userIdentifier) {
+                $this->addFlash('error', 'empty-user-identifier');
+
                 return $response;
             }
 
-            $password = $request->request->get('password');
-            if (!is_string($password) || '' === $password) {
+            $password = $userCredentials->password;
+            if (null === $password) {
                 return $response;
             }
 
