@@ -31,17 +31,22 @@ class SignInWriteTest extends AbstractSignInWriteTest
     /**
      * @dataProvider writeEmptyFieldDataProvider
      */
-    public function testWriteEmptyField(?string $userIdentifier, ?string $password, string $expected): void
-    {
+    public function testWriteEmptyField(
+        ?string $userIdentifier,
+        ?string $password,
+        string $expectedResponseHeaderLocation,
+        string $expectedFlashKey
+    ): void {
         $sessionHandler = self::getContainer()->get(SessionHandler::class);
         \assert($sessionHandler instanceof SessionHandler);
 
         $session = $sessionHandler->create();
         $sessionHandler->persist(self::$kernelBrowser, $session);
 
-        self::$staticApplicationClient->makeSignInPageWriteRequest($userIdentifier, $password);
+        $response = self::$staticApplicationClient->makeSignInPageWriteRequest($userIdentifier, $password);
 
-        self::assertTrue($session->getFlashBag()->has($expected));
+        self::assertSame($expectedResponseHeaderLocation, $response->getHeaderLine('location'));
+        self::assertTrue($session->getFlashBag()->has($expectedFlashKey));
     }
 
     /**
@@ -53,17 +58,20 @@ class SignInWriteTest extends AbstractSignInWriteTest
             'empty user-identifier, empty password' => [
                 'userIdentifier' => null,
                 'password' => null,
-                'expected' => 'empty-user-identifier',
+                'expectedResponseHeaderLocation' => '/sign-in/',
+                'expectedFlashKey' => 'empty-user-identifier',
             ],
             'non-empty user-identifier, empty password' => [
                 'userIdentifier' => 'user@example.com',
                 'password' => null,
-                'expected' => 'empty-password',
+                'expectedResponseHeaderLocation' => '/sign-in/?email=user%40example.com',
+                'expectedFlashKey' => 'empty-password',
             ],
             'empty user-identifier, non-empty password' => [
                 'userIdentifier' => null,
                 'password' => null,
-                'expected' => 'empty-user-identifier',
+                'expectedResponseHeaderLocation' => '/sign-in/',
+                'expectedFlashKey' => 'empty-user-identifier',
             ],
         ];
     }

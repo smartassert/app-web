@@ -69,6 +69,10 @@ class SignInController extends AbstractController
         $password = $userCredentials->password;
         if (null === $password) {
             $this->addFlash('empty-password', null);
+            $response->headers->set(
+                'location',
+                $response->headers->get('location') . '?email=' . urlencode($userIdentifier)
+            );
 
             return $response;
         }
