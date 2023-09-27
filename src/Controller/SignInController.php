@@ -61,7 +61,7 @@ class SignInController extends AbstractController
 
         $userIdentifier = $userCredentials->userIdentifier;
         if (null === $userIdentifier) {
-            $this->addFlash('error', 'empty-user-identifier');
+            $this->addFlash('empty-user-identifier', null);
 
             return $response;
         }

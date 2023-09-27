@@ -41,6 +41,6 @@ class SignInWriteTest extends AbstractSignInWriteTest
 
         $flashBag = $session->getFlashBag();
 
-        self::assertSame(['empty-user-identifier'], $flashBag->get('error'));
+        self::assertTrue($flashBag->has('empty-user-identifier'));
     }
 }
