@@ -15,13 +15,17 @@ class SignInWriteTest extends AbstractSignInWriteTest
     public function testWriteUnauthorized(): void
     {
         $response = self::$staticApplicationClient->makeSignInPageWriteRequest(null, null);
-        $responseCookie = Cookie::fromString($response->getHeaderLine('set-cookie'));
 
         self::assertSame(302, $response->getStatusCode());
         self::assertSame('', $response->getHeaderLine('content-type'));
-        self::assertNotSame('token', $responseCookie->getName());
         self::assertSame('/sign-in/', $response->getHeaderLine('location'));
         self::assertSame('', $response->getBody()->getContents());
+
+        $responseCookieValue = $response->getHeaderLine('set-cookie');
+        if ('' !== $responseCookieValue) {
+            $responseCookie = Cookie::fromString($response->getHeaderLine('set-cookie'));
+            self::assertNotSame('token', $responseCookie->getName());
+        }
     }
 
     public function testWriteEmptyUserIdentifier(): void
