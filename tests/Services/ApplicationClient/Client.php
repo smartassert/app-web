@@ -23,7 +23,7 @@ readonly class Client
             $queryParameters['user-identifier'] = $userIdentifier;
         }
 
-        return $this->client->makeRequest($method, $this->router->generate('sign-in', $queryParameters));
+        return $this->client->makeRequest($method, $this->router->generate('sign_in_view', $queryParameters));
     }
 
     public function makeSignInPageWriteRequest(
@@ -43,7 +43,7 @@ readonly class Client
 
         return $this->client->makeRequest(
             $method,
-            $this->router->generate('sign-in'),
+            $this->router->generate('sign_in_handle'),
             ['Content-Type' => 'application/x-www-form-urlencoded'],
             http_build_query($payload)
         );

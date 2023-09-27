@@ -17,9 +17,7 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment as TwigEnvironment;
 use Twig\Error\LoaderError;
@@ -38,6 +36,13 @@ class SignInController extends AbstractController
      * @throws RuntimeError
      * @throws SyntaxError
      * @throws LoaderError
+     */
+    public function view(): Response
+    {
+        return new Response($this->twig->render('sign_in/index.html.twig'));
+    }
+
+    /**
      * @throws ClientExceptionInterface
      * @throws CurlExceptionInterface
      * @throws InvalidModelDataException
@@ -47,40 +52,31 @@ class SignInController extends AbstractController
      * @throws NonSuccessResponseException
      * @throws RequestExceptionInterface
      */
-    #[Route('/sign-in/', name: 'sign-in', methods: ['GET', 'POST'])]
-    public function index(UserCredentials $userCredentials, Request $request, UsersClient $usersClient): Response
+    public function handle(UserCredentials $userCredentials, UsersClient $usersClient): Response
     {
-        if (Request::METHOD_POST === $request->getMethod()) {
-            $response = new Response(
-                null,
-                302,
-                [
-                    'location' => $this->router->generate('sign-in'),
-                    'content-type' => null,
-                ]
-            );
+        $response = new Response(null, 302, [
+            'location' => $this->router->generate('sign_in_view'),
+            'content-type' => null,
+        ]);
 
-            $userIdentifier = $userCredentials->userIdentifier;
-            if (null === $userIdentifier) {
-                $this->addFlash('error', 'empty-user-identifier');
-
-                return $response;
-            }
-
-            $password = $userCredentials->password;
-            if (null === $password) {
-                return $response;
-            }
-
-            try {
-                $token = $usersClient->createToken($userIdentifier, $password);
-                $response->headers->setCookie(Cookie::create('token', $token->token));
-            } catch (UnauthorizedException) {
-            }
+        $userIdentifier = $userCredentials->userIdentifier;
+        if (null === $userIdentifier) {
+            $this->addFlash('error', 'empty-user-identifier');
 
             return $response;
         }
 
-        return new Response($this->twig->render('sign_in/index.html.twig'));
+        $password = $userCredentials->password;
+        if (null === $password) {
+            return $response;
+        }
+
+        try {
+            $token = $usersClient->createToken($userIdentifier, $password);
+            $response->headers->setCookie(Cookie::create('token', $token->token));
+        } catch (UnauthorizedException) {
+        }
+
+        return $response;
     }
 }
