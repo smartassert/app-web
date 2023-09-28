@@ -6,13 +6,13 @@ namespace App\Tests\Services\ApplicationClient;
 
 use Psr\Http\Message\ResponseInterface;
 use SmartAssert\SymfonyTestClient\ClientInterface;
-use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 readonly class Client
 {
     public function __construct(
         private ClientInterface $client,
-        private RouterInterface $router,
+        private UrlGeneratorInterface $urlGenerator,
     ) {
     }
 
@@ -23,7 +23,7 @@ readonly class Client
             $queryParameters['user-identifier'] = $userIdentifier;
         }
 
-        return $this->client->makeRequest($method, $this->router->generate('sign_in_view', $queryParameters));
+        return $this->client->makeRequest($method, $this->urlGenerator->generate('sign_in_view', $queryParameters));
     }
 
     public function makeSignInPageWriteRequest(
@@ -43,7 +43,7 @@ readonly class Client
 
         return $this->client->makeRequest(
             $method,
-            $this->router->generate('sign_in_handle'),
+            $this->urlGenerator->generate('sign_in_handle'),
             ['Content-Type' => 'application/x-www-form-urlencoded'],
             http_build_query($payload)
         );
@@ -56,6 +56,6 @@ readonly class Client
             $headers['Authorization'] = 'Bearer ' . $token;
         }
 
-        return $this->client->makeRequest($method, $this->router->generate('dashboard'), $headers);
+        return $this->client->makeRequest($method, $this->urlGenerator->generate('dashboard'), $headers);
     }
 }

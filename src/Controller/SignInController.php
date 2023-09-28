@@ -20,7 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment as TwigEnvironment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -30,7 +30,7 @@ class SignInController extends AbstractController
 {
     public function __construct(
         private readonly TwigEnvironment $twig,
-        private readonly RouterInterface $router,
+        private readonly UrlGeneratorInterface $urlGenerator,
     ) {
     }
 
@@ -83,7 +83,7 @@ class SignInController extends AbstractController
             $token = $usersClient->createToken($userIdentifier, $password);
 
             $response = new Response(null, 302, [
-                'location' => $this->router->generate($redirectRoute->name, $redirectRoute->parameters),
+                'location' => $this->urlGenerator->generate($redirectRoute->name, $redirectRoute->parameters),
                 'content-type' => null,
             ]);
             $response->headers->setCookie(Cookie::create('token', $token->token));
@@ -104,7 +104,7 @@ class SignInController extends AbstractController
         }
 
         return new Response(null, 302, [
-            'location' => $this->router->generate('sign_in_view', $routeParameters),
+            'location' => $this->urlGenerator->generate('sign_in_view', $routeParameters),
             'content-type' => null,
         ]);
     }
