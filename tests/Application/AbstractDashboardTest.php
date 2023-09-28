@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Application;
 
 use SmartAssert\TestAuthenticationProviderBundle\FrontendTokenProvider;
+use Symfony\Component\Routing\RouterInterface;
 
 abstract class AbstractDashboardTest extends AbstractApplicationTestCase
 {
@@ -12,7 +13,12 @@ abstract class AbstractDashboardTest extends AbstractApplicationTestCase
     {
         $response = self::$staticApplicationClient->makeDashboardReadRequest(md5((string) rand()));
 
-        self::assertSame(401, $response->getStatusCode());
+        self::assertSame(302, $response->getStatusCode());
+
+        $router = self::getContainer()->get(RouterInterface::class);
+        \assert($router instanceof RouterInterface);
+
+        self::assertSame($router->generate('sign_in_view'), $response->getHeaderLine('location'));
     }
 
     public function testGetSuccess(): void
