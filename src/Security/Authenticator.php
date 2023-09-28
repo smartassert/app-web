@@ -17,7 +17,7 @@ use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
@@ -31,7 +31,7 @@ class Authenticator extends AbstractAuthenticator
     public function __construct(
         private readonly SymfonyRequestTokenExtractor $tokenExtractor,
         private readonly UsersClient $usersClient,
-        private readonly RouterInterface $router,
+        private readonly UrlGeneratorInterface $urlGenerator,
         private readonly Factory $redirectRouteFactory,
         private readonly Serializer $redirectRouteSerializer,
     ) {
@@ -76,7 +76,7 @@ class Authenticator extends AbstractAuthenticator
     {
         $redirectRoute = $this->redirectRouteFactory->createFromRequest($request);
 
-        return new RedirectResponse($this->router->generate(
+        return new RedirectResponse($this->urlGenerator->generate(
             'sign_in_view',
             ['route' => $this->redirectRouteSerializer->serialize($redirectRoute)]
         ));
