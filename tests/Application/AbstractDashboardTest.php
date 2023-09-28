@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Application;
 
+use App\RedirectRoute\RedirectRoute;
 use SmartAssert\TestAuthenticationProviderBundle\FrontendTokenProvider;
-use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 abstract class AbstractDashboardTest extends AbstractApplicationTestCase
 {
@@ -15,10 +16,13 @@ abstract class AbstractDashboardTest extends AbstractApplicationTestCase
 
         self::assertSame(302, $response->getStatusCode());
 
-        $router = self::getContainer()->get(RouterInterface::class);
-        \assert($router instanceof RouterInterface);
+        $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
+        \assert($urlGenerator instanceof UrlGeneratorInterface);
 
-        self::assertSame($router->generate('sign_in_view'), $response->getHeaderLine('location'));
+        $expectedRedirectRoute = new RedirectRoute('dashboard', []);
+        $expected = $urlGenerator->generate('sign_in_view', ['route' => $expectedRedirectRoute->serialize()]);
+
+        self::assertSame($expected, $response->getHeaderLine('location'));
     }
 
     public function testGetSuccess(): void

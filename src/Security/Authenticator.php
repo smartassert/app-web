@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Security;
 
+use App\RedirectRoute\Factory;
 use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ApiClient\Exception\UnauthorizedException;
 use SmartAssert\ApiClient\UsersClient;
@@ -30,6 +31,7 @@ class Authenticator extends AbstractAuthenticator
         private readonly SymfonyRequestTokenExtractor $tokenExtractor,
         private readonly UsersClient $usersClient,
         private readonly RouterInterface $router,
+        private readonly Factory $redirectRouteFactory,
     ) {
     }
 
@@ -70,6 +72,8 @@ class Authenticator extends AbstractAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        return new RedirectResponse($this->router->generate('sign_in_view'));
+        $redirectRoute = $this->redirectRouteFactory->createFromRequest($request);
+
+        return new RedirectResponse($this->router->generate('sign_in_view', ['route' => $redirectRoute->serialize()]));
     }
 }
