@@ -19,7 +19,32 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+            - '../src/Security/UserCredentials.php'
 
     App\Controller\:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
+
+    SmartAssert\SecurityTokenExtractor\TokenExtractor: ~
+
+    SmartAssert\ServiceClient\ResponseFactory\ResponseFactory:
+        factory: ['SmartAssert\ServiceClient\ResponseFactory\ResponseFactory', 'createFactory']
+
+    SmartAssert\ServiceClient\ExceptionFactory\CurlExceptionFactory: ~
+
+    Psr\Http\Client\ClientInterface:
+        class: GuzzleHttp\Client
+
+    GuzzleHttp\Psr7\HttpFactory: ~
+
+    Psr\Http\Message\RequestFactoryInterface:
+        alias: GuzzleHttp\Psr7\HttpFactory
+
+    Psr\Http\Message\StreamFactoryInterface:
+        alias: GuzzleHttp\Psr7\HttpFactory
+
+    SmartAssert\ServiceClient\Client: ~
+
+    SmartAssert\ApiClient\UsersClient:
+        arguments:
+            $baseUrl: '%env(string:API_CLIENT_BASE_URL)%'

@@ -4,39 +4,24 @@ declare(strict_types=1);
 
 namespace App\Tests\Application;
 
+use SmartAssert\TestAuthenticationProviderBundle\FrontendTokenProvider;
+
 abstract class AbstractDashboardTest extends AbstractApplicationTestCase
 {
-    /**
-     * @dataProvider createBadMethodDataProvider
-     */
-    public function testGetBadMethod(string $method): void
+    public function testGetInvalidToken(): void
     {
-        $response = self::$staticApplicationClient->makeDashboardReadRequest($method);
+        $response = self::$staticApplicationClient->makeDashboardReadRequest(md5((string) rand()));
 
-        self::assertSame(405, $response->getStatusCode());
-    }
-
-    /**
-     * @return array<mixed>
-     */
-    public function createBadMethodDataProvider(): array
-    {
-        return [
-            'POST' => [
-                'method' => 'POST',
-            ],
-            'PUT' => [
-                'method' => 'PUT',
-            ],
-            'DELETE' => [
-                'method' => 'DELETE',
-            ],
-        ];
+        self::assertSame(401, $response->getStatusCode());
     }
 
     public function testGetSuccess(): void
     {
-        $response = self::$staticApplicationClient->makeDashboardReadRequest();
+        $frontendTokenProvider = self::getContainer()->get(FrontendTokenProvider::class);
+        \assert($frontendTokenProvider instanceof FrontendTokenProvider);
+
+        $frontendToken = $frontendTokenProvider->get('user@example.com');
+        $response = self::$staticApplicationClient->makeDashboardReadRequest($frontendToken->token);
 
         self::assertSame(200, $response->getStatusCode());
         self::assertStringContainsString('text/html', $response->getHeaderLine('content-type'));

@@ -3,8 +3,10 @@ FROM php:8.2-fpm-buster
 WORKDIR /app
 
 ARG APP_ENV=prod
+ARG API_CLIENT_BASE_URL=https://api-client/
 
 ENV APP_ENV=$APP_ENV
+ENV API_CLIENT_BASE_URL=$API_CLIENT_BASE_URL
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 

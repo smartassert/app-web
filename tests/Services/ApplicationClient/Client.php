@@ -23,7 +23,7 @@ readonly class Client
             $queryParameters['user-identifier'] = $userIdentifier;
         }
 
-        return $this->client->makeRequest($method, $this->router->generate('sign-in', $queryParameters));
+        return $this->client->makeRequest($method, $this->router->generate('sign_in_view', $queryParameters));
     }
 
     public function makeSignInPageWriteRequest(
@@ -43,14 +43,19 @@ readonly class Client
 
         return $this->client->makeRequest(
             $method,
-            $this->router->generate('sign-in'),
+            $this->router->generate('sign_in_handle'),
             ['Content-Type' => 'application/x-www-form-urlencoded'],
             http_build_query($payload)
         );
     }
 
-    public function makeDashboardReadRequest(string $method = 'GET'): ResponseInterface
+    public function makeDashboardReadRequest(?string $token, string $method = 'GET'): ResponseInterface
     {
-        return $this->client->makeRequest($method, $this->router->generate('dashboard'));
+        $headers = [];
+        if (is_string($token)) {
+            $headers['Authorization'] = 'Bearer ' . $token;
+        }
+
+        return $this->client->makeRequest($method, $this->router->generate('dashboard'), $headers);
     }
 }

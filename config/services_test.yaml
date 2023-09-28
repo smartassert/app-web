@@ -1,6 +1,6 @@
-#parameters:
-#  test_authentication_provider_bundle_frontend_token_provider_users:
-#    'user@example.com': 'password'
+parameters:
+  test_authentication_provider_bundle_frontend_token_provider_users:
+    'user@example.com': 'password'
 
 services:
   _defaults:
@@ -16,15 +16,7 @@ services:
   Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface:
     class: Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory
 
-  GuzzleHttp\Psr7\HttpFactory: ~
-
-  Psr\Http\Message\RequestFactoryInterface:
-    alias: GuzzleHttp\Psr7\HttpFactory
-
   Psr\Http\Message\ServerRequestFactoryInterface:
-    alias: GuzzleHttp\Psr7\HttpFactory
-
-  Psr\Http\Message\StreamFactoryInterface:
     alias: GuzzleHttp\Psr7\HttpFactory
 
   Psr\Http\Message\UploadedFileFactoryInterface:
@@ -45,3 +37,12 @@ services:
     public: true
     arguments:
       $httpClient: '@app.tests.integration.http.client'
+
+  SmartAssert\UsersClient\Client:
+    arguments:
+      $baseUrl: 'http://localhost:9080'
+
+  App\Tests\Services\SessionHandler:
+    public: true
+    arguments:
+      $sessionFactory: '@session.factory'
