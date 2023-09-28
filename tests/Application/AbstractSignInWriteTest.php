@@ -41,7 +41,7 @@ abstract class AbstractSignInWriteTest extends AbstractApplicationTestCase
         self::assertSame(302, $response->getStatusCode());
         self::assertSame('', $response->getHeaderLine('content-type'));
         self::assertSame('token', $responseCookie->getName());
-        self::assertSame('/sign-in/', $response->getHeaderLine('location'));
+        self::assertSame('/', $response->getHeaderLine('location'));
         self::assertSame('', $response->getBody()->getContents());
     }
 }
