@@ -31,6 +31,7 @@
         "smartassert/symfony-test-client": "^1.0",
         "smartassert/test-authenticaton-provider-bundle": "*",
         "squizlabs/php_codesniffer": "dev-master#7c452b0ff35ab2cf1d0c60965fea3e79f621b2d2",
+        "symfony/css-selector": "6.3.*",
         "symfony/maker-bundle": "^1.51",
         "symfony/phpunit-bridge": "^6.3"
     },
