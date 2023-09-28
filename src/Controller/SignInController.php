@@ -44,6 +44,7 @@ class SignInController extends AbstractController
             'sign_in/index.html.twig',
             [
                 'email' => $request->query->get('email'),
+                'redirect_route' => $request->query->get('route'),
             ]
         ));
     }
