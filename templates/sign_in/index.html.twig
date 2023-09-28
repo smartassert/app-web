@@ -22,6 +22,12 @@
         </div>
     {% endif %}
 
+    {% if app.flashes('unauthorized') %}
+        <div class="error">
+            Unauthorized!
+        </div>
+    {% endif %}
+
     <form method="post" action="{{ path('sign_in_handle') }}">
         <label>
             Email address

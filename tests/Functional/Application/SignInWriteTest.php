@@ -29,9 +29,9 @@ class SignInWriteTest extends AbstractSignInWriteTest
     }
 
     /**
-     * @dataProvider writeEmptyFieldDataProvider
+     * @dataProvider writeInvalidCredentialsDataProvider
      */
-    public function testWriteEmptyField(
+    public function testWriteInvalidCredentials(
         ?string $userIdentifier,
         ?string $password,
         string $expectedResponseHeaderLocation,
@@ -52,7 +52,7 @@ class SignInWriteTest extends AbstractSignInWriteTest
     /**
      * @return array<mixed>
      */
-    public function writeEmptyFieldDataProvider(): array
+    public function writeInvalidCredentialsDataProvider(): array
     {
         return [
             'empty user-identifier, empty password' => [
@@ -72,6 +72,12 @@ class SignInWriteTest extends AbstractSignInWriteTest
                 'password' => null,
                 'expectedResponseHeaderLocation' => '/sign-in/',
                 'expectedFlashKey' => 'empty-user-identifier',
+            ],
+            'unauthorized' => [
+                'userIdentifier' => 'user@example.com',
+                'password' => 'invalid',
+                'expectedResponseHeaderLocation' => '/sign-in/?email=user%40example.com',
+                'expectedFlashKey' => 'unauthorized',
             ],
         ];
     }

@@ -81,6 +81,13 @@ class SignInController extends AbstractController
             $token = $usersClient->createToken($userIdentifier, $password);
             $response->headers->setCookie(Cookie::create('token', $token->token));
         } catch (UnauthorizedException) {
+            $this->addFlash('unauthorized', null);
+            $response->headers->set(
+                'location',
+                $response->headers->get('location') . '?email=' . urlencode($userIdentifier)
+            );
+
+            return $response;
         }
 
         return $response;
