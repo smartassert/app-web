@@ -17,6 +17,7 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment as TwigEnvironment;
@@ -37,9 +38,14 @@ class SignInController extends AbstractController
      * @throws SyntaxError
      * @throws LoaderError
      */
-    public function view(): Response
+    public function view(Request $request): Response
     {
-        return new Response($this->twig->render('sign_in/index.html.twig'));
+        return new Response($this->twig->render(
+            'sign_in/index.html.twig',
+            [
+                'email' => $request->query->get('email'),
+            ]
+        ));
     }
 
     /**
