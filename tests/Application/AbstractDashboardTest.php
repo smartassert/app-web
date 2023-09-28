@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Application;
 
 use App\RedirectRoute\RedirectRoute;
+use App\RedirectRoute\Serializer;
 use SmartAssert\TestAuthenticationProviderBundle\FrontendTokenProvider;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -19,8 +20,14 @@ abstract class AbstractDashboardTest extends AbstractApplicationTestCase
         $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
         \assert($urlGenerator instanceof UrlGeneratorInterface);
 
+        $redirectRouteSerializer = self::getContainer()->get(Serializer::class);
+        \assert($redirectRouteSerializer instanceof Serializer);
+
         $expectedRedirectRoute = new RedirectRoute('dashboard', []);
-        $expected = $urlGenerator->generate('sign_in_view', ['route' => $expectedRedirectRoute->serialize()]);
+        $expected = $urlGenerator->generate(
+            'sign_in_view',
+            ['route' => $redirectRouteSerializer->serialize($expectedRedirectRoute)]
+        );
 
         self::assertSame($expected, $response->getHeaderLine('location'));
     }

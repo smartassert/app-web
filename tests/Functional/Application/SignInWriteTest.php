@@ -64,7 +64,7 @@ class SignInWriteTest extends AbstractSignInWriteTest
             'non-empty user-identifier, empty password' => [
                 'userIdentifier' => 'user@example.com',
                 'password' => null,
-                'expectedResponseHeaderLocation' => '/sign-in/?email=user%40example.com',
+                'expectedResponseHeaderLocation' => '/sign-in/?email=user@example.com',
                 'expectedFlashKey' => 'empty-password',
             ],
             'empty user-identifier, non-empty password' => [
@@ -76,7 +76,7 @@ class SignInWriteTest extends AbstractSignInWriteTest
             'unauthorized' => [
                 'userIdentifier' => 'user@example.com',
                 'password' => 'invalid',
-                'expectedResponseHeaderLocation' => '/sign-in/?email=user%40example.com',
+                'expectedResponseHeaderLocation' => '/sign-in/?email=user@example.com',
                 'expectedFlashKey' => 'unauthorized',
             ],
         ];

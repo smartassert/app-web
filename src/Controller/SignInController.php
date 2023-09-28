@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\RedirectRoute\RedirectRoute;
 use App\Security\UserCredentials;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\NetworkExceptionInterface;
@@ -44,6 +45,7 @@ class SignInController extends AbstractController
             'sign_in/index.html.twig',
             [
                 'email' => $request->query->get('email'),
+                'redirect_route' => $request->query->get('route'),
             ]
         ));
     }
@@ -58,44 +60,52 @@ class SignInController extends AbstractController
      * @throws NonSuccessResponseException
      * @throws RequestExceptionInterface
      */
-    public function handle(UserCredentials $userCredentials, UsersClient $usersClient): Response
-    {
-        $response = new Response(null, 302, [
-            'location' => $this->router->generate('sign_in_view'),
-            'content-type' => null,
-        ]);
-
+    public function handle(
+        UserCredentials $userCredentials,
+        RedirectRoute $redirectRoute,
+        UsersClient $usersClient
+    ): Response {
         $userIdentifier = $userCredentials->userIdentifier;
         if (null === $userIdentifier) {
             $this->addFlash('empty-user-identifier', null);
 
-            return $response;
+            return $this->createSignInRedirectResponse();
         }
 
         $password = $userCredentials->password;
         if (null === $password) {
             $this->addFlash('empty-password', null);
-            $response->headers->set(
-                'location',
-                $response->headers->get('location') . '?email=' . urlencode($userIdentifier)
-            );
 
-            return $response;
+            return $this->createSignInRedirectResponse($userIdentifier);
         }
 
         try {
             $token = $usersClient->createToken($userIdentifier, $password);
+
+            $response = new Response(null, 302, [
+                'location' => $this->router->generate($redirectRoute->name, $redirectRoute->parameters),
+                'content-type' => null,
+            ]);
             $response->headers->setCookie(Cookie::create('token', $token->token));
-        } catch (UnauthorizedException) {
-            $this->addFlash('unauthorized', null);
-            $response->headers->set(
-                'location',
-                $response->headers->get('location') . '?email=' . urlencode($userIdentifier)
-            );
 
             return $response;
+        } catch (UnauthorizedException) {
+            $this->addFlash('unauthorized', null);
+
+            return $this->createSignInRedirectResponse($userIdentifier);
+        }
+    }
+
+    private function createSignInRedirectResponse(?string $userIdentifier = null): Response
+    {
+        $routeParameters = [];
+        if (is_string($userIdentifier)) {
+            $routeParameters['email'] = $userIdentifier;
         }
 
-        return $response;
+        return new Response(null, 302, [
+            'location' => $this->router->generate('sign_in_view', $routeParameters),
+            'content-type' => null,
+        ]);
     }
 }

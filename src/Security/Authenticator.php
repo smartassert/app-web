@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Security;
 
 use App\RedirectRoute\Factory;
+use App\RedirectRoute\Serializer;
 use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ApiClient\Exception\UnauthorizedException;
 use SmartAssert\ApiClient\UsersClient;
@@ -32,6 +33,7 @@ class Authenticator extends AbstractAuthenticator
         private readonly UsersClient $usersClient,
         private readonly RouterInterface $router,
         private readonly Factory $redirectRouteFactory,
+        private readonly Serializer $redirectRouteSerializer,
     ) {
     }
 
@@ -74,6 +76,9 @@ class Authenticator extends AbstractAuthenticator
     {
         $redirectRoute = $this->redirectRouteFactory->createFromRequest($request);
 
-        return new RedirectResponse($this->router->generate('sign_in_view', ['route' => $redirectRoute->serialize()]));
+        return new RedirectResponse($this->router->generate(
+            'sign_in_view',
+            ['route' => $this->redirectRouteSerializer->serialize($redirectRoute)]
+        ));
     }
 }

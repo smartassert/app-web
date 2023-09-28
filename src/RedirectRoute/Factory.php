@@ -12,7 +12,7 @@ class Factory
     {
         $name = $request->attributes->get('_route');
         if (!is_string($name)) {
-            $name = null;
+            return $this->getDefault();
         }
 
         $queryParameters = [];
@@ -25,5 +25,10 @@ class Factory
         }
 
         return new RedirectRoute($name, $queryParameters);
+    }
+
+    public function getDefault(): RedirectRoute
+    {
+        return new RedirectRoute('dashboard', []);
     }
 }
