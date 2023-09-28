@@ -12,8 +12,10 @@ use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
@@ -27,6 +29,7 @@ class Authenticator extends AbstractAuthenticator
     public function __construct(
         private readonly SymfonyRequestTokenExtractor $tokenExtractor,
         private readonly UsersClient $usersClient,
+        private readonly RouterInterface $router,
     ) {
     }
 
@@ -67,6 +70,6 @@ class Authenticator extends AbstractAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        return new Response('', Response::HTTP_UNAUTHORIZED);
+        return new RedirectResponse($this->router->generate('sign_in_view'));
     }
 }
