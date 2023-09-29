@@ -39,7 +39,7 @@ class Authenticator extends AbstractAuthenticator
 
     public function supports(Request $request): bool
     {
-        return false !== $this->tokenExtractor->extract($request);
+        return null !== $this->tokenExtractor->extract($request);
     }
 
     /**
@@ -52,9 +52,9 @@ class Authenticator extends AbstractAuthenticator
      */
     public function authenticate(Request $request): Passport
     {
-        $tokenValue = trim((string) $this->tokenExtractor->extract($request));
+        $tokenValue = $this->tokenExtractor->extract($request);
 
-        if ('' === $tokenValue) {
+        if (null === $tokenValue) {
             throw new CustomUserMessageAuthenticationException('Invalid user token');
         }
 

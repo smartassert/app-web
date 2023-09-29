@@ -53,7 +53,7 @@ readonly class Client
     {
         $headers = [];
         if (is_string($token)) {
-            $headers['Authorization'] = 'Bearer ' . $token;
+            $headers['cookie'] = 'token=' . $token;
         }
 
         return $this->client->makeRequest($method, $this->urlGenerator->generate('dashboard'), $headers);

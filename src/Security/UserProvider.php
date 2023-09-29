@@ -29,8 +29,8 @@ readonly class UserProvider implements UserProviderInterface
             throw new UserNotFoundException();
         }
 
-        $securityToken = (string) $this->tokenExtractor->extract($currentRequest);
-        if ('' === $securityToken) {
+        $securityToken = $this->tokenExtractor->extract($currentRequest);
+        if (null === $securityToken) {
             throw new UserNotFoundException();
         }
 
