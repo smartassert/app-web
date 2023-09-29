@@ -6,6 +6,7 @@ namespace App\Tests\Application;
 
 use App\RedirectRoute\RedirectRoute;
 use App\RedirectRoute\Serializer;
+use SmartAssert\ApiClient\Model\RefreshableToken;
 use SmartAssert\TestAuthenticationProviderBundle\FrontendTokenProvider;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -13,7 +14,9 @@ abstract class AbstractDashboardTest extends AbstractApplicationTestCase
 {
     public function testGetInvalidToken(): void
     {
-        $response = self::$staticApplicationClient->makeDashboardReadRequest(md5((string) rand()));
+        $frontendToken = new RefreshableToken(md5((string) rand()), md5((string) rand()));
+
+        $response = self::$staticApplicationClient->makeDashboardReadRequest($frontendToken);
 
         self::assertSame(302, $response->getStatusCode());
 
@@ -38,7 +41,11 @@ abstract class AbstractDashboardTest extends AbstractApplicationTestCase
         \assert($frontendTokenProvider instanceof FrontendTokenProvider);
 
         $frontendToken = $frontendTokenProvider->get('user@example.com');
-        $response = self::$staticApplicationClient->makeDashboardReadRequest($frontendToken->token);
+
+        $response = self::$staticApplicationClient->makeDashboardReadRequest(new RefreshableToken(
+            $frontendToken->token,
+            $frontendToken->refreshToken
+        ));
 
         self::assertSame(200, $response->getStatusCode());
         self::assertStringContainsString('text/html', $response->getHeaderLine('content-type'));

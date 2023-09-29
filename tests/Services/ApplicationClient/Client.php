@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Services\ApplicationClient;
 
+use App\RefreshableToken\Encrypter;
 use Psr\Http\Message\ResponseInterface;
+use SmartAssert\ApiClient\Model\RefreshableToken;
 use SmartAssert\SymfonyTestClient\ClientInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -13,6 +15,7 @@ readonly class Client
     public function __construct(
         private ClientInterface $client,
         private UrlGeneratorInterface $urlGenerator,
+        private Encrypter $tokenEncrypter,
     ) {
     }
 
@@ -49,11 +52,13 @@ readonly class Client
         );
     }
 
-    public function makeDashboardReadRequest(?string $token, string $method = 'GET'): ResponseInterface
+    public function makeDashboardReadRequest(?RefreshableToken $token, string $method = 'GET'): ResponseInterface
     {
         $headers = [];
-        if (is_string($token)) {
-            $headers['cookie'] = 'token=' . $token;
+        if ($token instanceof RefreshableToken) {
+            $encryptedToken = $this->tokenEncrypter->encrypt($token);
+
+            $headers['cookie'] = 'token=' . $encryptedToken;
         }
 
         return $this->client->makeRequest($method, $this->urlGenerator->generate('dashboard'), $headers);

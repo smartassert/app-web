@@ -48,3 +48,9 @@ services:
     SmartAssert\ApiClient\UsersClient:
         arguments:
             $baseUrl: '%env(string:API_CLIENT_BASE_URL)%'
+
+    App\RefreshableToken\Encrypter:
+        arguments:
+            $keys:
+                - '%env(string:PRIMARY_TOKEN_ENCRYPTION_KEY)%'
+                - '%env(string:SECONDARY_TOKEN_ENCRYPTION_KEY)%'

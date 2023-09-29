@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\RedirectRoute\RedirectRoute;
+use App\RefreshableToken\Encrypter;
 use App\Security\UserCredentials;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\NetworkExceptionInterface;
@@ -63,7 +64,8 @@ class SignInController extends AbstractController
     public function handle(
         UserCredentials $userCredentials,
         RedirectRoute $redirectRoute,
-        UsersClient $usersClient
+        UsersClient $usersClient,
+        Encrypter $tokenEncrypter,
     ): Response {
         $userIdentifier = $userCredentials->userIdentifier;
         if (null === $userIdentifier) {
@@ -86,7 +88,7 @@ class SignInController extends AbstractController
                 'location' => $this->urlGenerator->generate($redirectRoute->name, $redirectRoute->parameters),
                 'content-type' => null,
             ]);
-            $response->headers->setCookie(Cookie::create('token', $token->token));
+            $response->headers->setCookie(Cookie::create('token', $tokenEncrypter->encrypt($token)));
 
             return $response;
         } catch (UnauthorizedException) {
