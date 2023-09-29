@@ -7,6 +7,7 @@
         "php": ">=8.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "defuse/php-encryption": "^2.4",
         "guzzlehttp/guzzle": "^7.8",
         "guzzlehttp/psr7": "*",
         "smartassert/api-client": "^1.0",
