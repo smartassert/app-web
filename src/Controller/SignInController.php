@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Enum\SignInErrorState;
 use App\RedirectRoute\RedirectRoute;
 use App\RefreshableToken\Encrypter;
 use App\Security\UserCredentials;
@@ -42,13 +43,21 @@ class SignInController extends AbstractController
      */
     public function view(Request $request): Response
     {
-        return new Response($this->twig->render(
-            'sign_in/index.html.twig',
-            [
-                'email' => $request->query->get('email'),
-                'route' => $request->query->get('route'),
-            ]
-        ));
+        $viewParameters = [
+            'email' => $request->query->getString('email'),
+            'route' => $request->query->get('route'),
+        ];
+
+        $error = $request->query->getString('error');
+        if ('' !== $error && !$this->isErrorState($error)) {
+            return new Response(null, 302, [
+                'location' => $this->urlGenerator->generate('sign_in_view', $viewParameters),
+            ]);
+        }
+
+        $viewParameters['error'] = $error;
+
+        return new Response($this->twig->render('sign_in/index.html.twig', $viewParameters));
     }
 
     /**
@@ -69,16 +78,15 @@ class SignInController extends AbstractController
     ): Response {
         $userIdentifier = $userCredentials->userIdentifier;
         if (null === $userIdentifier) {
-            $this->addFlash('empty-user-identifier', null);
-
-            return $this->createSignInRedirectResponse();
+            return $this->createSignInRedirectResponse(errorState: SignInErrorState::EMAIL_EMPTY);
         }
 
         $password = $userCredentials->password;
         if (null === $password) {
-            $this->addFlash('empty-password', null);
-
-            return $this->createSignInRedirectResponse($userIdentifier);
+            return $this->createSignInRedirectResponse(
+                userIdentifier: $userIdentifier,
+                errorState: SignInErrorState::PASSWORD_EMPTY
+            );
         }
 
         try {
@@ -92,22 +100,37 @@ class SignInController extends AbstractController
 
             return $response;
         } catch (UnauthorizedException) {
-            $this->addFlash('unauthorized', null);
-
-            return $this->createSignInRedirectResponse($userIdentifier);
+            return $this->createSignInRedirectResponse($userIdentifier, SignInErrorState::UNAUTHORIZED);
         }
     }
 
-    private function createSignInRedirectResponse(?string $userIdentifier = null): Response
-    {
+    private function createSignInRedirectResponse(
+        ?string $userIdentifier = null,
+        ?SignInErrorState $errorState = null
+    ): Response {
         $routeParameters = [];
         if (is_string($userIdentifier)) {
             $routeParameters['email'] = $userIdentifier;
+        }
+
+        if (null !== $errorState) {
+            $routeParameters['error'] = $errorState->value;
         }
 
         return new Response(null, 302, [
             'location' => $this->urlGenerator->generate('sign_in_view', $routeParameters),
             'content-type' => null,
         ]);
+    }
+
+    private function isErrorState(string $error): bool
+    {
+        foreach (SignInErrorState::cases() as $errorState) {
+            if ($error === $errorState->value) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

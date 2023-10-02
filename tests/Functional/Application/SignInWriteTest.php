@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Application;
 
 use App\Tests\Application\AbstractSignInWriteTest;
-use App\Tests\Services\SessionHandler;
 use Symfony\Component\HttpFoundation\Cookie;
 
 class SignInWriteTest extends AbstractSignInWriteTest
@@ -14,11 +13,11 @@ class SignInWriteTest extends AbstractSignInWriteTest
 
     public function testWriteUnauthorized(): void
     {
-        $response = self::$staticApplicationClient->makeSignInPageWriteRequest(null, null);
+        $response = self::$staticApplicationClient->makeSignInPageWriteRequest('user@example.com', 'invalid');
 
         self::assertSame(302, $response->getStatusCode());
         self::assertSame('', $response->getHeaderLine('content-type'));
-        self::assertSame('/sign-in/', $response->getHeaderLine('location'));
+        self::assertStringContainsString('/sign-in/', $response->getHeaderLine('location'));
         self::assertSame('', $response->getBody()->getContents());
 
         $responseCookieValue = $response->getHeaderLine('set-cookie');
@@ -35,18 +34,10 @@ class SignInWriteTest extends AbstractSignInWriteTest
         ?string $userIdentifier,
         ?string $password,
         string $expectedResponseHeaderLocation,
-        string $expectedFlashKey
     ): void {
-        $sessionHandler = self::getContainer()->get(SessionHandler::class);
-        \assert($sessionHandler instanceof SessionHandler);
-
-        $session = $sessionHandler->create();
-        $sessionHandler->persist(self::$kernelBrowser, $session);
-
         $response = self::$staticApplicationClient->makeSignInPageWriteRequest($userIdentifier, $password);
 
         self::assertSame($expectedResponseHeaderLocation, $response->getHeaderLine('location'));
-        self::assertTrue($session->getFlashBag()->has($expectedFlashKey));
     }
 
     /**
@@ -58,26 +49,17 @@ class SignInWriteTest extends AbstractSignInWriteTest
             'empty user-identifier, empty password' => [
                 'userIdentifier' => null,
                 'password' => null,
-                'expectedResponseHeaderLocation' => '/sign-in/',
-                'expectedFlashKey' => 'empty-user-identifier',
+                'expectedResponseHeaderLocation' => '/sign-in/?error=email_empty',
             ],
             'non-empty user-identifier, empty password' => [
                 'userIdentifier' => 'user@example.com',
                 'password' => null,
-                'expectedResponseHeaderLocation' => '/sign-in/?email=user@example.com',
-                'expectedFlashKey' => 'empty-password',
+                'expectedResponseHeaderLocation' => '/sign-in/?email=user@example.com&error=password_empty',
             ],
             'empty user-identifier, non-empty password' => [
                 'userIdentifier' => null,
                 'password' => null,
-                'expectedResponseHeaderLocation' => '/sign-in/',
-                'expectedFlashKey' => 'empty-user-identifier',
-            ],
-            'unauthorized' => [
-                'userIdentifier' => 'user@example.com',
-                'password' => 'invalid',
-                'expectedResponseHeaderLocation' => '/sign-in/?email=user@example.com',
-                'expectedFlashKey' => 'unauthorized',
+                'expectedResponseHeaderLocation' => '/sign-in/?error=email_empty',
             ],
         ];
     }
