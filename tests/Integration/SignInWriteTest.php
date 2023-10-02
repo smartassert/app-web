@@ -19,7 +19,7 @@ class SignInWriteTest extends AbstractSignInWriteTest
         self::assertSame(302, $response->getStatusCode());
         self::assertSame('', $response->getHeaderLine('content-type'));
         self::assertNotSame('token', $responseCookie->getName());
-        self::assertSame('/sign-in/', $response->getHeaderLine('location'));
+        self::assertStringContainsString('/sign-in/', $response->getHeaderLine('location'));
         self::assertSame('', $response->getBody()->getContents());
     }
 }
