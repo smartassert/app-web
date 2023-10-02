@@ -20,7 +20,6 @@ use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,13 +29,13 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-class SignInController extends AbstractController
+readonly class SignInController
 {
     public function __construct(
-        private readonly TwigEnvironment $twig,
-        private readonly UrlGeneratorInterface $urlGenerator,
-        private readonly Factory $signInRedirectResponseFactory,
-        private readonly Serializer $redirectRouteSerializer,
+        private TwigEnvironment $twig,
+        private UrlGeneratorInterface $urlGenerator,
+        private Factory $signInRedirectResponseFactory,
+        private Serializer $redirectRouteSerializer,
     ) {
     }
 
