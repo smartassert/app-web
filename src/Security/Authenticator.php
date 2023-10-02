@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Security;
 
-use App\RedirectRoute\Factory;
+use App\RedirectRoute\Factory as RedirectRouteFactory;
+use App\SignInRedirectResponse\Factory as SignInRedirectResponseFactory;
 use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ApiClient\Exception\UnauthorizedException;
 use SmartAssert\ApiClient\UsersClient;
@@ -28,8 +29,8 @@ class Authenticator extends AbstractAuthenticator
     public function __construct(
         private readonly SymfonyRequestTokenExtractor $tokenExtractor,
         private readonly UsersClient $usersClient,
-        private readonly Factory $redirectRouteFactory,
-        private readonly \App\SignInRedirectResponse\Factory $signInRedirectResponseFactory,
+        private readonly RedirectRouteFactory $redirectRouteFactory,
+        private readonly SignInRedirectResponseFactory $signInRedirectResponseFactory,
     ) {
     }
 
