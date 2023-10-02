@@ -43,19 +43,30 @@ class SignInController extends AbstractController
      */
     public function view(Request $request): Response
     {
-        $viewParameters = [
-            'email' => $request->query->getString('email'),
-            'route' => $request->query->get('route'),
-        ];
+        $email = $request->query->getString('email');
+        $route = $request->query->getString('route');
 
         $error = $request->query->getString('error');
         if ('' !== $error && !$this->isErrorState($error)) {
+            $routeParameters = [];
+            if ('' !== $email) {
+                $routeParameters['email'] = $email;
+            }
+
+            if ('' !== $route) {
+                $routeParameters['route'] = $route;
+            }
+
             return new Response(null, 302, [
-                'location' => $this->urlGenerator->generate('sign_in_view', $viewParameters),
+                'location' => $this->urlGenerator->generate('sign_in_view', $routeParameters),
             ]);
         }
 
-        $viewParameters['error'] = $error;
+        $viewParameters = [
+            'email' => $request->query->getString('email'),
+            'route' => $request->query->get('route'),
+            'error' => $error,
+        ];
 
         return new Response($this->twig->render('sign_in/index.html.twig', $viewParameters));
     }
@@ -109,7 +120,7 @@ class SignInController extends AbstractController
         ?SignInErrorState $errorState = null
     ): Response {
         $routeParameters = [];
-        if (is_string($userIdentifier)) {
+        if (is_string($userIdentifier) && '' !== $userIdentifier) {
             $routeParameters['email'] = $userIdentifier;
         }
 
