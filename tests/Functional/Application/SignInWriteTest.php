@@ -5,27 +5,10 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Application;
 
 use App\Tests\Application\AbstractSignInWriteTest;
-use Symfony\Component\HttpFoundation\Cookie;
 
 class SignInWriteTest extends AbstractSignInWriteTest
 {
     use GetClientAdapterTrait;
-
-    public function testWriteUnauthorized(): void
-    {
-        $response = self::$staticApplicationClient->makeSignInPageWriteRequest('user@example.com', 'invalid');
-
-        self::assertSame(302, $response->getStatusCode());
-        self::assertSame('', $response->getHeaderLine('content-type'));
-        self::assertStringContainsString('/sign-in/', $response->getHeaderLine('location'));
-        self::assertSame('', $response->getBody()->getContents());
-
-        $responseCookieValue = $response->getHeaderLine('set-cookie');
-        if ('' !== $responseCookieValue) {
-            $responseCookie = Cookie::fromString($response->getHeaderLine('set-cookie'));
-            self::assertNotSame('token', $responseCookie->getName());
-        }
-    }
 
     /**
      * @dataProvider writeInvalidCredentialsDataProvider
