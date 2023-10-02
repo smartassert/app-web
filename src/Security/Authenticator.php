@@ -19,24 +19,30 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
-use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
+use Symfony\Component\Security\Http\Authenticator\AuthenticatorInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
+use Symfony\Component\Security\Http\Authenticator\Token\PostAuthenticationToken;
 
-class Authenticator extends AbstractAuthenticator
+readonly class Authenticator implements AuthenticatorInterface
 {
     public function __construct(
-        private readonly SymfonyRequestTokenExtractor $tokenExtractor,
-        private readonly UsersClient $usersClient,
-        private readonly RedirectRouteFactory $redirectRouteFactory,
-        private readonly SignInRedirectResponseFactory $signInRedirectResponseFactory,
+        private SymfonyRequestTokenExtractor $tokenExtractor,
+        private UsersClient $usersClient,
+        private RedirectRouteFactory $redirectRouteFactory,
+        private SignInRedirectResponseFactory $signInRedirectResponseFactory,
     ) {
     }
 
     public function supports(Request $request): bool
     {
         return null !== $this->tokenExtractor->extract($request);
+    }
+
+    public function createToken(Passport $passport, string $firewallName): TokenInterface
+    {
+        return new PostAuthenticationToken($passport->getUser(), $firewallName, $passport->getUser()->getRoles());
     }
 
     /**
