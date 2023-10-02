@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Security;
 
 use App\RedirectRoute\Factory;
-use App\RedirectRoute\Serializer;
 use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ApiClient\Exception\UnauthorizedException;
 use SmartAssert\ApiClient\UsersClient;
@@ -14,10 +13,8 @@ use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
@@ -31,9 +28,8 @@ class Authenticator extends AbstractAuthenticator
     public function __construct(
         private readonly SymfonyRequestTokenExtractor $tokenExtractor,
         private readonly UsersClient $usersClient,
-        private readonly UrlGeneratorInterface $urlGenerator,
         private readonly Factory $redirectRouteFactory,
-        private readonly Serializer $redirectRouteSerializer,
+        private readonly \App\SignInRedirectResponse\Factory $signInRedirectResponseFactory,
     ) {
     }
 
@@ -74,11 +70,10 @@ class Authenticator extends AbstractAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        $redirectRoute = $this->redirectRouteFactory->createFromRequest($request);
-
-        return new RedirectResponse($this->urlGenerator->generate(
-            'sign_in_view',
-            ['route' => $this->redirectRouteSerializer->serialize($redirectRoute)]
-        ));
+        return $this->signInRedirectResponseFactory->create(
+            userIdentifier: null,
+            error: null,
+            route: $this->redirectRouteFactory->createFromRequest($request)
+        );
     }
 }
