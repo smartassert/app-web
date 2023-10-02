@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Enum\SignInErrorState;
 use App\RedirectRoute\RedirectRoute;
+use App\RedirectRoute\Serializer;
 use App\RefreshableToken\Encrypter;
 use App\Security\UserCredentials;
 use Psr\Http\Client\ClientExceptionInterface;
@@ -86,17 +87,22 @@ class SignInController extends AbstractController
         RedirectRoute $redirectRoute,
         UsersClient $usersClient,
         Encrypter $tokenEncrypter,
+        Serializer $redirectRouteSerializer,
     ): Response {
         $userIdentifier = $userCredentials->userIdentifier;
         if (null === $userIdentifier) {
-            return $this->createSignInRedirectResponse(errorState: SignInErrorState::EMAIL_EMPTY);
+            return $this->createSignInRedirectResponse(
+                errorState: SignInErrorState::EMAIL_EMPTY,
+                redirectRoute: $redirectRouteSerializer->serialize($redirectRoute),
+            );
         }
 
         $password = $userCredentials->password;
         if (null === $password) {
             return $this->createSignInRedirectResponse(
                 userIdentifier: $userIdentifier,
-                errorState: SignInErrorState::PASSWORD_EMPTY
+                errorState: SignInErrorState::PASSWORD_EMPTY,
+                redirectRoute: $redirectRouteSerializer->serialize($redirectRoute),
             );
         }
 
@@ -111,13 +117,18 @@ class SignInController extends AbstractController
 
             return $response;
         } catch (UnauthorizedException) {
-            return $this->createSignInRedirectResponse($userIdentifier, SignInErrorState::UNAUTHORIZED);
+            return $this->createSignInRedirectResponse(
+                userIdentifier: $userIdentifier,
+                errorState: SignInErrorState::UNAUTHORIZED,
+                redirectRoute: $redirectRouteSerializer->serialize($redirectRoute),
+            );
         }
     }
 
     private function createSignInRedirectResponse(
         ?string $userIdentifier = null,
-        ?SignInErrorState $errorState = null
+        ?SignInErrorState $errorState = null,
+        ?string $redirectRoute = null,
     ): Response {
         $routeParameters = [];
         if (is_string($userIdentifier) && '' !== $userIdentifier) {
@@ -126,6 +137,10 @@ class SignInController extends AbstractController
 
         if (null !== $errorState) {
             $routeParameters['error'] = $errorState->value;
+        }
+
+        if (null !== $redirectRoute) {
+            $routeParameters['route'] = $redirectRoute;
         }
 
         return new Response(null, 302, [
