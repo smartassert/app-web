@@ -27,7 +27,7 @@ readonly class Factory
             $urlParameters['email'] = $userIdentifier;
         }
 
-        if (is_string($error) && $this->isErrorState($error)) {
+        if (is_string($error) && SignInErrorState::is($error)) {
             $urlParameters['error'] = $error;
         }
 
@@ -41,16 +41,5 @@ readonly class Factory
             'content-type' => null,
             'location' => $url,
         ]);
-    }
-
-    private function isErrorState(string $error): bool
-    {
-        foreach (SignInErrorState::cases() as $errorState) {
-            if ($error === $errorState->value) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

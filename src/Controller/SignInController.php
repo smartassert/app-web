@@ -51,7 +51,7 @@ class SignInController extends AbstractController
         $route = $request->query->getString('route');
 
         $error = $request->query->getString('error');
-        if ('' !== $error && !$this->isErrorState($error)) {
+        if ('' !== $error && !SignInErrorState::is($error)) {
             $redirectUserIdentifier = '' === $email ? null : $email;
             $redirectRoute = '' === $route ? null : $this->redirectRouteSerializer->deserialize($route);
 
@@ -122,16 +122,5 @@ class SignInController extends AbstractController
                 route: $redirectRoute,
             );
         }
-    }
-
-    private function isErrorState(string $error): bool
-    {
-        foreach (SignInErrorState::cases() as $errorState) {
-            if ($error === $errorState->value) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }
