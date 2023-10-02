@@ -32,10 +32,7 @@ use Twig\Error\SyntaxError;
 readonly class SignInController
 {
     public function __construct(
-        private TwigEnvironment $twig,
-        private UrlGeneratorInterface $urlGenerator,
         private Factory $signInRedirectResponseFactory,
-        private Serializer $redirectRouteSerializer,
     ) {
     }
 
@@ -44,7 +41,7 @@ readonly class SignInController
      * @throws SyntaxError
      * @throws LoaderError
      */
-    public function view(Request $request): Response
+    public function view(Request $request, TwigEnvironment $twig, Serializer $redirectRouteSerializer): Response
     {
         $email = $request->query->getString('email');
         $route = $request->query->getString('route');
@@ -52,7 +49,7 @@ readonly class SignInController
         $error = $request->query->getString('error');
         if ('' !== $error && !SignInErrorState::is($error)) {
             $redirectUserIdentifier = '' === $email ? null : $email;
-            $redirectRoute = '' === $route ? null : $this->redirectRouteSerializer->deserialize($route);
+            $redirectRoute = '' === $route ? null : $redirectRouteSerializer->deserialize($route);
 
             return $this->signInRedirectResponseFactory->create(
                 userIdentifier: $redirectUserIdentifier,
@@ -67,7 +64,7 @@ readonly class SignInController
             'error' => $error,
         ];
 
-        return new Response($this->twig->render('sign_in/index.html.twig', $viewParameters));
+        return new Response($twig->render('sign_in/index.html.twig', $viewParameters));
     }
 
     /**
@@ -85,6 +82,7 @@ readonly class SignInController
         RedirectRoute $redirectRoute,
         UsersClient $usersClient,
         Encrypter $tokenEncrypter,
+        UrlGeneratorInterface $urlGenerator,
     ): Response {
         $userIdentifier = $userCredentials->userIdentifier;
         if (null === $userIdentifier) {
@@ -108,7 +106,7 @@ readonly class SignInController
             $token = $usersClient->createToken($userIdentifier, $password);
 
             $response = new Response(null, 302, [
-                'location' => $this->urlGenerator->generate($redirectRoute->name, $redirectRoute->parameters),
+                'location' => $urlGenerator->generate($redirectRoute->name, $redirectRoute->parameters),
                 'content-type' => null,
             ]);
             $response->headers->setCookie(Cookie::create('token', $tokenEncrypter->encrypt($token)));
