@@ -58,9 +58,10 @@ class SignInController extends AbstractController
                 $routeParameters['route'] = $route;
             }
 
-            return new Response(null, 302, [
-                'location' => $this->urlGenerator->generate('sign_in_view', $routeParameters),
-            ]);
+            return $this->createSignInRedirectResponse(
+                userIdentifier: $routeParameters['email'] ?? null,
+                redirectRoute: $routeParameters['route'] ?? null,
+            );
         }
 
         $viewParameters = [
