@@ -9,6 +9,7 @@ use App\RedirectRoute\RedirectRoute;
 use App\RedirectRoute\Serializer;
 use App\RefreshableToken\Encrypter;
 use App\Security\UserCredentials;
+use App\SignInRedirectResponse\Factory;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\NetworkExceptionInterface;
 use Psr\Http\Client\RequestExceptionInterface;
@@ -34,6 +35,8 @@ class SignInController extends AbstractController
     public function __construct(
         private readonly TwigEnvironment $twig,
         private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly Factory $signInRedirectResponseFactory,
+        private readonly Serializer $redirectRouteSerializer,
     ) {
     }
 
@@ -49,18 +52,13 @@ class SignInController extends AbstractController
 
         $error = $request->query->getString('error');
         if ('' !== $error && !$this->isErrorState($error)) {
-            $routeParameters = [];
-            if ('' !== $email) {
-                $routeParameters['email'] = $email;
-            }
+            $redirectUserIdentifier = '' === $email ? null : $email;
+            $redirectRoute = '' === $route ? null : $this->redirectRouteSerializer->deserialize($route);
 
-            if ('' !== $route) {
-                $routeParameters['route'] = $route;
-            }
-
-            return $this->createSignInRedirectResponse(
-                userIdentifier: $routeParameters['email'] ?? null,
-                redirectRoute: $routeParameters['route'] ?? null,
+            return $this->signInRedirectResponseFactory->create(
+                userIdentifier: $redirectUserIdentifier,
+                error: null,
+                route: $redirectRoute,
             );
         }
 
@@ -88,22 +86,22 @@ class SignInController extends AbstractController
         RedirectRoute $redirectRoute,
         UsersClient $usersClient,
         Encrypter $tokenEncrypter,
-        Serializer $redirectRouteSerializer,
     ): Response {
         $userIdentifier = $userCredentials->userIdentifier;
         if (null === $userIdentifier) {
-            return $this->createSignInRedirectResponse(
-                errorState: SignInErrorState::EMAIL_EMPTY,
-                redirectRoute: $redirectRouteSerializer->serialize($redirectRoute),
+            return $this->signInRedirectResponseFactory->create(
+                userIdentifier: null,
+                error: SignInErrorState::EMAIL_EMPTY->value,
+                route: $redirectRoute,
             );
         }
 
         $password = $userCredentials->password;
         if (null === $password) {
-            return $this->createSignInRedirectResponse(
+            return $this->signInRedirectResponseFactory->create(
                 userIdentifier: $userIdentifier,
-                errorState: SignInErrorState::PASSWORD_EMPTY,
-                redirectRoute: $redirectRouteSerializer->serialize($redirectRoute),
+                error: SignInErrorState::PASSWORD_EMPTY->value,
+                route: $redirectRoute,
             );
         }
 
@@ -118,36 +116,12 @@ class SignInController extends AbstractController
 
             return $response;
         } catch (UnauthorizedException) {
-            return $this->createSignInRedirectResponse(
+            return $this->signInRedirectResponseFactory->create(
                 userIdentifier: $userIdentifier,
-                errorState: SignInErrorState::UNAUTHORIZED,
-                redirectRoute: $redirectRouteSerializer->serialize($redirectRoute),
+                error: SignInErrorState::UNAUTHORIZED->value,
+                route: $redirectRoute,
             );
         }
-    }
-
-    private function createSignInRedirectResponse(
-        ?string $userIdentifier = null,
-        ?SignInErrorState $errorState = null,
-        ?string $redirectRoute = null,
-    ): Response {
-        $routeParameters = [];
-        if (is_string($userIdentifier) && '' !== $userIdentifier) {
-            $routeParameters['email'] = $userIdentifier;
-        }
-
-        if (null !== $errorState) {
-            $routeParameters['error'] = $errorState->value;
-        }
-
-        if (null !== $redirectRoute) {
-            $routeParameters['route'] = $redirectRoute;
-        }
-
-        return new Response(null, 302, [
-            'location' => $this->urlGenerator->generate('sign_in_view', $routeParameters),
-            'content-type' => null,
-        ]);
     }
 
     private function isErrorState(string $error): bool
