@@ -55,6 +55,6 @@ services:
                 - '%env(string:PRIMARY_TOKEN_ENCRYPTION_KEY)%'
                 - '%env(string:SECONDARY_TOKEN_ENCRYPTION_KEY)%'
 
-    App\Security\Authenticator:
+    App\Security\TokenAuthentication\Authenticator:
         arguments:
             $firewallMap: '@security.firewall.map'

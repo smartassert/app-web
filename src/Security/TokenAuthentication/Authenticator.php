@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Security;
+namespace App\Security\TokenAuthentication;
 
 use App\RedirectRoute\Factory as RedirectRouteFactory;
+use App\Security\SymfonyRequestTokenExtractor;
 use App\SignInRedirectResponse\Factory as SignInRedirectResponseFactory;
 use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ApiClient\Exception\UnauthorizedException;
@@ -43,7 +44,7 @@ readonly class Authenticator implements AuthenticatorInterface
     {
         $firewallConfig = $this->firewallMap->getFirewallConfig($request);
 
-        return $firewallConfig instanceof FirewallConfig && $firewallConfig->isSecurityEnabled();
+        return $firewallConfig instanceof FirewallConfig && 'secured' === $firewallConfig->getName();
     }
 
     public function createToken(Passport $passport, string $firewallName): TokenInterface

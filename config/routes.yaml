@@ -12,4 +12,3 @@ sign_in_view:
 sign_in_handle:
     path: '/sign-in/'
     methods: [POST]
-    controller: App\Controller\SignInController::handle
