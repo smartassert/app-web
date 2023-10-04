@@ -8,6 +8,7 @@ use App\Enum\SignInErrorState;
 use App\RedirectRoute\RedirectRoute;
 use App\RedirectRoute\Serializer;
 use App\RefreshableToken\Encrypter;
+use App\Request\SignInReadRequest;
 use App\Security\UserCredentials;
 use App\SignInRedirectResponse\Factory;
 use Psr\Http\Client\ClientExceptionInterface;
@@ -21,7 +22,6 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment as TwigEnvironment;
@@ -41,27 +41,23 @@ readonly class SignInController
      * @throws SyntaxError
      * @throws LoaderError
      */
-    public function view(Request $request, TwigEnvironment $twig, Serializer $redirectRouteSerializer): Response
-    {
-        $email = $request->query->getString('email');
-        $route = $request->query->getString('route');
-
-        $error = $request->query->getString('error');
-        if ('' !== $error && !SignInErrorState::is($error)) {
-            $redirectUserIdentifier = '' === $email ? null : $email;
-            $redirectRoute = '' === $route ? null : $redirectRouteSerializer->deserialize($route);
-
+    public function view(
+        SignInReadRequest $request,
+        TwigEnvironment $twig,
+        Serializer $redirectRouteSerializer
+    ): Response {
+        if (is_string($request->error) && !SignInErrorState::is($request->error)) {
             return $this->signInRedirectResponseFactory->create(
-                userIdentifier: $redirectUserIdentifier,
+                userIdentifier: $request->email,
                 error: null,
-                route: $redirectRoute,
+                route: $request->route,
             );
         }
 
         $viewParameters = [
-            'email' => $request->query->getString('email'),
-            'route' => $request->query->get('route'),
-            'error' => $error,
+            'email' => $request->email,
+            'route' => $redirectRouteSerializer->serialize($request->route),
+            'error' => $request->error,
         ];
 
         return new Response($twig->render('sign_in/index.html.twig', $viewParameters));
