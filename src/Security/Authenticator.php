@@ -17,8 +17,9 @@ use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Http\Authenticator\AuthenticatorInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
@@ -58,13 +59,13 @@ readonly class Authenticator implements AuthenticatorInterface
         $tokenValue = $this->tokenExtractor->extract($request);
 
         if (null === $tokenValue) {
-            throw new CustomUserMessageAuthenticationException('Invalid user token');
+            throw new AuthenticationCredentialsNotFoundException();
         }
 
         try {
             $user = $this->usersClient->verifyToken($tokenValue);
         } catch (UnauthorizedException) {
-            throw new CustomUserMessageAuthenticationException('Invalid user token');
+            throw new BadCredentialsException();
         }
 
         return new SelfValidatingPassport(new UserBadge($user->id));
