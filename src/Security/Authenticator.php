@@ -14,6 +14,8 @@ use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
+use Symfony\Bundle\SecurityBundle\Security\FirewallConfig;
+use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -32,12 +34,15 @@ readonly class Authenticator implements AuthenticatorInterface
         private UsersClient $usersClient,
         private RedirectRouteFactory $redirectRouteFactory,
         private SignInRedirectResponseFactory $signInRedirectResponseFactory,
+        private FirewallMap $firewallMap,
     ) {
     }
 
     public function supports(Request $request): bool
     {
-        return null !== $this->tokenExtractor->extract($request);
+        $firewallConfig = $this->firewallMap->getFirewallConfig($request);
+
+        return $firewallConfig instanceof FirewallConfig && $firewallConfig->isSecurityEnabled();
     }
 
     public function createToken(Passport $passport, string $firewallName): TokenInterface
