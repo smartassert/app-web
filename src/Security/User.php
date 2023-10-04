@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Security;
 
+use SmartAssert\ApiClient\Model\RefreshableToken;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 readonly class User implements UserInterface
 {
     /**
      * @param non-empty-string $identifier
-     * @param non-empty-string $securityToken
      */
     public function __construct(
         private string $identifier,
-        private string $securityToken,
+        private RefreshableToken $securityToken,
     ) {
     }
 
@@ -31,10 +31,7 @@ readonly class User implements UserInterface
         return $this->identifier;
     }
 
-    /**
-     * @return non-empty-string
-     */
-    public function getSecurityToken(): string
+    public function getSecurityToken(): RefreshableToken
     {
         return $this->securityToken;
     }

@@ -61,14 +61,14 @@ readonly class Authenticator implements AuthenticatorInterface
      */
     public function authenticate(Request $request): Passport
     {
-        $tokenValue = $this->tokenExtractor->extract($request);
+        $token = $this->tokenExtractor->extract($request);
 
-        if (null === $tokenValue) {
+        if (null === $token) {
             throw new AuthenticationCredentialsNotFoundException();
         }
 
         try {
-            $user = $this->usersClient->verifyToken($tokenValue);
+            $user = $this->usersClient->verifyToken($token->token);
         } catch (UnauthorizedException) {
             throw new BadCredentialsException();
         }

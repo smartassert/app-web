@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Security;
 
 use App\RefreshableToken\Encrypter;
+use SmartAssert\ApiClient\Model\RefreshableToken;
 use Symfony\Component\HttpFoundation\Request;
 
 readonly class SymfonyRequestTokenExtractor
@@ -14,15 +15,8 @@ readonly class SymfonyRequestTokenExtractor
     ) {
     }
 
-    /**
-     * @return ?non-empty-string
-     */
-    public function extract(Request $request): ?string
+    public function extract(Request $request): ?RefreshableToken
     {
-        $refreshableToken = $this->tokenEncrypter->decrypt(
-            $request->cookies->getString('token')
-        );
-
-        return $refreshableToken?->token;
+        return $this->tokenEncrypter->decrypt($request->cookies->getString('token'));
     }
 }
