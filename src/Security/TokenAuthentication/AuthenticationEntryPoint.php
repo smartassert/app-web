@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Security;
+namespace App\Security\TokenAuthentication;
 
 use App\RedirectRoute\Factory as RedirectRouteFactory;
 use App\SignInRedirectResponse\Factory as SignInRedirectResponseFactory;

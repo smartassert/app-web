@@ -9,12 +9,18 @@ security:
         public:
             pattern: ^/sign-in
             security: false
+            methods: [GET]
+        handle_sign_in:
+            pattern: ^/sign-in
+            methods: [POST]
+            custom_authenticators:
+                - App\Security\CredentialAuthentication\Authenticator
         secured:
             pattern: ^/
             lazy: true
             provider: app_user_provider
             custom_authenticators:
-                - App\Security\Authenticator
-            entry_point: App\Security\AuthenticationEntryPoint
+                - App\Security\TokenAuthentication\Authenticator
+            entry_point: App\Security\TokenAuthentication\AuthenticationEntryPoint
     access_control:
         - { path: ^/, roles: ROLE_USER }
