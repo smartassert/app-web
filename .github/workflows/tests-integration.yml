@@ -31,7 +31,10 @@ jobs:
         run: composer integration-pull
 
       - name: Setup integration environment
-        run: composer integration-setup
+        run: |
+          > tests/build/users.env
+          echo "JWT_TOKEN_TTL=10" > tests/build/users.env
+          composer integration-setup
 
       - name: Verify integration environment state
         run: |
