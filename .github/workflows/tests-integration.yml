@@ -32,8 +32,8 @@ jobs:
 
       - name: Setup integration environment
         run: |
-          > tests/build/users.env
-          echo "JWT_TOKEN_TTL=10" > tests/build/users.env
+          rm tests/build/users.env
+          echo "JWT_TOKEN_TTL=10" >> tests/build/users.env
           composer integration-setup
 
       - name: Verify integration environment state
