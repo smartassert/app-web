@@ -41,9 +41,14 @@ class DashboardTest extends AbstractDashboardTest
 
     private function getUsersServiceJwtTokenTtl(): int
     {
-        $usersServicePrintEnvOutput =
-            `docker-compose -f tests/build/docker-compose.yml exec users-service printenv | grep JWT_TOKEN_TTL`;
+        $jwtTokenEnvVarName = 'JWT_TOKEN_TTL';
 
-        return (int) str_replace('JWT_TOKEN_TTL=', '', $usersServicePrintEnvOutput);
+        $usersServicePrintEnvOutput =
+            (string) shell_exec(sprintf(
+                'docker-compose -f tests/build/docker-compose.yml exec users-service printenv | grep %s',
+                $jwtTokenEnvVarName
+            ));
+
+        return (int) str_replace($jwtTokenEnvVarName . '=', '', $usersServicePrintEnvOutput);
     }
 }
