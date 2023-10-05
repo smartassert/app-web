@@ -8,7 +8,7 @@ services:
       - "5432:5432"
 
   users-service:
-    image: ghcr.io/smartassert/users:2.0
+    image: ghcr.io/smartassert/users:2.3
     profiles: ["functional"]
     container_name: users-service
     environment:
