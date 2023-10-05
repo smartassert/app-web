@@ -9,7 +9,6 @@ use App\Exception\PasswordMissingException;
 use App\Exception\SignInExceptionInterface;
 use App\Exception\UserIdentifierMissingException;
 use App\RedirectRoute\Serializer;
-use App\RefreshableToken\Encrypter;
 use App\Security\User;
 use App\SignInRedirectResponse\Factory as SignInRedirectResponseFactory;
 use Psr\Http\Client\ClientExceptionInterface;
@@ -20,7 +19,6 @@ use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
-use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -38,7 +36,6 @@ readonly class Authenticator implements AuthenticatorInterface
         private UsersClient $usersClient,
         private SignInRedirectResponseFactory $signInRedirectResponseFactory,
         private UrlGeneratorInterface $urlGenerator,
-        private Encrypter $tokenEncrypter,
         private Serializer $serializer,
     ) {
     }
@@ -92,20 +89,10 @@ readonly class Authenticator implements AuthenticatorInterface
     {
         $redirectRoute = $this->serializer->deserialize($request->request->getString('route'));
 
-        $response = new Response(null, 302, [
+        return new Response(null, 302, [
             'location' => $this->urlGenerator->generate($redirectRoute->name, $redirectRoute->parameters),
             'content-type' => null,
         ]);
-
-        $user = $token->getUser();
-        if ($user instanceof User) {
-            $response->headers->setCookie(Cookie::create(
-                'token',
-                $this->tokenEncrypter->encrypt($user->getSecurityToken())
-            ));
-        }
-
-        return $response;
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response

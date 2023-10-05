@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Security\TokenAuthentication;
 
 use App\RedirectRoute\Factory as RedirectRouteFactory;
+use App\RefreshableToken\Encrypter;
 use App\Security\SymfonyRequestTokenExtractor;
+use App\Security\User;
 use App\SignInRedirectResponse\Factory as SignInRedirectResponseFactory;
 use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ApiClient\Exception\UnauthorizedException;
@@ -37,6 +39,7 @@ readonly class Authenticator implements AuthenticatorInterface
         private RedirectRouteFactory $redirectRouteFactory,
         private SignInRedirectResponseFactory $signInRedirectResponseFactory,
         private FirewallMap $firewallMap,
+        private Encrypter $tokenEncrypter,
     ) {
     }
 
@@ -69,12 +72,25 @@ readonly class Authenticator implements AuthenticatorInterface
         }
 
         try {
-            $user = $this->usersClient->verifyToken($token->token);
+            $remoteUser = $this->usersClient->verifyToken($token->token);
+            $user = new User($remoteUser->userIdentifier, $token);
         } catch (UnauthorizedException) {
-            throw new BadCredentialsException();
+            try {
+                $newToken = $this->usersClient->refreshToken($token->refreshToken);
+                $request->cookies->set('token', $this->tokenEncrypter->encrypt($newToken));
+
+                return $this->authenticate($request);
+            } catch (UnauthorizedException) {
+                throw new BadCredentialsException();
+            }
         }
 
-        return new SelfValidatingPassport(new UserBadge($user->id));
+        return new SelfValidatingPassport(new UserBadge(
+            $user->getUserIdentifier(),
+            function () use ($user) {
+                return $user;
+            }
+        ));
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
