@@ -9,7 +9,7 @@ services:
 
   users-service:
     env_file: users.env
-    image: ghcr.io/smartassert/users:2.3
+    image: ghcr.io/smartassert/users:3.0
     profiles: ["functional"]
     container_name: users-service
     environment:
@@ -35,7 +35,7 @@ services:
       - ./http-config/caddy/Caddyfile:/etc/caddy/Caddyfile
 
   api-gateway-service:
-    image: ghcr.io/smartassert/api-gateway:1.3
+    image: ghcr.io/smartassert/api-gateway:2.0
     profiles: ["functional"]
     container_name: api-gateway-service
     environment:
