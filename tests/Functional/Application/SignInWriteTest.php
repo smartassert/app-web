@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Application;
 
+use App\Enum\SignInErrorState;
 use App\RedirectRoute\Factory;
 use App\RedirectRoute\Serializer;
 use App\Tests\Application\AbstractSignInWriteTest;
+use App\Tests\Services\SessionHandler;
 
 class SignInWriteTest extends AbstractSignInWriteTest
 {
@@ -21,7 +23,14 @@ class SignInWriteTest extends AbstractSignInWriteTest
         ?string $userIdentifier,
         ?string $password,
         callable $expectedLocationCreator,
+        string $expectedError,
     ): void {
+        $sessionHandler = self::getContainer()->get(SessionHandler::class);
+        \assert($sessionHandler instanceof SessionHandler);
+
+        $session = $sessionHandler->create();
+        $sessionHandler->persist(self::$kernelBrowser, $session);
+
         $redirectRouteFactory = self::getContainer()->get(Factory::class);
         \assert($redirectRouteFactory instanceof Factory);
 
@@ -34,6 +43,10 @@ class SignInWriteTest extends AbstractSignInWriteTest
             $expectedLocationCreator($redirectRouteFactory, $redirectRouteSerializer),
             $response->getHeaderLine('location')
         );
+
+        self::assertTrue($session->getFlashBag()->has('error'));
+        $error = $session->getFlashBag()->get('error')[0];
+        self::assertSame($expectedError, $error);
     }
 
     /**
@@ -51,8 +64,9 @@ class SignInWriteTest extends AbstractSignInWriteTest
                 ) {
                     $serializedRedirectRoute = $redirectRouteSerializer->serialize($redirectRouteFactory->getDefault());
 
-                    return '/sign-in/?error=email_empty&route=' . $serializedRedirectRoute;
+                    return '/sign-in/?route=' . $serializedRedirectRoute;
                 },
+                'expectedError' => SignInErrorState::EMAIL_EMPTY->value,
             ],
             'non-empty user-identifier, empty password' => [
                 'userIdentifier' => 'user@example.com',
@@ -63,8 +77,9 @@ class SignInWriteTest extends AbstractSignInWriteTest
                 ) {
                     $serializedRedirectRoute = $redirectRouteSerializer->serialize($redirectRouteFactory->getDefault());
 
-                    return '/sign-in/?email=user@example.com&error=password_empty&route=' . $serializedRedirectRoute;
+                    return '/sign-in/?email=user@example.com&route=' . $serializedRedirectRoute;
                 },
+                'expectedError' => SignInErrorState::PASSWORD_EMPTY->value,
             ],
             'empty user-identifier, non-empty password' => [
                 'userIdentifier' => null,
@@ -75,8 +90,9 @@ class SignInWriteTest extends AbstractSignInWriteTest
                 ) {
                     $serializedRedirectRoute = $redirectRouteSerializer->serialize($redirectRouteFactory->getDefault());
 
-                    return '/sign-in/?error=email_empty&route=' . $serializedRedirectRoute;
+                    return '/sign-in/?route=' . $serializedRedirectRoute;
                 },
+                'expectedError' => SignInErrorState::EMAIL_EMPTY->value,
             ],
         ];
     }

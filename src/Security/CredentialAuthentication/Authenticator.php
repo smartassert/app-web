@@ -21,6 +21,7 @@ use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -98,9 +99,13 @@ readonly class Authenticator implements AuthenticatorInterface
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         if ($exception instanceof SignInExceptionInterface) {
+            $session = $request->getSession();
+            if ($session instanceof Session) {
+                $session->getFlashBag()->set('error', $exception->getErrorState()->value);
+            }
+
             return $this->signInRedirectResponseFactory->create(
                 userIdentifier: $exception->getUserIdentifier(),
-                error: $exception->getErrorState()->value,
                 route: $this->serializer->deserialize($request->request->getString('route')),
             );
         }

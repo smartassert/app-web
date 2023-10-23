@@ -23,7 +23,6 @@ readonly class AuthenticationEntryPoint implements AuthenticationEntryPointInter
     {
         return $this->signInRedirectResponseFactory->create(
             userIdentifier: null,
-            error: null,
             route: $this->redirectRouteFactory->createFromRequest($request)
         );
     }

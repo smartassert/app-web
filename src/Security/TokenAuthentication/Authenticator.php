@@ -102,7 +102,6 @@ readonly class Authenticator implements AuthenticatorInterface
     {
         return $this->signInRedirectResponseFactory->create(
             userIdentifier: null,
-            error: null,
             route: $this->redirectRouteFactory->createFromRequest($request)
         );
     }

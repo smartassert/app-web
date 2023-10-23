@@ -34,7 +34,6 @@ readonly class SignInController
         if (is_string($request->error) && !SignInErrorState::is($request->error)) {
             return $this->signInRedirectResponseFactory->create(
                 userIdentifier: $request->email,
-                error: null,
                 route: $request->route,
             );
         }
