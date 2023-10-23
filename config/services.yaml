@@ -64,3 +64,7 @@ services:
     App\Security\TokenAuthentication\Authenticator:
         arguments:
             $firewallMap: '@security.firewall.map'
+
+    Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
+        arguments:
+            - '%env(DATABASE_URL)%'
