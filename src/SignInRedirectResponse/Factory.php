@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\SignInRedirectResponse;
 
-use App\Enum\SignInErrorState;
 use App\RedirectRoute\RedirectRoute;
 use App\RedirectRoute\Serializer;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,15 +19,11 @@ readonly class Factory
     ) {
     }
 
-    public function create(?string $userIdentifier, ?string $error, ?RedirectRoute $route): Response
+    public function create(?string $userIdentifier, ?RedirectRoute $route): Response
     {
         $urlParameters = [];
         if (is_string($userIdentifier) && '' !== $userIdentifier) {
             $urlParameters['email'] = $userIdentifier;
-        }
-
-        if (is_string($error) && SignInErrorState::is($error)) {
-            $urlParameters['error'] = $error;
         }
 
         if ($route instanceof RedirectRoute) {
