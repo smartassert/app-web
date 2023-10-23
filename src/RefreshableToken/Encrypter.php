@@ -4,18 +4,12 @@ declare(strict_types=1);
 
 namespace App\RefreshableToken;
 
-use Defuse\Crypto\Crypto;
-use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException;
 use SmartAssert\ApiClient\Model\RefreshableToken;
 
 readonly class Encrypter
 {
-    /**
-     * @param non-empty-string[] $keys
-     */
     public function __construct(
-        private array $keys,
+        private \App\Security\Encrypter $encrypter,
         private Serializer $serializer,
     ) {
     }
@@ -32,25 +26,11 @@ readonly class Encrypter
 
     private function doEncrypt(string $plaintext): string
     {
-        foreach ($this->keys as $key) {
-            try {
-                return Crypto::encryptWithPassword($plaintext, $key);
-            } catch (EnvironmentIsBrokenException) {
-            }
-        }
-
-        return '';
+        return $this->encrypter->encrypt($plaintext);
     }
 
     private function doDecrypt(string $ciphertext): string
     {
-        foreach ($this->keys as $key) {
-            try {
-                return Crypto::decryptWithPassword($ciphertext, $key);
-            } catch (EnvironmentIsBrokenException | WrongKeyOrModifiedCiphertextException) {
-            }
-        }
-
-        return '';
+        return $this->encrypter->decrypt($ciphertext) ?? '';
     }
 }
