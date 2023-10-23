@@ -120,6 +120,7 @@
             "@integration-build",
             "@integration-up",
             "sleep 2",
+            "@db-setup",
             "@users-setup"
         ],
         "integration-status": "docker-compose -f ./tests/build/docker-compose.yml --profile functional --profile integration ps",
