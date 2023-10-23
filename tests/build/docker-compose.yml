@@ -62,6 +62,7 @@ services:
     build:
       context: ../..
       args:
+        DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/app-web?serverVersion=12&charset=utf8
         API_CLIENT_BASE_URL: http://api-gateway-http
     container_name: app
     restart: unless-stopped
