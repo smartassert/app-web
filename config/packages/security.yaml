@@ -22,7 +22,5 @@ security:
             custom_authenticators:
                 - App\Security\TokenAuthentication\Authenticator
             entry_point: App\Security\TokenAuthentication\AuthenticationEntryPoint
-#            logout:
-#                path: log_out_handle
     access_control:
         - { path: ^/, roles: ROLE_USER }
