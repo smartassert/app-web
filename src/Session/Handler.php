@@ -22,7 +22,7 @@ class Handler extends AbstractSessionHandler implements \SessionHandlerInterface
         return true;
     }
 
-    public function gc(int $max_lifetime): int|false
+    public function gc(int $max_lifetime): int
     {
         return 0;
     }
