@@ -16,3 +16,4 @@ sign_in_handle:
 log_out_handle:
     path: '/logout/'
     methods: [POST]
+    controller: App\Controller\LogoutController::handle
