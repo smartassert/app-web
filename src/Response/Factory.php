@@ -29,18 +29,20 @@ readonly class Factory
             $urlParameters['route'] = $this->redirectRouteSerializer->serialize($route);
         }
 
-        $url = $this->urlGenerator->generate(Routes::SIGN_IN_VIEW_NAME->value, $urlParameters);
-
-        return new Response(null, 302, [
-            'content-type' => null,
-            'location' => $url,
-        ]);
+        return $this->createRedirectResponse(
+            $this->urlGenerator->generate(Routes::SIGN_IN_VIEW_NAME->value, $urlParameters)
+        );
     }
 
     public function createDashboardRedirectResponse(): Response
     {
-        $url = $this->urlGenerator->generate(Routes::DASHBOARD_NAME->value);
+        return $this->createRedirectResponse(
+            $this->urlGenerator->generate(Routes::DASHBOARD_NAME->value)
+        );
+    }
 
+    private function createRedirectResponse(string $url): Response
+    {
         return new Response(null, 302, [
             'content-type' => null,
             'location' => $url,
