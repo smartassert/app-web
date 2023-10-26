@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\RedirectRoute;
 
+use App\Enum\Routes;
 use Symfony\Component\HttpFoundation\Request;
 
 class Factory
@@ -29,6 +30,6 @@ class Factory
 
     public function getDefault(): RedirectRoute
     {
-        return new RedirectRoute('dashboard', []);
+        return new RedirectRoute(Routes::DASHBOARD_NAME->value, []);
     }
 }

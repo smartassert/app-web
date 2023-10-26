@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
+use App\Enum\Routes;
 use App\Security\RequestTokenExtractor;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -35,7 +36,7 @@ readonly class SignInPageRedirector implements EventSubscriberInterface
 
     public function redirectSignInRequestWithAuthenticationTokenToDashboard(RequestEvent $event): void
     {
-        if ('sign_in_view' !== $event->getRequest()->attributes->get('_route')) {
+        if (Routes::SIGN_IN_VIEW_NAME->value !== $event->getRequest()->attributes->get('_route')) {
             return;
         }
 
@@ -52,7 +53,7 @@ readonly class SignInPageRedirector implements EventSubscriberInterface
             302,
             [
                 'content-type' => null,
-                'location' => $this->urlGenerator->generate('dashboard'),
+                'location' => $this->urlGenerator->generate(Routes::DASHBOARD_NAME->value),
             ]
         );
 

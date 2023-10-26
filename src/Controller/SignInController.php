@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Enum\Routes;
 use App\Enum\SignInErrorState;
 use App\RedirectRoute\Serializer;
 use App\Request\SignInReadRequest;
 use App\SignInRedirectResponse\Factory;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment as TwigEnvironment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -26,6 +28,7 @@ readonly class SignInController
      * @throws SyntaxError
      * @throws LoaderError
      */
+    #[Route(Routes::SIGN_IN_VIEW_PATH->value, name: Routes::SIGN_IN_VIEW_NAME->value, methods: ['GET'])]
     public function view(
         SignInReadRequest $request,
         TwigEnvironment $twig,

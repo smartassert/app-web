@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Services\ApplicationClient;
 
+use App\Enum\Routes;
 use App\RefreshableToken\Encrypter;
 use Psr\Http\Message\ResponseInterface;
 use SmartAssert\ApiClient\Model\RefreshableToken;
@@ -38,7 +39,7 @@ readonly class Client
 
         return $this->client->makeRequest(
             $method,
-            $this->urlGenerator->generate('sign_in_view', $queryParameters),
+            $this->urlGenerator->generate(Routes::SIGN_IN_VIEW_NAME->value, $queryParameters),
             $headers
         );
     }
@@ -75,7 +76,11 @@ readonly class Client
             $headers['cookie'] = 'token=' . $encryptedToken;
         }
 
-        return $this->client->makeRequest($method, $this->urlGenerator->generate('dashboard'), $headers);
+        return $this->client->makeRequest(
+            $method,
+            $this->urlGenerator->generate(Routes::DASHBOARD_NAME->value),
+            $headers
+        );
     }
 
     public function makeLogoutRequest(?RefreshableToken $token, string $method = 'POST'): ResponseInterface

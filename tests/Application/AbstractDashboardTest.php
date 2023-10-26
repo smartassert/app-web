@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Application;
 
+use App\Enum\Routes;
 use App\RedirectRoute\RedirectRoute;
 use App\RedirectRoute\Serializer;
 use SmartAssert\ApiClient\Model\RefreshableToken;
@@ -26,9 +27,9 @@ abstract class AbstractDashboardTest extends AbstractApplicationTestCase
         $redirectRouteSerializer = self::getContainer()->get(Serializer::class);
         \assert($redirectRouteSerializer instanceof Serializer);
 
-        $expectedRedirectRoute = new RedirectRoute('dashboard', []);
+        $expectedRedirectRoute = new RedirectRoute(Routes::DASHBOARD_NAME->value, []);
         $expected = $urlGenerator->generate(
-            'sign_in_view',
+            Routes::SIGN_IN_VIEW_NAME->value,
             ['route' => $redirectRouteSerializer->serialize($expectedRedirectRoute)]
         );
 
