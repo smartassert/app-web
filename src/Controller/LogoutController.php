@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Response\Factory;
+use App\Response\RedirectResponseFactory;
 use App\Security\User;
 use SmartAssert\ApiClient\UsersClient;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -15,7 +15,7 @@ readonly class LogoutController
     public function __construct(
         private Security $security,
         private UsersClient $usersClient,
-        private Factory $redirectResponseFactory,
+        private RedirectResponseFactory $redirectResponseFactory,
     ) {
     }
 
@@ -35,7 +35,7 @@ readonly class LogoutController
 
         $response = $this->security->logout(validateCsrfToken: false);
         if (null === $response) {
-            $response = $this->redirectResponseFactory->createSignInRedirectResponse(null, null);
+            $response = $this->redirectResponseFactory->createForSignIn(null, null);
         }
 
         return $response;

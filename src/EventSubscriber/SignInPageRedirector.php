@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Enum\Routes;
-use App\Response\Factory;
+use App\Response\RedirectResponseFactory;
 use App\Security\RequestTokenExtractor;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -17,7 +17,7 @@ readonly class SignInPageRedirector implements EventSubscriberInterface
     public function __construct(
         private RequestTokenExtractor $requestTokenExtractor,
         private HttpMessageFactoryInterface $httpMessageFactory,
-        private Factory $redirectResponseFactory,
+        private RedirectResponseFactory $redirectResponseFactory,
     ) {
     }
 
@@ -47,7 +47,7 @@ readonly class SignInPageRedirector implements EventSubscriberInterface
             return;
         }
 
-        $event->setResponse($this->redirectResponseFactory->createDashboardRedirectResponse());
+        $event->setResponse($this->redirectResponseFactory->createforDashboard());
         $event->stopPropagation();
     }
 }

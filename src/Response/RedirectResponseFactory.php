@@ -9,7 +9,7 @@ use App\RedirectRoute\RedirectRoute;
 use App\RedirectRoute\Serializer;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-readonly class Factory
+readonly class RedirectResponseFactory
 {
     public function __construct(
         private UrlGeneratorInterface $urlGenerator,
@@ -17,7 +17,7 @@ readonly class Factory
     ) {
     }
 
-    public function createSignInRedirectResponse(?string $userIdentifier, ?RedirectRoute $route): RedirectResponse
+    public function createForSignIn(?string $userIdentifier, ?RedirectRoute $route): RedirectResponse
     {
         $urlParameters = [];
         if (is_string($userIdentifier) && '' !== $userIdentifier) {
@@ -33,7 +33,7 @@ readonly class Factory
         );
     }
 
-    public function createDashboardRedirectResponse(): RedirectResponse
+    public function createforDashboard(): RedirectResponse
     {
         return new RedirectResponse(
             $this->urlGenerator->generate(Routes::DASHBOARD_NAME->value)
