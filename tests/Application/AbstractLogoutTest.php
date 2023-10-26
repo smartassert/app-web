@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Application;
 
+use App\Enum\Routes;
+use App\RedirectRoute\RedirectRoute;
+use App\RedirectRoute\Serializer;
 use Psr\Http\Message\ResponseInterface;
 use SmartAssert\ApiClient\Model\RefreshableToken;
 use SmartAssert\TestAuthenticationProviderBundle\FrontendTokenProvider;
@@ -39,6 +42,19 @@ abstract class AbstractLogoutTest extends AbstractApplicationTestCase
         ];
     }
 
+    public function testLogoutSuccessWithoutAuthentication(): void
+    {
+        $redirectRouteSerializer = self::getContainer()->get(Serializer::class);
+        \assert($redirectRouteSerializer instanceof Serializer);
+
+        $expectedRedirectRoute = new RedirectRoute(Routes::SIGN_IN_VIEW_NAME->value, []);
+        $expectedLocation = '/sign-in/?route=' . $redirectRouteSerializer->serialize($expectedRedirectRoute);
+
+        $response = self::$staticApplicationClient->makeLogoutRequest(null);
+
+        $this->assertLogoutSuccessResponse($response, $expectedLocation);
+    }
+
     public function testLogoutSuccessWithAuthentication(): void
     {
         $frontendTokenProvider = self::getContainer()->get(FrontendTokenProvider::class);
@@ -51,22 +67,15 @@ abstract class AbstractLogoutTest extends AbstractApplicationTestCase
             $frontendToken->refreshToken
         ));
 
-        $this->assertLogoutSuccessResponse($response);
+        $this->assertLogoutSuccessResponse($response, '/sign-in/');
     }
 
-    public function testLogoutSuccessWithoutAuthentication(): void
-    {
-        $response = self::$staticApplicationClient->makeLogoutRequest(null);
-
-        $this->assertLogoutSuccessResponse($response);
-    }
-
-    private function assertLogoutSuccessResponse(ResponseInterface $response): void
+    private function assertLogoutSuccessResponse(ResponseInterface $response, string $expectedLocation): void
     {
         self::assertSame(302, $response->getStatusCode());
         self::assertSame('', $response->getHeaderLine('content-type'));
-        self::assertStringContainsString('/sign-in/', $response->getHeaderLine('location'));
         self::assertSame('', $response->getBody()->getContents());
+        self::assertSame($expectedLocation, $response->getHeaderLine('location'));
 
         $responseCookieValue = $response->getHeaderLine('set-cookie');
         if ('' !== $responseCookieValue) {

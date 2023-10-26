@@ -16,6 +16,10 @@ class Factory
             return $this->getDefault();
         }
 
+        if (Routes::LOG_OUT_NAME->value === $name) {
+            return $this->getSignIn();
+        }
+
         $queryParameters = [];
         if ('GET' === $request->getMethod()) {
             foreach ($request->query as $key => $value) {
@@ -31,5 +35,10 @@ class Factory
     public function getDefault(): RedirectRoute
     {
         return new RedirectRoute(Routes::DASHBOARD_NAME->value, []);
+    }
+
+    public function getSignIn(): RedirectRoute
+    {
+        return new RedirectRoute(Routes::SIGN_IN_VIEW_NAME->value, []);
     }
 }
