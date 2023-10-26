@@ -9,6 +9,7 @@ use App\Exception\PasswordMissingException;
 use App\Exception\SignInExceptionInterface;
 use App\Exception\UserIdentifierMissingException;
 use App\RedirectRoute\Serializer;
+use App\Response\RedirectResponse;
 use App\Response\RedirectResponseFactory;
 use App\Security\User;
 use Psr\Http\Client\ClientExceptionInterface;
@@ -90,10 +91,9 @@ readonly class Authenticator implements AuthenticatorInterface
     {
         $redirectRoute = $this->serializer->deserialize($request->request->getString('route'));
 
-        return new Response(null, 302, [
-            'location' => $this->urlGenerator->generate($redirectRoute->name, $redirectRoute->parameters),
-            'content-type' => null,
-        ]);
+        return new RedirectResponse(
+            $this->urlGenerator->generate($redirectRoute->name, $redirectRoute->parameters)
+        );
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
