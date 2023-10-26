@@ -5,20 +5,19 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Enum\Routes;
+use App\Response\Factory;
 use App\Security\RequestTokenExtractor;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 readonly class SignInPageRedirector implements EventSubscriberInterface
 {
     public function __construct(
         private RequestTokenExtractor $requestTokenExtractor,
         private HttpMessageFactoryInterface $httpMessageFactory,
-        private UrlGeneratorInterface $urlGenerator,
+        private Factory $redirectResponseFactory,
     ) {
     }
 
@@ -48,16 +47,7 @@ readonly class SignInPageRedirector implements EventSubscriberInterface
             return;
         }
 
-        $response = new Response(
-            null,
-            302,
-            [
-                'content-type' => null,
-                'location' => $this->urlGenerator->generate(Routes::DASHBOARD_NAME->value),
-            ]
-        );
-
-        $event->setResponse($response);
+        $event->setResponse($this->redirectResponseFactory->createDashboardRedirectResponse());
         $event->stopPropagation();
     }
 }

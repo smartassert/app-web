@@ -36,4 +36,14 @@ readonly class Factory
             'location' => $url,
         ]);
     }
+
+    public function createDashboardRedirectResponse(): Response
+    {
+        $url = $this->urlGenerator->generate(Routes::DASHBOARD_NAME->value);
+
+        return new Response(null, 302, [
+            'content-type' => null,
+            'location' => $url,
+        ]);
+    }
 }
