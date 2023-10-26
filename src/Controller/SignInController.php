@@ -19,7 +19,7 @@ use Twig\Error\SyntaxError;
 readonly class SignInController
 {
     public function __construct(
-        private Factory $signInRedirectResponseFactory,
+        private Factory $redirectResponseFactory,
     ) {
     }
 
@@ -35,7 +35,7 @@ readonly class SignInController
         Serializer $redirectRouteSerializer
     ): Response {
         if (is_string($request->error) && !SignInErrorState::is($request->error)) {
-            return $this->signInRedirectResponseFactory->create(
+            return $this->redirectResponseFactory->createSignInRedirectResponse(
                 userIdentifier: $request->email,
                 route: $request->route,
             );

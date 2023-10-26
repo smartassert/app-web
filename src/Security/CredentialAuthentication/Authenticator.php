@@ -9,7 +9,7 @@ use App\Exception\PasswordMissingException;
 use App\Exception\SignInExceptionInterface;
 use App\Exception\UserIdentifierMissingException;
 use App\RedirectRoute\Serializer;
-use App\Response\Factory as SignInRedirectResponseFactory;
+use App\Response\Factory;
 use App\Security\User;
 use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ApiClient\Exception\UnauthorizedException;
@@ -35,7 +35,7 @@ readonly class Authenticator implements AuthenticatorInterface
 {
     public function __construct(
         private UsersClient $usersClient,
-        private SignInRedirectResponseFactory $signInRedirectResponseFactory,
+        private Factory $redirectResponseFactory,
         private UrlGeneratorInterface $urlGenerator,
         private Serializer $serializer,
     ) {
@@ -104,7 +104,7 @@ readonly class Authenticator implements AuthenticatorInterface
                 $session->getFlashBag()->set('error', $exception->getErrorState()->value);
             }
 
-            return $this->signInRedirectResponseFactory->create(
+            return $this->redirectResponseFactory->createSignInRedirectResponse(
                 userIdentifier: $exception->getUserIdentifier(),
                 route: $this->serializer->deserialize($request->request->getString('route')),
             );

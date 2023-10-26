@@ -18,7 +18,7 @@ readonly class Factory
     ) {
     }
 
-    public function create(?string $userIdentifier, ?RedirectRoute $route): Response
+    public function createSignInRedirectResponse(?string $userIdentifier, ?RedirectRoute $route): Response
     {
         $urlParameters = [];
         if (is_string($userIdentifier) && '' !== $userIdentifier) {

@@ -6,7 +6,7 @@ namespace App\Security\TokenAuthentication;
 
 use App\RedirectRoute\Factory as RedirectRouteFactory;
 use App\RefreshableToken\Encrypter;
-use App\Response\Factory as SignInRedirectResponseFactory;
+use App\Response\Factory as RedirectResponseFactory;
 use App\Security\RequestTokenExtractor;
 use App\Security\User;
 use Psr\Http\Client\ClientExceptionInterface;
@@ -38,7 +38,7 @@ readonly class Authenticator implements AuthenticatorInterface
         private RequestTokenExtractor $tokenExtractor,
         private UsersClient $usersClient,
         private RedirectRouteFactory $redirectRouteFactory,
-        private SignInRedirectResponseFactory $signInRedirectResponseFactory,
+        private RedirectResponseFactory $redirectResponseFactory,
         private FirewallMap $firewallMap,
         private Encrypter $tokenEncrypter,
         private HttpMessageFactoryInterface $psrHttpFactory,
@@ -104,7 +104,7 @@ readonly class Authenticator implements AuthenticatorInterface
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        return $this->signInRedirectResponseFactory->create(
+        return $this->redirectResponseFactory->createSignInRedirectResponse(
             userIdentifier: null,
             route: $this->redirectRouteFactory->createFromRequest($request)
         );

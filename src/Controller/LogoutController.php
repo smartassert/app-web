@@ -15,7 +15,7 @@ readonly class LogoutController
     public function __construct(
         private Security $security,
         private UsersClient $usersClient,
-        private Factory $signInRedirectResponseFactory,
+        private Factory $redirectResponseFactory,
     ) {
     }
 
@@ -35,7 +35,7 @@ readonly class LogoutController
 
         $response = $this->security->logout(validateCsrfToken: false);
         if (null === $response) {
-            $response = $this->signInRedirectResponseFactory->create(null, null);
+            $response = $this->redirectResponseFactory->createSignInRedirectResponse(null, null);
         }
 
         return $response;
