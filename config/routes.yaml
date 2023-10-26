@@ -4,13 +4,8 @@ controllers:
         namespace: App\Controller
     type: attribute
 
-sign_in_view:
-    path: '/sign-in/'
-    methods: [GET]
-    controller: App\Controller\SignInController::view
-
 sign_in_handle:
-    path: '/sign-in/'
+    path: !php/enum App\Enum\Routes::SIGN_IN_VIEW_PATH->value
     methods: [POST]
 
 log_out_handle:

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Enum\Routes;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,7 +25,7 @@ class DashboardController
      * @throws SyntaxError
      * @throws LoaderError
      */
-    #[Route('/', name: 'dashboard', methods: ['GET'])]
+    #[Route('/', name: Routes::DASHBOARD_NAME->value, methods: ['GET'])]
     public function index(Request $request): Response
     {
         return new Response($this->twig->render('dashboard/index.html.twig'));
