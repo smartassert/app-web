@@ -9,8 +9,9 @@ use App\Exception\PasswordMissingException;
 use App\Exception\SignInExceptionInterface;
 use App\Exception\UserIdentifierMissingException;
 use App\RedirectRoute\Serializer;
+use App\Response\RedirectResponse;
+use App\Response\RedirectResponseFactory;
 use App\Security\User;
-use App\SignInRedirectResponse\Factory as SignInRedirectResponseFactory;
 use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ApiClient\Exception\UnauthorizedException;
 use SmartAssert\ApiClient\UsersClient;
@@ -35,7 +36,7 @@ readonly class Authenticator implements AuthenticatorInterface
 {
     public function __construct(
         private UsersClient $usersClient,
-        private SignInRedirectResponseFactory $signInRedirectResponseFactory,
+        private RedirectResponseFactory $redirectResponseFactory,
         private UrlGeneratorInterface $urlGenerator,
         private Serializer $serializer,
     ) {
@@ -90,10 +91,9 @@ readonly class Authenticator implements AuthenticatorInterface
     {
         $redirectRoute = $this->serializer->deserialize($request->request->getString('route'));
 
-        return new Response(null, 302, [
-            'location' => $this->urlGenerator->generate($redirectRoute->name, $redirectRoute->parameters),
-            'content-type' => null,
-        ]);
+        return new RedirectResponse(
+            $this->urlGenerator->generate($redirectRoute->name, $redirectRoute->parameters)
+        );
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
@@ -104,7 +104,7 @@ readonly class Authenticator implements AuthenticatorInterface
                 $session->getFlashBag()->set('error', $exception->getErrorState()->value);
             }
 
-            return $this->signInRedirectResponseFactory->create(
+            return $this->redirectResponseFactory->createForSignIn(
                 userIdentifier: $exception->getUserIdentifier(),
                 route: $this->serializer->deserialize($request->request->getString('route')),
             );

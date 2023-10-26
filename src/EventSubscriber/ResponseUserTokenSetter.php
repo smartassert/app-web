@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\RefreshableToken\Encrypter;
+use App\Response\RedirectResponseFactory;
 use App\Security\User;
-use App\SignInRedirectResponse\Factory;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -19,7 +19,7 @@ readonly class ResponseUserTokenSetter implements EventSubscriberInterface
     public function __construct(
         private Security $security,
         private Encrypter $tokenEncrypter,
-        private Factory $signInRedirectResponseFactory,
+        private RedirectResponseFactory $redirectResponseFactory,
     ) {
     }
 
@@ -55,7 +55,7 @@ readonly class ResponseUserTokenSetter implements EventSubscriberInterface
 
     public function remove(LogoutEvent $event): void
     {
-        $response = $this->signInRedirectResponseFactory->create(userIdentifier: null, route: null);
+        $response = $this->redirectResponseFactory->createForSignIn(userIdentifier: null, route: null);
         $response->headers->setCookie(Cookie::create('token'));
 
         $event->setResponse($response);

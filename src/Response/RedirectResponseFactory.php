@@ -2,15 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\SignInRedirectResponse;
+namespace App\Response;
 
 use App\Enum\Routes;
 use App\RedirectRoute\RedirectRoute;
 use App\RedirectRoute\Serializer;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-readonly class Factory
+readonly class RedirectResponseFactory
 {
     public function __construct(
         private UrlGeneratorInterface $urlGenerator,
@@ -18,7 +17,7 @@ readonly class Factory
     ) {
     }
 
-    public function create(?string $userIdentifier, ?RedirectRoute $route): Response
+    public function createForSignIn(?string $userIdentifier, ?RedirectRoute $route): RedirectResponse
     {
         $urlParameters = [];
         if (is_string($userIdentifier) && '' !== $userIdentifier) {
@@ -29,11 +28,15 @@ readonly class Factory
             $urlParameters['route'] = $this->redirectRouteSerializer->serialize($route);
         }
 
-        $url = $this->urlGenerator->generate(Routes::SIGN_IN_VIEW_NAME->value, $urlParameters);
+        return new RedirectResponse(
+            $this->urlGenerator->generate(Routes::SIGN_IN_VIEW_NAME->value, $urlParameters)
+        );
+    }
 
-        return new Response(null, 302, [
-            'content-type' => null,
-            'location' => $url,
-        ]);
+    public function createforDashboard(): RedirectResponse
+    {
+        return new RedirectResponse(
+            $this->urlGenerator->generate(Routes::DASHBOARD_NAME->value)
+        );
     }
 }

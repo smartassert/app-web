@@ -8,7 +8,7 @@ use App\Enum\Routes;
 use App\Enum\SignInErrorState;
 use App\RedirectRoute\Serializer;
 use App\Request\SignInReadRequest;
-use App\SignInRedirectResponse\Factory;
+use App\Response\RedirectResponseFactory;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment as TwigEnvironment;
@@ -19,7 +19,7 @@ use Twig\Error\SyntaxError;
 readonly class SignInController
 {
     public function __construct(
-        private Factory $signInRedirectResponseFactory,
+        private RedirectResponseFactory $redirectResponseFactory,
     ) {
     }
 
@@ -35,7 +35,7 @@ readonly class SignInController
         Serializer $redirectRouteSerializer
     ): Response {
         if (is_string($request->error) && !SignInErrorState::is($request->error)) {
-            return $this->signInRedirectResponseFactory->create(
+            return $this->redirectResponseFactory->createForSignIn(
                 userIdentifier: $request->email,
                 route: $request->route,
             );
