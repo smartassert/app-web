@@ -7,8 +7,3 @@ controllers:
 sign_in_handle:
     path: !php/enum App\Enum\Routes::SIGN_IN_VIEW_PATH->value
     methods: [POST]
-
-log_out_handle:
-    path: '/logout/'
-    methods: [POST]
-    controller: App\Controller\LogoutController::handle

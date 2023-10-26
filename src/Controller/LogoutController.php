@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Enum\Routes;
 use App\Response\RedirectResponseFactory;
 use App\Security\User;
 use SmartAssert\ApiClient\UsersClient;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 readonly class LogoutController
 {
@@ -19,6 +21,7 @@ readonly class LogoutController
     ) {
     }
 
+    #[Route('/logout/', name: Routes::LOG_OUT_NAME->value, methods: ['POST'])]
     public function handle(): Response
     {
         $user = $this->security->getUser();
