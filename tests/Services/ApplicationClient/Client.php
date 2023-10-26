@@ -19,14 +19,28 @@ readonly class Client
     ) {
     }
 
-    public function makeSignInPageReadRequest(?string $userIdentifier, string $method = 'GET'): ResponseInterface
-    {
+    public function makeSignInPageReadRequest(
+        ?string $userIdentifier,
+        ?RefreshableToken $token = null,
+        string $method = 'GET'
+    ): ResponseInterface {
         $queryParameters = [];
         if (null !== $userIdentifier) {
             $queryParameters['user-identifier'] = $userIdentifier;
         }
 
-        return $this->client->makeRequest($method, $this->urlGenerator->generate('sign_in_view', $queryParameters));
+        $headers = [];
+        if ($token instanceof RefreshableToken) {
+            $encryptedToken = $this->tokenEncrypter->encrypt($token);
+
+            $headers['cookie'] = 'token=' . $encryptedToken;
+        }
+
+        return $this->client->makeRequest(
+            $method,
+            $this->urlGenerator->generate('sign_in_view', $queryParameters),
+            $headers
+        );
     }
 
     public function makeSignInPageWriteRequest(
