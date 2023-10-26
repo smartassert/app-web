@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Response\Factory;
 use App\Security\User;
-use App\SignInRedirectResponse\Factory;
 use SmartAssert\ApiClient\UsersClient;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;

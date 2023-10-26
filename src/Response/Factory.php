@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\SignInRedirectResponse;
+namespace App\Response;
 
 use App\Enum\Routes;
 use App\RedirectRoute\RedirectRoute;

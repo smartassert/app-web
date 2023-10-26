@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\RefreshableToken\Encrypter;
+use App\Response\Factory;
 use App\Security\User;
-use App\SignInRedirectResponse\Factory;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Cookie;

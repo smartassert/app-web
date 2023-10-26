@@ -6,9 +6,9 @@ namespace App\Security\TokenAuthentication;
 
 use App\RedirectRoute\Factory as RedirectRouteFactory;
 use App\RefreshableToken\Encrypter;
+use App\Response\Factory as SignInRedirectResponseFactory;
 use App\Security\RequestTokenExtractor;
 use App\Security\User;
-use App\SignInRedirectResponse\Factory as SignInRedirectResponseFactory;
 use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ApiClient\Exception\UnauthorizedException;
 use SmartAssert\ApiClient\UsersClient;

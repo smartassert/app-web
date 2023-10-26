@@ -8,7 +8,7 @@ use App\Enum\Routes;
 use App\Enum\SignInErrorState;
 use App\RedirectRoute\Serializer;
 use App\Request\SignInReadRequest;
-use App\SignInRedirectResponse\Factory;
+use App\Response\Factory;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment as TwigEnvironment;
