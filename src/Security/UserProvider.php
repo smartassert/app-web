@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Security;
 
+use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -13,7 +14,8 @@ readonly class UserProvider implements UserProviderInterface
 {
     public function __construct(
         private RequestStack $requestStack,
-        private SymfonyRequestTokenExtractor $tokenExtractor,
+        private RequestTokenExtractor $tokenExtractor,
+        private HttpMessageFactoryInterface $psrHttpFactory,
     ) {
     }
 
@@ -29,7 +31,10 @@ readonly class UserProvider implements UserProviderInterface
             throw new UserNotFoundException();
         }
 
-        $securityToken = $this->tokenExtractor->extract($currentRequest);
+        $securityToken = $this->tokenExtractor->extract(
+            $this->psrHttpFactory->createRequest($currentRequest)
+        );
+
         if (null === $securityToken) {
             throw new UserNotFoundException();
         }

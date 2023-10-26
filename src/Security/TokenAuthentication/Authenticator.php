@@ -6,7 +6,7 @@ namespace App\Security\TokenAuthentication;
 
 use App\RedirectRoute\Factory as RedirectRouteFactory;
 use App\RefreshableToken\Encrypter;
-use App\Security\SymfonyRequestTokenExtractor;
+use App\Security\RequestTokenExtractor;
 use App\Security\User;
 use App\SignInRedirectResponse\Factory as SignInRedirectResponseFactory;
 use Psr\Http\Client\ClientExceptionInterface;
@@ -17,6 +17,7 @@ use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
 use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
 use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
+use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Bundle\SecurityBundle\Security\FirewallConfig;
 use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,12 +35,13 @@ use Symfony\Component\Security\Http\Authenticator\Token\PostAuthenticationToken;
 readonly class Authenticator implements AuthenticatorInterface
 {
     public function __construct(
-        private SymfonyRequestTokenExtractor $tokenExtractor,
+        private RequestTokenExtractor $tokenExtractor,
         private UsersClient $usersClient,
         private RedirectRouteFactory $redirectRouteFactory,
         private SignInRedirectResponseFactory $signInRedirectResponseFactory,
         private FirewallMap $firewallMap,
         private Encrypter $tokenEncrypter,
+        private HttpMessageFactoryInterface $psrHttpFactory,
     ) {
     }
 
@@ -65,7 +67,9 @@ readonly class Authenticator implements AuthenticatorInterface
      */
     public function authenticate(Request $request): Passport
     {
-        $token = $this->tokenExtractor->extract($request);
+        $token = $this->tokenExtractor->extract(
+            $this->psrHttpFactory->createRequest($request)
+        );
 
         if (null === $token) {
             throw new AuthenticationCredentialsNotFoundException();
