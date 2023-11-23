@@ -1,3 +1,6 @@
+include:
+  - path: ./services/users.yml
+
 services:
   postgres:
     env_file: .env
@@ -6,33 +9,6 @@ services:
     container_name: postgres
     ports:
       - "5432:5432"
-
-  users-service:
-    env_file: users.env
-    image: ghcr.io/smartassert/users:3.1
-    profiles: ["functional"]
-    container_name: users-service
-    environment:
-      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/users?serverVersion=12&charset=utf8
-      JWT_PASSPHRASE: non-empty-string
-      PRIMARY_ADMIN_TOKEN: primary_admin_token
-      SECONDARY_ADMIN_TOKEN: secondary_admin_token
-      IS_READY: 1
-    depends_on:
-      - postgres
-
-  users-http:
-    image: caddy:2.4.5-alpine
-    profiles: ["functional"]
-    container_name: users-http
-    restart: unless-stopped
-    ports:
-      - "9080:80"
-    links:
-      - users-service:app
-    volumes:
-      - ./http-config/caddy/index.php:/app/public/index.php
-      - ./http-config/caddy/Caddyfile:/etc/caddy/Caddyfile
 
   api-gateway-service:
     image: ghcr.io/smartassert/api-gateway:6.0
