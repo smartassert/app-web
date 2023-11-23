@@ -9,10 +9,12 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Dashboard</h1>
+    <h1 style="display:inline;">Dashboard</h1>
 
-    <form method="post" action="{{ path('log_out_handle') }}">
+    <form method="post" action="{{ path('log_out_handle') }}" style="display:inline; margin-left: 6px; vertical-align: super;">
         <input type="submit" value="Log out">
     </form>
+
+    <h2>Sources</h2>
 </div>
 {% endblock %}
