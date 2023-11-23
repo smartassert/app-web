@@ -57,9 +57,15 @@ services:
 
     SmartAssert\ServiceClient\Client: ~
 
-    SmartAssert\ApiClient\UsersClient:
+    smartassert.api-client.url-generator:
+        class: Symfony\Component\Routing\Generator\UrlGenerator
+        factory: ['SmartAssert\ApiClient\UrlGeneratorFactory', 'create']
         arguments:
             $baseUrl: '%env(string:API_CLIENT_BASE_URL)%'
+
+    SmartAssert\ApiClient\UsersClient:
+        arguments:
+            $urlGenerator: '@smartassert.api-client.url-generator'
 
     App\Security\Encrypter:
         arguments:
