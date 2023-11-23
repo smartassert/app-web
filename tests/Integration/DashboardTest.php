@@ -45,7 +45,7 @@ class DashboardTest extends AbstractDashboardTest
 
         $usersServicePrintEnvOutput =
             (string) shell_exec(sprintf(
-                'docker-compose -f tests/build/docker-compose.yml exec users-service printenv | grep %s',
+                'docker compose -f tests/build/docker-compose.yml exec users-service printenv | grep %s',
                 $jwtTokenEnvVarName
             ));
 
