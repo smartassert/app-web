@@ -18,7 +18,6 @@ abstract class AbstractDashboardTest extends AbstractApplicationTestCase
         $frontendToken = new RefreshableToken(md5((string) rand()), md5((string) rand()));
 
         $response = self::$staticApplicationClient->makeDashboardReadRequest($frontendToken);
-
         self::assertSame(302, $response->getStatusCode());
 
         $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);

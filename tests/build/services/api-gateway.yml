@@ -1,0 +1,23 @@
+services:
+  api-gateway-service:
+    image: ghcr.io/smartassert/api-gateway:6.0
+    profiles: ["functional"]
+    container_name: api-gateway-service
+    environment:
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/api?serverVersion=12&charset=utf8
+      AUTHENTICATION_BASE_URL: http://users-http
+    depends_on:
+      - postgres
+
+  api-gateway-http:
+    image: caddy:2.4.5-alpine
+    profiles: ["functional"]
+    container_name: api-gateway-http
+    restart: unless-stopped
+    ports:
+      - "9081:80"
+    links:
+      - api-gateway-service:app
+    volumes:
+      - .././http-config/caddy/index.php:/app/public/index.php
+      - .././http-config/caddy/Caddyfile:/etc/caddy/Caddyfile
