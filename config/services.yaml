@@ -90,6 +90,22 @@ services:
 
     SmartAssert\ApiClient\UsersClient: ~
 
+    SmartAssert\ApiClient\FileClient:
+      arguments:
+        $urlGenerator: '@smartassert.api-client.url-generator'
+
+    SmartAssert\ApiClient\FileSourceClient:
+      arguments:
+        $urlGenerator: '@smartassert.api-client.url-generator'
+
+    SmartAssert\ApiClient\GitSourceClient:
+      arguments:
+        $urlGenerator: '@smartassert.api-client.url-generator'
+
+    SmartAssert\ApiClient\SourceClient:
+      arguments:
+        $urlGenerator: '@smartassert.api-client.url-generator'
+
     App\Security\Encrypter:
         arguments:
             $keys:
