@@ -1,6 +1,7 @@
 include:
   - path: ./services/users.yml
   - path: ./services/api-gateway.yml
+  - path: ./services/sources.yml
 
 services:
   postgres:
