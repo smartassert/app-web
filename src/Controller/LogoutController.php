@@ -9,6 +9,7 @@ use App\Response\RedirectResponseFactory;
 use App\Security\User;
 use SmartAssert\ApiClient\UsersClient;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -22,7 +23,7 @@ readonly class LogoutController
     }
 
     #[Route('/logout/', name: Routes::LOG_OUT_NAME->value, methods: ['POST'])]
-    public function handle(): Response
+    public function handle(Request $request): Response
     {
         $user = $this->security->getUser();
         if ($user instanceof User) {
@@ -40,6 +41,9 @@ readonly class LogoutController
         if (null === $response) {
             $response = $this->redirectResponseFactory->createForSignIn(null, null);
         }
+
+        $session = $request->getSession();
+        $session->clear();
 
         return $response;
     }
