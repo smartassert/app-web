@@ -11,6 +11,7 @@ use App\Exception\UserIdentifierMissingException;
 use App\RedirectRoute\Serializer;
 use App\Response\RedirectResponse;
 use App\Response\RedirectResponseFactory;
+use App\Security\ApiKeyBadge;
 use App\Security\User;
 use Psr\Http\Client\ClientExceptionInterface;
 use SmartAssert\ApiClient\UsersClient;
@@ -49,7 +50,14 @@ readonly class Authenticator implements AuthenticatorInterface
 
     public function createToken(Passport $passport, string $firewallName): TokenInterface
     {
-        return new PostAuthenticationToken($passport->getUser(), $firewallName, $passport->getUser()->getRoles());
+        $token = new PostAuthenticationToken($passport->getUser(), $firewallName, $passport->getUser()->getRoles());
+
+        $apiKeyBadge = $passport->getBadge(ApiKeyBadge::class);
+        if ($apiKeyBadge instanceof ApiKeyBadge) {
+            $token->setAttribute('api_key', $apiKeyBadge->apiKey);
+        }
+
+        return $token;
     }
 
     /**
@@ -74,21 +82,31 @@ readonly class Authenticator implements AuthenticatorInterface
 
         try {
             $token = $this->usersClient->createToken($userIdentifier, $password);
+            $apiKey = $this->usersClient->getApiKey($token->token);
             $user = new User($userIdentifier, $token);
         } catch (UnauthorizedException) {
             throw new BadCredentialsException($userIdentifier);
         }
 
-        return new SelfValidatingPassport(new UserBadge(
-            $user->getUserIdentifier(),
-            function () use ($user) {
-                return $user;
-            }
-        ));
+        return new SelfValidatingPassport(
+            new UserBadge(
+                $user->getUserIdentifier(),
+                function () use ($user) {
+                    return $user;
+                }
+            ),
+            [
+                new ApiKeyBadge($apiKey->key),
+            ]
+        );
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): Response
     {
+        if ($token->hasAttribute('api_key')) {
+            $request->getSession()->set('api_key', $token->getAttribute('api_key'));
+        }
+
         $redirectRoute = $this->serializer->deserialize($request->request->getString('route'));
 
         return new RedirectResponse(
