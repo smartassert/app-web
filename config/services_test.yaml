@@ -26,10 +26,6 @@ services:
     arguments:
       $httpClient: '@app.tests.integration.http.client'
 
-  SmartAssert\UsersClient\Client:
-    arguments:
-      $baseUrl: 'http://localhost:9080'
-
   App\Tests\Services\SessionHandler:
     public: true
     arguments:
