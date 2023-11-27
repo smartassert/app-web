@@ -16,13 +16,6 @@
     </form>
 
     <h2>Sources</h2>
-    {% if sources|length > 0 %}
-        <ul>
-            {% for source in sources %}
-                <li>{{ source.type }} {{ source.label }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
+    {{ include ('partial/source/list.html.twig') }}
 </div>
 {% endblock %}
