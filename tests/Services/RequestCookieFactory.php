@@ -14,8 +14,14 @@ readonly class RequestCookieFactory
     {
         $response = $client->makeSignInPageWriteRequest('user@example.com', 'password');
 
+        return $this->createFromResponse($response, $sessionIdentifier);
+    }
+
+    public function createFromResponse(ResponseInterface $response, string $sessionIdentifier): string
+    {
         return sprintf(
-            'id=%s; token=%s',
+            '%s=%s; token=%s',
+            $sessionIdentifier,
             $this->extractCookieValue($response, $sessionIdentifier),
             $this->extractCookieValue($response, 'token'),
         );

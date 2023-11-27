@@ -16,5 +16,13 @@
     </form>
 
     <h2>Sources</h2>
+    {% if sources|length > 0 %}
+        <ul>
+            {% for source in sources %}
+                <li>{{ source.type }} {{ source.label }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
 </div>
 {% endblock %}
