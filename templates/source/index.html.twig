@@ -21,5 +21,14 @@
 
     <h2>Sources</h2>
     {{ include ('partial/source/list.html.twig') }}
+
+    <h3>Add file source</h3>
+    <form method="post" action="{{ path('sources_add_file_source') }}">
+        <label>
+            Label
+            <input type="text" name="label" value="{{ label|default('') }}">
+        </label>
+        <input type="submit" value="Add">
+    </form>
 </div>
 {% endblock %}
