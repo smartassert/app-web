@@ -40,7 +40,11 @@ abstract class AbstractDashboardTest extends AbstractApplicationTestCase
         $requestCookie = $requestCookieFactory->create($this->applicationClient, $this->getSessionIdentifier());
 
         $response = $this->applicationClient->makeDashboardReadRequest($requestCookie);
+        self::assertSame(200, $response->getStatusCode());
+        self::assertStringContainsString('text/html', $response->getHeaderLine('content-type'));
 
+        $requestCookie = $requestCookieFactory->createFromResponse($response, $this->getSessionIdentifier());
+        $response = $this->applicationClient->makeDashboardReadRequest($requestCookie);
         self::assertSame(200, $response->getStatusCode());
         self::assertStringContainsString('text/html', $response->getHeaderLine('content-type'));
     }
