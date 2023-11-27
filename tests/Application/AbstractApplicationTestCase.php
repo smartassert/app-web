@@ -31,4 +31,6 @@ abstract class AbstractApplicationTestCase extends WebTestCase
     {
         return \Mockery::mock(ClientInterface::class);
     }
+
+    abstract protected function getSessionIdentifier(): string;
 }

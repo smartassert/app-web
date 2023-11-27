@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class SignInReadTest extends AbstractSignInReadTest
 {
     use GetClientAdapterTrait;
+    use GetSessionIdentifierTrait;
 
     public function testReadRendersUserIdentifier(): void
     {

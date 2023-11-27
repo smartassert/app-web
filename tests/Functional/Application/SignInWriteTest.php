@@ -13,6 +13,7 @@ use App\Tests\Services\SessionHandler;
 class SignInWriteTest extends AbstractSignInWriteTest
 {
     use GetClientAdapterTrait;
+    use GetSessionIdentifierTrait;
 
     /**
      * @dataProvider writeInvalidCredentialsDataProvider

@@ -34,3 +34,6 @@ services:
     public: true
     arguments:
       $sessionFactory: '@session.factory'
+
+  App\Tests\Services\RequestCookieFactory:
+    public: true

@@ -9,4 +9,5 @@ use App\Tests\Application\AbstractDashboardTest;
 class DashboardTest extends AbstractDashboardTest
 {
     use GetClientAdapterTrait;
+    use GetSessionIdentifierTrait;
 }

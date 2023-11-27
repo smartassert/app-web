@@ -67,19 +67,12 @@ readonly class Client
         );
     }
 
-    public function makeDashboardReadRequest(?RefreshableToken $token, string $method = 'GET'): ResponseInterface
+    public function makeDashboardReadRequest(string $cookie): ResponseInterface
     {
-        $headers = [];
-        if ($token instanceof RefreshableToken) {
-            $encryptedToken = $this->tokenEncrypter->encrypt($token);
-
-            $headers['cookie'] = 'token=' . $encryptedToken;
-        }
-
         return $this->client->makeRequest(
-            $method,
+            'GET',
             $this->urlGenerator->generate(Routes::DASHBOARD_NAME->value),
-            $headers
+            ['cookie' => $cookie]
         );
     }
 
