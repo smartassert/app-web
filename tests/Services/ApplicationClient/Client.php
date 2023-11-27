@@ -76,15 +76,12 @@ readonly class Client
         );
     }
 
-    public function makeLogoutRequest(?RefreshableToken $token, string $method = 'POST'): ResponseInterface
+    public function makeLogoutRequest(string $cookie = '', string $method = 'POST'): ResponseInterface
     {
-        $headers = [];
-        if ($token instanceof RefreshableToken) {
-            $encryptedToken = $this->tokenEncrypter->encrypt($token);
-
-            $headers['cookie'] = 'token=' . $encryptedToken;
-        }
-
-        return $this->client->makeRequest($method, $this->urlGenerator->generate('log_out_handle'), $headers);
+        return $this->client->makeRequest(
+            $method,
+            $this->urlGenerator->generate('log_out_handle'),
+            ['cookie' => $cookie]
+        );
     }
 }

@@ -7,9 +7,8 @@ namespace App\Tests\Application;
 use App\Enum\Routes;
 use App\RedirectRoute\RedirectRoute;
 use App\RedirectRoute\Serializer;
+use App\Tests\Services\RequestCookieFactory;
 use Psr\Http\Message\ResponseInterface;
-use SmartAssert\ApiClient\Model\RefreshableToken;
-use SmartAssert\TestAuthenticationProviderBundle\FrontendTokenProvider;
 use Symfony\Component\HttpFoundation\Cookie;
 
 abstract class AbstractLogoutTest extends AbstractApplicationTestCase
@@ -19,7 +18,7 @@ abstract class AbstractLogoutTest extends AbstractApplicationTestCase
      */
     public function testReadBadMethod(string $method): void
     {
-        $response = self::$staticApplicationClient->makeLogoutRequest(null, $method);
+        $response = self::$staticApplicationClient->makeLogoutRequest('', $method);
 
         self::assertSame(405, $response->getStatusCode());
     }
@@ -50,22 +49,19 @@ abstract class AbstractLogoutTest extends AbstractApplicationTestCase
         $expectedRedirectRoute = new RedirectRoute(Routes::SIGN_IN_VIEW_NAME->value, []);
         $expectedLocation = '/sign-in/?route=' . $redirectRouteSerializer->serialize($expectedRedirectRoute);
 
-        $response = self::$staticApplicationClient->makeLogoutRequest(null);
+        $response = self::$staticApplicationClient->makeLogoutRequest();
 
         $this->assertLogoutSuccessResponse($response, $expectedLocation);
     }
 
     public function testLogoutSuccessWithAuthentication(): void
     {
-        $frontendTokenProvider = self::getContainer()->get(FrontendTokenProvider::class);
-        \assert($frontendTokenProvider instanceof FrontendTokenProvider);
+        $requestCookieFactory = self::getContainer()->get(RequestCookieFactory::class);
+        \assert($requestCookieFactory instanceof RequestCookieFactory);
 
-        $frontendToken = $frontendTokenProvider->get('user@example.com');
+        $requestCookie = $requestCookieFactory->create(self::$staticApplicationClient, $this->getSessionIdentifier());
 
-        $response = self::$staticApplicationClient->makeLogoutRequest(new RefreshableToken(
-            $frontendToken->token,
-            $frontendToken->refreshToken
-        ));
+        $response = self::$staticApplicationClient->makeLogoutRequest($requestCookie);
 
         $this->assertLogoutSuccessResponse($response, '/sign-in/');
     }
