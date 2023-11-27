@@ -9,4 +9,5 @@ use App\Tests\Application\AbstractLogoutTest;
 class LogoutTest extends AbstractLogoutTest
 {
     use GetClientAdapterTrait;
+    use GetSessionIdentifierTrait;
 }

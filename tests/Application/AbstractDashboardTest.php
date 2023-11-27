@@ -7,17 +7,14 @@ namespace App\Tests\Application;
 use App\Enum\Routes;
 use App\RedirectRoute\RedirectRoute;
 use App\RedirectRoute\Serializer;
-use SmartAssert\ApiClient\Model\RefreshableToken;
-use SmartAssert\TestAuthenticationProviderBundle\FrontendTokenProvider;
+use App\Tests\Services\RequestCookieFactory;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 abstract class AbstractDashboardTest extends AbstractApplicationTestCase
 {
     public function testGetInvalidToken(): void
     {
-        $frontendToken = new RefreshableToken(md5((string) rand()), md5((string) rand()));
-
-        $response = self::$staticApplicationClient->makeDashboardReadRequest($frontendToken);
+        $response = self::$staticApplicationClient->makeDashboardReadRequest('token=invalid');
         self::assertSame(302, $response->getStatusCode());
 
         $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
@@ -37,15 +34,12 @@ abstract class AbstractDashboardTest extends AbstractApplicationTestCase
 
     public function testGetSuccess(): void
     {
-        $frontendTokenProvider = self::getContainer()->get(FrontendTokenProvider::class);
-        \assert($frontendTokenProvider instanceof FrontendTokenProvider);
+        $requestCookieFactory = self::getContainer()->get(RequestCookieFactory::class);
+        \assert($requestCookieFactory instanceof RequestCookieFactory);
 
-        $frontendToken = $frontendTokenProvider->get('user@example.com');
+        $requestCookie = $requestCookieFactory->create(self::$staticApplicationClient, $this->getSessionIdentifier());
 
-        $response = self::$staticApplicationClient->makeDashboardReadRequest(new RefreshableToken(
-            $frontendToken->token,
-            $frontendToken->refreshToken
-        ));
+        $response = self::$staticApplicationClient->makeDashboardReadRequest($requestCookie);
 
         self::assertSame(200, $response->getStatusCode());
         self::assertStringContainsString('text/html', $response->getHeaderLine('content-type'));

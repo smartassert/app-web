@@ -9,4 +9,5 @@ use App\Tests\Application\AbstractSignInWriteTest;
 class SignInWriteTest extends AbstractSignInWriteTest
 {
     use GetClientAdapterTrait;
+    use GetSessionIdentifierTrait;
 }

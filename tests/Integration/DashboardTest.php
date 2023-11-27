@@ -5,25 +5,21 @@ declare(strict_types=1);
 namespace App\Tests\Integration;
 
 use App\Tests\Application\AbstractDashboardTest;
-use SmartAssert\ApiClient\Model\RefreshableToken;
-use SmartAssert\TestAuthenticationProviderBundle\FrontendTokenProvider;
+use App\Tests\Services\RequestCookieFactory;
 
 class DashboardTest extends AbstractDashboardTest
 {
     use GetClientAdapterTrait;
+    use GetSessionIdentifierTrait;
 
     public function testExpiredUserTokenIsRefreshed(): void
     {
-        $frontendTokenProvider = self::getContainer()->get(FrontendTokenProvider::class);
-        \assert($frontendTokenProvider instanceof FrontendTokenProvider);
+        $requestCookieFactory = self::getContainer()->get(RequestCookieFactory::class);
+        \assert($requestCookieFactory instanceof RequestCookieFactory);
 
-        $frontendToken = $frontendTokenProvider->get('user@example.com');
+        $requestCookie = $requestCookieFactory->create(self::$staticApplicationClient, $this->getSessionIdentifier());
 
-        $response = self::$staticApplicationClient->makeDashboardReadRequest(new RefreshableToken(
-            $frontendToken->token,
-            $frontendToken->refreshToken
-        ));
-
+        $response = self::$staticApplicationClient->makeDashboardReadRequest($requestCookie);
         self::assertSame(200, $response->getStatusCode());
 
         $jwtTokenTtl = $this->getUsersServiceJwtTokenTtl();
@@ -31,11 +27,7 @@ class DashboardTest extends AbstractDashboardTest
 
         sleep($waitTime);
 
-        $response = self::$staticApplicationClient->makeDashboardReadRequest(new RefreshableToken(
-            $frontendToken->token,
-            $frontendToken->refreshToken
-        ));
-
+        $response = self::$staticApplicationClient->makeDashboardReadRequest($requestCookie);
         self::assertSame(200, $response->getStatusCode());
     }
 
