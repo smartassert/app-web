@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Services;
 
 use App\Tests\Services\ApplicationClient\Client as ApplicationClient;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\BrowserKit\Cookie;
 
 readonly class RequestCookieFactory
@@ -13,27 +14,23 @@ readonly class RequestCookieFactory
     {
         $response = $client->makeSignInPageWriteRequest('user@example.com', 'password');
 
-        $setCookieLines = $response->getHeader('set-cookie');
+        return sprintf(
+            'id=%s; token=%s',
+            $this->extractCookieValue($response, $sessionIdentifier),
+            $this->extractCookieValue($response, 'token'),
+        );
+    }
 
-        $sessionId = null;
-        $authenticationToken = null;
-
-        foreach ($setCookieLines as $setCookieLine) {
-            if (str_starts_with($setCookieLine, 'token=')) {
-                $tokenCookie = \Symfony\Component\HttpFoundation\Cookie::fromString($setCookieLine);
-                $authenticationToken = $tokenCookie->getValue();
-            }
-
-            if (str_starts_with($setCookieLine, $sessionIdentifier . '=')) {
+    private function extractCookieValue(ResponseInterface $response, string $name): ?string
+    {
+        foreach ($response->getHeader('set-cookie') as $setCookieLine) {
+            if (str_starts_with($setCookieLine, $name . '=')) {
                 $sessionIdCookie = Cookie::fromString($setCookieLine);
-                $sessionId = $sessionIdCookie->getValue();
+
+                return $sessionIdCookie->getValue();
             }
         }
 
-        return sprintf(
-            'id=%s; token=%s',
-            $sessionId,
-            $authenticationToken,
-        );
+        return null;
     }
 }
