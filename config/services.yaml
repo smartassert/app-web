@@ -102,6 +102,8 @@ services:
       arguments:
         $urlGenerator: '@smartassert.api-client.url-generator'
 
+    SmartAssert\ApiClient\Factory\Source\SourceFactory: ~
+
     SmartAssert\ApiClient\SourceClient:
       arguments:
         $urlGenerator: '@smartassert.api-client.url-generator'
