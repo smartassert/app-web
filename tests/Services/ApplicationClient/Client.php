@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Services\ApplicationClient;
 
 use App\Enum\Routes;
-use App\RefreshableToken\Encrypter;
 use Psr\Http\Message\ResponseInterface;
-use SmartAssert\ApiClient\Model\RefreshableToken;
 use SmartAssert\SymfonyTestClient\ClientInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -16,13 +14,12 @@ readonly class Client
     public function __construct(
         private ClientInterface $client,
         private UrlGeneratorInterface $urlGenerator,
-        private Encrypter $tokenEncrypter,
     ) {
     }
 
     public function makeSignInPageReadRequest(
-        ?string $userIdentifier,
-        ?RefreshableToken $token = null,
+        ?string $userIdentifier = null,
+        string $cookie = '',
         string $method = 'GET'
     ): ResponseInterface {
         $queryParameters = [];
@@ -30,17 +27,10 @@ readonly class Client
             $queryParameters['user-identifier'] = $userIdentifier;
         }
 
-        $headers = [];
-        if ($token instanceof RefreshableToken) {
-            $encryptedToken = $this->tokenEncrypter->encrypt($token);
-
-            $headers['cookie'] = 'token=' . $encryptedToken;
-        }
-
         return $this->client->makeRequest(
             $method,
             $this->urlGenerator->generate(Routes::SIGN_IN_VIEW_NAME->value, $queryParameters),
-            $headers
+            ['cookie' => $cookie]
         );
     }
 

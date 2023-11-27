@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Application;
 
-use App\RefreshableToken\Encrypter;
-use SmartAssert\ApiClient\Model\RefreshableToken;
-use SmartAssert\TestAuthenticationProviderBundle\FrontendTokenProvider;
+use App\Tests\Services\RequestCookieFactory;
 
 abstract class AbstractSignInReadTest extends AbstractApplicationTestCase
 {
@@ -15,10 +13,7 @@ abstract class AbstractSignInReadTest extends AbstractApplicationTestCase
      */
     public function testReadBadMethod(string $method): void
     {
-        $response = self::$staticApplicationClient->makeSignInPageReadRequest(
-            userIdentifier: null,
-            method: $method,
-        );
+        $response = self::$staticApplicationClient->makeSignInPageReadRequest(method: $method);
 
         self::assertSame(405, $response->getStatusCode());
     }
@@ -40,7 +35,7 @@ abstract class AbstractSignInReadTest extends AbstractApplicationTestCase
 
     public function testReadSuccess(): void
     {
-        $response = self::$staticApplicationClient->makeSignInPageReadRequest(null);
+        $response = self::$staticApplicationClient->makeSignInPageReadRequest();
 
         self::assertSame(200, $response->getStatusCode());
         self::assertStringContainsString('text/html', $response->getHeaderLine('content-type'));
@@ -48,19 +43,12 @@ abstract class AbstractSignInReadTest extends AbstractApplicationTestCase
 
     public function testReadWhenSignedInRedirectsToDashboard(): void
     {
-        $frontendTokenProvider = self::getContainer()->get(FrontendTokenProvider::class);
-        \assert($frontendTokenProvider instanceof FrontendTokenProvider);
+        $requestCookieFactory = self::getContainer()->get(RequestCookieFactory::class);
+        \assert($requestCookieFactory instanceof RequestCookieFactory);
 
-        $frontendToken = $frontendTokenProvider->get('user@example.com');
-        $refreshableToken = new RefreshableToken($frontendToken->token, $frontendToken->refreshToken);
+        $requestCookie = $requestCookieFactory->create(self::$staticApplicationClient, $this->getSessionIdentifier());
 
-        $tokenEncrypter = self::getContainer()->get(Encrypter::class);
-        \assert($tokenEncrypter instanceof Encrypter);
-
-        $response = self::$staticApplicationClient->makeSignInPageReadRequest(
-            userIdentifier: null,
-            token: $refreshableToken,
-        );
+        $response = self::$staticApplicationClient->makeSignInPageReadRequest(cookie: $requestCookie);
 
         self::assertSame(302, $response->getStatusCode());
         self::assertSame('', $response->getHeaderLine('content-type'));
