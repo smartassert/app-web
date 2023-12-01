@@ -13,17 +13,17 @@
         "doctrine/orm": "^2.16",
         "guzzlehttp/guzzle": "^7.8",
         "guzzlehttp/psr7": "*",
-        "smartassert/api-client": "^5.0",
-        "symfony/console": "6.4.*",
-        "symfony/dotenv": "6.4.*",
+        "smartassert/api-client": "^6.0",
+        "symfony/console": "7.0.*",
+        "symfony/dotenv": "7.0.*",
         "symfony/flex": "^2",
-        "symfony/framework-bundle": "6.4.*",
+        "symfony/framework-bundle": "7.0.*",
         "symfony/monolog-bundle": "^3.8",
-        "symfony/psr-http-message-bridge": "6.4.*",
-        "symfony/runtime": "6.4.*",
-        "symfony/security-bundle": "6.4.*",
-        "symfony/twig-bundle": "6.4.*",
-        "symfony/yaml": "6.4.*"
+        "symfony/psr-http-message-bridge": "7.0.*",
+        "symfony/runtime": "7.0.*",
+        "symfony/security-bundle": "7.0.*",
+        "symfony/twig-bundle": "7.0.*",
+        "symfony/yaml": "7.0.*"
     },
     "require-dev": {
         "mockery/mockery": "^1.6",
@@ -34,7 +34,7 @@
         "phpunit/phpunit": "^9.6",
         "smartassert/symfony-test-client": "^2.0",
         "squizlabs/php_codesniffer": "dev-master#7763e2e1f773cb0615ed8afa133189fc804f583d",
-        "symfony/css-selector": "6.4.*",
+        "symfony/css-selector": "7.0.*",
         "symfony/maker-bundle": "^1.51",
         "symfony/phpunit-bridge": "^6.3"
     },
@@ -133,7 +133,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "6.4.*"
+            "require": "7.0.*"
         }
     }
 }
