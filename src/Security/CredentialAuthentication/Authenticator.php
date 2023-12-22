@@ -13,14 +13,14 @@ use App\Response\RedirectResponse;
 use App\Response\RedirectResponseFactory;
 use App\Security\ApiKeyBadge;
 use App\Security\User;
-use Psr\Http\Client\ClientExceptionInterface;
+use SmartAssert\ApiClient\Exception\Http\HttpClientException;
+use SmartAssert\ApiClient\Exception\Http\HttpException;
+use SmartAssert\ApiClient\Exception\Http\NotFoundException;
+use SmartAssert\ApiClient\Exception\Http\UnauthorizedException;
+use SmartAssert\ApiClient\Exception\Http\UnexpectedContentTypeException;
+use SmartAssert\ApiClient\Exception\Http\UnexpectedDataException;
+use SmartAssert\ApiClient\Exception\IncompleteDataException;
 use SmartAssert\ApiClient\UsersClient;
-use SmartAssert\ServiceClient\Exception\CurlExceptionInterface;
-use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
-use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
-use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
-use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
-use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -61,12 +61,12 @@ readonly class Authenticator implements AuthenticatorInterface
     }
 
     /**
-     * @throws ClientExceptionInterface
-     * @throws InvalidModelDataException
-     * @throws InvalidResponseDataException
-     * @throws InvalidResponseTypeException
-     * @throws NonSuccessResponseException
-     * @throws CurlExceptionInterface
+     * @throws HttpClientException
+     * @throws HttpException
+     * @throws IncompleteDataException
+     * @throws NotFoundException
+     * @throws UnexpectedContentTypeException
+     * @throws UnexpectedDataException
      */
     public function authenticate(Request $request): Passport
     {

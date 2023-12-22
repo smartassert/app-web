@@ -9,14 +9,14 @@ use App\RefreshableToken\Encrypter;
 use App\Response\RedirectResponseFactory;
 use App\Security\RequestTokenExtractor;
 use App\Security\User;
-use Psr\Http\Client\ClientExceptionInterface;
+use SmartAssert\ApiClient\Exception\Http\HttpClientException;
+use SmartAssert\ApiClient\Exception\Http\HttpException;
+use SmartAssert\ApiClient\Exception\Http\NotFoundException;
+use SmartAssert\ApiClient\Exception\Http\UnauthorizedException;
+use SmartAssert\ApiClient\Exception\Http\UnexpectedContentTypeException;
+use SmartAssert\ApiClient\Exception\Http\UnexpectedDataException;
+use SmartAssert\ApiClient\Exception\IncompleteDataException;
 use SmartAssert\ApiClient\UsersClient;
-use SmartAssert\ServiceClient\Exception\CurlExceptionInterface;
-use SmartAssert\ServiceClient\Exception\InvalidModelDataException;
-use SmartAssert\ServiceClient\Exception\InvalidResponseDataException;
-use SmartAssert\ServiceClient\Exception\InvalidResponseTypeException;
-use SmartAssert\ServiceClient\Exception\NonSuccessResponseException;
-use SmartAssert\ServiceClient\Exception\UnauthorizedException;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Bundle\SecurityBundle\Security\FirewallConfig;
 use Symfony\Bundle\SecurityBundle\Security\FirewallMap;
@@ -58,12 +58,12 @@ readonly class Authenticator implements AuthenticatorInterface
     }
 
     /**
-     * @throws ClientExceptionInterface
-     * @throws InvalidModelDataException
-     * @throws InvalidResponseDataException
-     * @throws InvalidResponseTypeException
-     * @throws NonSuccessResponseException
-     * @throws CurlExceptionInterface
+     * @throws HttpClientException
+     * @throws HttpException
+     * @throws IncompleteDataException
+     * @throws NotFoundException
+     * @throws UnexpectedContentTypeException
+     * @throws UnexpectedDataException
      */
     public function authenticate(Request $request): Passport
     {

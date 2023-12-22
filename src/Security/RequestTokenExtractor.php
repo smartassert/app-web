@@ -6,7 +6,7 @@ namespace App\Security;
 
 use App\RefreshableToken\Encrypter;
 use Psr\Http\Message\ServerRequestInterface;
-use SmartAssert\ApiClient\Model\RefreshableToken;
+use SmartAssert\ApiClient\Data\User\Token;
 
 readonly class RequestTokenExtractor
 {
@@ -15,7 +15,7 @@ readonly class RequestTokenExtractor
     ) {
     }
 
-    public function extract(ServerRequestInterface $request): ?RefreshableToken
+    public function extract(ServerRequestInterface $request): ?Token
     {
         $cookies = $request->getCookieParams();
         $tokenCookie = $cookies['token'] ?? '';
