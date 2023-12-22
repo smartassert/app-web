@@ -25,12 +25,12 @@ services:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
 
-    SmartAssert\SecurityTokenExtractor\TokenExtractor: ~
-
-    SmartAssert\ServiceClient\ResponseFactory\ResponseFactory:
-        factory: ['SmartAssert\ServiceClient\ResponseFactory\ResponseFactory', 'createFactory']
-
-    SmartAssert\ServiceClient\ExceptionFactory\CurlExceptionFactory: ~
+#    SmartAssert\SecurityTokenExtractor\TokenExtractor: ~
+#
+#    SmartAssert\ServiceClient\ResponseFactory\ResponseFactory:
+#        factory: ['SmartAssert\ServiceClient\ResponseFactory\ResponseFactory', 'createFactory']
+#
+#    SmartAssert\ServiceClient\ExceptionFactory\CurlExceptionFactory: ~
 
     Psr\Http\Client\ClientInterface:
         class: GuzzleHttp\Client
@@ -55,13 +55,15 @@ services:
     Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface:
         class: Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory
 
-    SmartAssert\ServiceClient\Client: ~
+#    SmartAssert\ServiceClient\Client: ~
 
     smartassert.api-client.url-generator:
         class: Symfony\Component\Routing\Generator\UrlGenerator
         factory: ['SmartAssert\ApiClient\UrlGeneratorFactory', 'create']
         arguments:
             $baseUrl: '%env(string:API_CLIENT_BASE_URL)%'
+
+    SmartAssert\ApiClient\ServiceClient\HttpHandler: ~
 
     SmartAssert\ApiClient\UsersClient:
         arguments:

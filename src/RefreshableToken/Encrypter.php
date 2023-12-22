@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\RefreshableToken;
 
-use SmartAssert\ApiClient\Model\RefreshableToken;
+use SmartAssert\ApiClient\Data\User\Token;
 
 readonly class Encrypter
 {
@@ -14,12 +14,12 @@ readonly class Encrypter
     ) {
     }
 
-    public function encrypt(RefreshableToken $token): string
+    public function encrypt(Token $token): string
     {
         return $this->doEncrypt($this->serializer->serialize($token));
     }
 
-    public function decrypt(string $ciphertext): ?RefreshableToken
+    public function decrypt(string $ciphertext): ?Token
     {
         return $this->serializer->deserialize($this->doDecrypt($ciphertext));
     }

@@ -13,7 +13,7 @@
         "doctrine/orm": "^2.16",
         "guzzlehttp/guzzle": "^7.8",
         "guzzlehttp/psr7": "*",
-        "smartassert/api-client": "^6.0",
+        "smartassert/api-client": "^7.0",
         "symfony/console": "7.0.*",
         "symfony/dotenv": "7.0.*",
         "symfony/flex": "^2",
@@ -105,7 +105,7 @@
         ],
         "users-generate-jwt-keys": "docker compose -f tests/build/docker-compose.yml exec -T users-service php bin/console lexik:jwt:generate-keypair --overwrite --no-interaction",
         "users-create-user": [
-            "curl --header 'Authorization: primary_admin_token' --data 'email=user@example.com&password=password' http://localhost:9080/user/create",
+            "curl --header 'Authorization: primary_admin_token' --data 'identifier=user@example.com&password=password' http://localhost:9081/user/create",
             ""
         ],
         "users-setup": [
