@@ -25,13 +25,6 @@ services:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
 
-#    SmartAssert\SecurityTokenExtractor\TokenExtractor: ~
-#
-#    SmartAssert\ServiceClient\ResponseFactory\ResponseFactory:
-#        factory: ['SmartAssert\ServiceClient\ResponseFactory\ResponseFactory', 'createFactory']
-#
-#    SmartAssert\ServiceClient\ExceptionFactory\CurlExceptionFactory: ~
-
     Psr\Http\Client\ClientInterface:
         class: GuzzleHttp\Client
 
@@ -55,15 +48,32 @@ services:
     Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface:
         class: Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory
 
-#    SmartAssert\ServiceClient\Client: ~
-
     smartassert.api-client.url-generator:
         class: Symfony\Component\Routing\Generator\UrlGenerator
         factory: ['SmartAssert\ApiClient\UrlGeneratorFactory', 'create']
         arguments:
             $baseUrl: '%env(string:API_CLIENT_BASE_URL)%'
 
+    SmartAssert\ServiceRequest\Deserializer\Field\Deserializer: ~
+    SmartAssert\ServiceRequest\Deserializer\Error\ErrorFieldDeserializer: ~
+    SmartAssert\ServiceRequest\Deserializer\Error\BadRequestErrorDeserializer: ~
+    SmartAssert\ServiceRequest\Deserializer\Error\DuplicateObjectErrorDeserializer: ~
+    SmartAssert\ServiceRequest\Deserializer\Error\ModifyReadOnlyEntityDeserializer: ~
+    SmartAssert\ServiceRequest\Deserializer\Error\StorageErrorDeserializer: ~
+
+    SmartAssert\ServiceRequest\Deserializer\Error\Deserializer:
+        arguments:
+            $typeDeserializers:
+                - '@SmartAssert\ServiceRequest\Deserializer\Error\BadRequestErrorDeserializer'
+                - '@SmartAssert\ServiceRequest\Deserializer\Error\DuplicateObjectErrorDeserializer'
+                - '@SmartAssert\ServiceRequest\Deserializer\Error\ModifyReadOnlyEntityDeserializer'
+                - '@SmartAssert\ServiceRequest\Deserializer\Error\StorageErrorDeserializer'
+
+    SmartAssert\ApiClient\Exception\Error\Factory: ~
+
     SmartAssert\ApiClient\ServiceClient\HttpHandler: ~
+
+    SmartAssert\ApiClient\ServiceClient\RequestBuilder: ~
 
     SmartAssert\ApiClient\UsersClient:
         arguments:
