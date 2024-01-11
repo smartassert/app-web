@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\RefreshableToken;
 
+use App\Security\Encrypter as SecurityEncrypter;
 use SmartAssert\ApiClient\Data\User\Token;
 
 readonly class Encrypter
 {
     public function __construct(
-        private \App\Security\Encrypter $encrypter,
+        private SecurityEncrypter $encrypter,
         private Serializer $serializer,
     ) {
     }
