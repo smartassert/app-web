@@ -13,7 +13,7 @@
         "doctrine/orm": "^2.16",
         "guzzlehttp/guzzle": "^7.8",
         "guzzlehttp/psr7": "*",
-        "smartassert/api-client": "^8.0",
+        "smartassert/api-client": "^8.1",
         "symfony/console": "7.0.*",
         "symfony/dotenv": "7.0.*",
         "symfony/flex": "^2",
@@ -26,6 +26,7 @@
         "symfony/yaml": "7.0.*"
     },
     "require-dev": {
+        "ext-pdo": "*",
         "mockery/mockery": "^1.6",
         "phpstan/extension-installer": "^1.3",
         "phpstan/phpstan": "^1.10",
