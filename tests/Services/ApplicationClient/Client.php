@@ -6,13 +6,11 @@ namespace App\Tests\Services\ApplicationClient;
 
 use Psr\Http\Message\ResponseInterface;
 use SmartAssert\SymfonyTestClient\ClientInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 readonly class Client
 {
     public function __construct(
         private ClientInterface $client,
-        private UrlGeneratorInterface $urlGenerator,
     ) {
     }
 
@@ -59,10 +57,6 @@ readonly class Client
 
     public function makeLogoutRequest(string $cookie = '', string $method = 'POST'): ResponseInterface
     {
-        return $this->client->makeRequest(
-            $method,
-            $this->urlGenerator->generate('log_out_handle'),
-            ['cookie' => $cookie]
-        );
+        return $this->client->makeRequest($method, '/logout/', ['cookie' => $cookie]);
     }
 }
