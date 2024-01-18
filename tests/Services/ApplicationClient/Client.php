@@ -59,4 +59,13 @@ readonly class Client
     {
         return $this->client->makeRequest($method, '/logout/', ['cookie' => $cookie]);
     }
+
+    public function makeSourcesReadRequest(string $cookie): ResponseInterface
+    {
+        return $this->client->makeRequest(
+            'GET',
+            '/sources',
+            ['cookie' => $cookie]
+        );
+    }
 }
