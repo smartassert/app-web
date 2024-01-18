@@ -47,7 +47,7 @@ readonly class Client
 
         return $this->client->makeRequest(
             $method,
-            $this->urlGenerator->generate('sign_in_handle'),
+            '/sign-in/',
             ['Content-Type' => 'application/x-www-form-urlencoded'],
             http_build_query($payload)
         );
