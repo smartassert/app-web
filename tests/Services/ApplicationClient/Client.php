@@ -64,7 +64,7 @@ readonly class Client
     {
         return $this->client->makeRequest(
             'GET',
-            $this->urlGenerator->generate(Routes::SOURCES_NAME->value),
+            '/sources',
             ['cookie' => $cookie]
         );
     }
