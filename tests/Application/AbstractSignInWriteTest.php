@@ -13,7 +13,7 @@ abstract class AbstractSignInWriteTest extends AbstractApplicationTestCase
      */
     public function testWriteBadMethod(string $method): void
     {
-        $response = self::$staticApplicationClient->makeSignInPageWriteRequest(null, null, $method);
+        $response = $this->applicationClient->makeSignInPageWriteRequest(null, null, $method);
 
         self::assertSame(405, $response->getStatusCode());
     }
@@ -35,7 +35,7 @@ abstract class AbstractSignInWriteTest extends AbstractApplicationTestCase
 
     public function testWriteUnauthorized(): void
     {
-        $response = self::$staticApplicationClient->makeSignInPageWriteRequest('user@example.com', 'invalid');
+        $response = $this->applicationClient->makeSignInPageWriteRequest('user@example.com', 'invalid');
 
         self::assertSame(302, $response->getStatusCode());
         self::assertSame('', $response->getHeaderLine('content-type'));
@@ -51,7 +51,7 @@ abstract class AbstractSignInWriteTest extends AbstractApplicationTestCase
 
     public function testWriteSuccess(): void
     {
-        $response = self::$staticApplicationClient->makeSignInPageWriteRequest('user@example.com', 'password');
+        $response = $this->applicationClient->makeSignInPageWriteRequest('user@example.com', 'password');
         $responseCookie = Cookie::fromString($response->getHeaderLine('set-cookie'));
 
         self::assertSame(302, $response->getStatusCode());

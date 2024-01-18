@@ -14,7 +14,7 @@ abstract class AbstractDashboardTest extends AbstractApplicationTestCase
 {
     public function testGetInvalidToken(): void
     {
-        $response = self::$staticApplicationClient->makeDashboardReadRequest('token=invalid');
+        $response = $this->applicationClient->makeDashboardReadRequest('token=invalid');
         self::assertSame(302, $response->getStatusCode());
 
         $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
@@ -37,9 +37,9 @@ abstract class AbstractDashboardTest extends AbstractApplicationTestCase
         $requestCookieFactory = self::getContainer()->get(RequestCookieFactory::class);
         \assert($requestCookieFactory instanceof RequestCookieFactory);
 
-        $requestCookie = $requestCookieFactory->create(self::$staticApplicationClient, $this->getSessionIdentifier());
+        $requestCookie = $requestCookieFactory->create($this->applicationClient, $this->getSessionIdentifier());
 
-        $response = self::$staticApplicationClient->makeDashboardReadRequest($requestCookie);
+        $response = $this->applicationClient->makeDashboardReadRequest($requestCookie);
 
         self::assertSame(200, $response->getStatusCode());
         self::assertStringContainsString('text/html', $response->getHeaderLine('content-type'));

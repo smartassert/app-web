@@ -9,12 +9,12 @@ use SmartAssert\SymfonyTestClient\SymfonyClient;
 
 trait GetClientAdapterTrait
 {
-    public static function getClientAdapter(): ClientInterface
+    public function getClientAdapter(): ClientInterface
     {
         $client = self::getContainer()->get(SymfonyClient::class);
         \assert($client instanceof SymfonyClient);
 
-        $client->setKernelBrowser(self::$kernelBrowser);
+        $client->setKernelBrowser($this->kernelBrowser);
 
         return $client;
     }

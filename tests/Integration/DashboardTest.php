@@ -17,9 +17,9 @@ class DashboardTest extends AbstractDashboardTest
         $requestCookieFactory = self::getContainer()->get(RequestCookieFactory::class);
         \assert($requestCookieFactory instanceof RequestCookieFactory);
 
-        $requestCookie = $requestCookieFactory->create(self::$staticApplicationClient, $this->getSessionIdentifier());
+        $requestCookie = $requestCookieFactory->create($this->applicationClient, $this->getSessionIdentifier());
 
-        $response = self::$staticApplicationClient->makeDashboardReadRequest($requestCookie);
+        $response = $this->applicationClient->makeDashboardReadRequest($requestCookie);
         self::assertSame(200, $response->getStatusCode());
 
         $jwtTokenTtl = $this->getUsersServiceJwtTokenTtl();
@@ -27,7 +27,7 @@ class DashboardTest extends AbstractDashboardTest
 
         sleep($waitTime);
 
-        $response = self::$staticApplicationClient->makeDashboardReadRequest($requestCookie);
+        $response = $this->applicationClient->makeDashboardReadRequest($requestCookie);
         self::assertSame(200, $response->getStatusCode());
     }
 

@@ -18,7 +18,7 @@ abstract class AbstractLogoutTest extends AbstractApplicationTestCase
      */
     public function testReadBadMethod(string $method): void
     {
-        $response = self::$staticApplicationClient->makeLogoutRequest('', $method);
+        $response = $this->applicationClient->makeLogoutRequest('', $method);
 
         self::assertSame(405, $response->getStatusCode());
     }
@@ -49,7 +49,7 @@ abstract class AbstractLogoutTest extends AbstractApplicationTestCase
         $expectedRedirectRoute = new RedirectRoute(Routes::SIGN_IN_VIEW_NAME->value, []);
         $expectedLocation = '/sign-in/?route=' . $redirectRouteSerializer->serialize($expectedRedirectRoute);
 
-        $response = self::$staticApplicationClient->makeLogoutRequest();
+        $response = $this->applicationClient->makeLogoutRequest();
 
         $this->assertLogoutSuccessResponse($response, $expectedLocation);
     }
@@ -59,9 +59,9 @@ abstract class AbstractLogoutTest extends AbstractApplicationTestCase
         $requestCookieFactory = self::getContainer()->get(RequestCookieFactory::class);
         \assert($requestCookieFactory instanceof RequestCookieFactory);
 
-        $requestCookie = $requestCookieFactory->create(self::$staticApplicationClient, $this->getSessionIdentifier());
+        $requestCookie = $requestCookieFactory->create($this->applicationClient, $this->getSessionIdentifier());
 
-        $response = self::$staticApplicationClient->makeLogoutRequest($requestCookie);
+        $response = $this->applicationClient->makeLogoutRequest($requestCookie);
 
         $this->assertLogoutSuccessResponse($response, '/sign-in/');
     }

@@ -20,7 +20,7 @@ class SignInReadTest extends AbstractSignInReadTest
 
         $email = md5((string) rand()) . '@example.com';
 
-        $crawler = self::$kernelBrowser->request(
+        $crawler = $this->kernelBrowser->request(
             'GET',
             $urlGenerator->generate(Routes::SIGN_IN_VIEW_NAME->value, ['email' => $email])
         );

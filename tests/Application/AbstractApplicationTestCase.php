@@ -5,29 +5,24 @@ declare(strict_types=1);
 namespace App\Tests\Application;
 
 use App\Tests\Services\ApplicationClient\Client;
-use App\Tests\Services\ApplicationClient\ClientFactory;
 use SmartAssert\SymfonyTestClient\ClientInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 abstract class AbstractApplicationTestCase extends WebTestCase
 {
-    protected static KernelBrowser $kernelBrowser;
-    protected static Client $staticApplicationClient;
+    protected KernelBrowser $kernelBrowser;
+    protected Client $applicationClient;
 
-    public static function setUpBeforeClass(): void
+    public function setUp(): void
     {
-        parent::setUpBeforeClass();
+        parent::setUp();
 
-        self::$kernelBrowser = self::createClient();
-
-        $factory = self::getContainer()->get(ClientFactory::class);
-        \assert($factory instanceof ClientFactory);
-
-        self::$staticApplicationClient = $factory->create(static::getClientAdapter());
+        $this->kernelBrowser = self::createClient();
+        $this->applicationClient = new Client($this->getClientAdapter());
     }
 
-    public static function getClientAdapter(): ClientInterface
+    public function getClientAdapter(): ClientInterface
     {
         return \Mockery::mock(ClientInterface::class);
     }

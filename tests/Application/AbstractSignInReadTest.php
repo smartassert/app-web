@@ -13,7 +13,7 @@ abstract class AbstractSignInReadTest extends AbstractApplicationTestCase
      */
     public function testReadBadMethod(string $method): void
     {
-        $response = self::$staticApplicationClient->makeSignInPageReadRequest(method: $method);
+        $response = $this->applicationClient->makeSignInPageReadRequest(method: $method);
 
         self::assertSame(405, $response->getStatusCode());
     }
@@ -35,7 +35,7 @@ abstract class AbstractSignInReadTest extends AbstractApplicationTestCase
 
     public function testReadSuccess(): void
     {
-        $response = self::$staticApplicationClient->makeSignInPageReadRequest();
+        $response = $this->applicationClient->makeSignInPageReadRequest();
 
         self::assertSame(200, $response->getStatusCode());
         self::assertStringContainsString('text/html', $response->getHeaderLine('content-type'));
@@ -46,9 +46,9 @@ abstract class AbstractSignInReadTest extends AbstractApplicationTestCase
         $requestCookieFactory = self::getContainer()->get(RequestCookieFactory::class);
         \assert($requestCookieFactory instanceof RequestCookieFactory);
 
-        $requestCookie = $requestCookieFactory->create(self::$staticApplicationClient, $this->getSessionIdentifier());
+        $requestCookie = $requestCookieFactory->create($this->applicationClient, $this->getSessionIdentifier());
 
-        $response = self::$staticApplicationClient->makeSignInPageReadRequest(cookie: $requestCookie);
+        $response = $this->applicationClient->makeSignInPageReadRequest(cookie: $requestCookie);
 
         self::assertSame(302, $response->getStatusCode());
         self::assertSame('', $response->getHeaderLine('content-type'));

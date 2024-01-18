@@ -30,7 +30,7 @@ class SignInWriteTest extends AbstractSignInWriteTest
         \assert($sessionHandler instanceof SessionHandler);
 
         $session = $sessionHandler->create();
-        $sessionHandler->persist(self::$kernelBrowser, $session);
+        $sessionHandler->persist($this->kernelBrowser, $session);
 
         $redirectRouteFactory = self::getContainer()->get(Factory::class);
         \assert($redirectRouteFactory instanceof Factory);
@@ -38,7 +38,7 @@ class SignInWriteTest extends AbstractSignInWriteTest
         $redirectRouteSerializer = self::getContainer()->get(Serializer::class);
         \assert($redirectRouteSerializer instanceof Serializer);
 
-        $response = self::$staticApplicationClient->makeSignInPageWriteRequest($userIdentifier, $password);
+        $response = $this->applicationClient->makeSignInPageWriteRequest($userIdentifier, $password);
 
         self::assertSame(
             $expectedLocationCreator($redirectRouteFactory, $redirectRouteSerializer),
