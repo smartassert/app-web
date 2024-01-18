@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 namespace App\Tests\Services\ApplicationClient;
 
-use App\Enum\Routes;
 use Psr\Http\Message\ResponseInterface;
 use SmartAssert\SymfonyTestClient\ClientInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 readonly class Client
 {
     public function __construct(
         private ClientInterface $client,
-        private UrlGeneratorInterface $urlGenerator,
     ) {
     }
 
@@ -22,16 +19,12 @@ readonly class Client
         string $cookie = '',
         string $method = 'GET'
     ): ResponseInterface {
-        $queryParameters = [];
+        $url = '/sign-in/';
         if (null !== $userIdentifier) {
-            $queryParameters['user-identifier'] = $userIdentifier;
+            $url .= '?user-identifier=' . $userIdentifier;
         }
 
-        return $this->client->makeRequest(
-            $method,
-            $this->urlGenerator->generate(Routes::SIGN_IN_VIEW_NAME->value, $queryParameters),
-            ['cookie' => $cookie]
-        );
+        return $this->client->makeRequest($method, $url, ['cookie' => $cookie]);
     }
 
     public function makeSignInPageWriteRequest(
@@ -51,7 +44,7 @@ readonly class Client
 
         return $this->client->makeRequest(
             $method,
-            $this->urlGenerator->generate('sign_in_handle'),
+            '/sign-in/',
             ['Content-Type' => 'application/x-www-form-urlencoded'],
             http_build_query($payload)
         );
@@ -59,19 +52,11 @@ readonly class Client
 
     public function makeDashboardReadRequest(string $cookie): ResponseInterface
     {
-        return $this->client->makeRequest(
-            'GET',
-            $this->urlGenerator->generate(Routes::DASHBOARD_NAME->value),
-            ['cookie' => $cookie]
-        );
+        return $this->client->makeRequest('GET', '/', ['cookie' => $cookie]);
     }
 
     public function makeLogoutRequest(string $cookie = '', string $method = 'POST'): ResponseInterface
     {
-        return $this->client->makeRequest(
-            $method,
-            $this->urlGenerator->generate('log_out_handle'),
-            ['cookie' => $cookie]
-        );
+        return $this->client->makeRequest($method, '/logout/', ['cookie' => $cookie]);
     }
 }
