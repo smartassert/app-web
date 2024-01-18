@@ -74,4 +74,13 @@ readonly class Client
             ['cookie' => $cookie]
         );
     }
+
+    public function makeSourcesReadRequest(string $cookie): ResponseInterface
+    {
+        return $this->client->makeRequest(
+            'GET',
+            $this->urlGenerator->generate(Routes::SOURCES_NAME->value),
+            ['cookie' => $cookie]
+        );
+    }
 }

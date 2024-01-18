@@ -1,7 +1,7 @@
 {% if sources|length == 0 %}
 <p>You have no sources.</p>
 {% else %}
-<ul>
+<ul id="sources_list">
     {% for source in sources %}
         <li>{{ source.type }} {{ source.label }}</li>
     {% endfor %}
