@@ -22,16 +22,12 @@ readonly class Client
         string $cookie = '',
         string $method = 'GET'
     ): ResponseInterface {
-        $queryParameters = [];
+        $url = '/sign-in/';
         if (null !== $userIdentifier) {
-            $queryParameters['user-identifier'] = $userIdentifier;
+            $url .= '?user-identifier=' . $userIdentifier;
         }
 
-        return $this->client->makeRequest(
-            $method,
-            $this->urlGenerator->generate(Routes::SIGN_IN_VIEW_NAME->value, $queryParameters),
-            ['cookie' => $cookie]
-        );
+        return $this->client->makeRequest($method, $url, ['cookie' => $cookie]);
     }
 
     public function makeSignInPageWriteRequest(
