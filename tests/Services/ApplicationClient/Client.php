@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Services\ApplicationClient;
 
-use App\Enum\Routes;
 use Psr\Http\Message\ResponseInterface;
 use SmartAssert\SymfonyTestClient\ClientInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -55,11 +54,7 @@ readonly class Client
 
     public function makeDashboardReadRequest(string $cookie): ResponseInterface
     {
-        return $this->client->makeRequest(
-            'GET',
-            $this->urlGenerator->generate(Routes::DASHBOARD_NAME->value),
-            ['cookie' => $cookie]
-        );
+        return $this->client->makeRequest('GET', '/', ['cookie' => $cookie]);
     }
 
     public function makeLogoutRequest(string $cookie = '', string $method = 'POST'): ResponseInterface
