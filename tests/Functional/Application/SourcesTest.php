@@ -28,11 +28,11 @@ class SourcesTest extends AbstractSourcesTest
         $requestCookieFactory = self::getContainer()->get(RequestCookieFactory::class);
         \assert($requestCookieFactory instanceof RequestCookieFactory);
 
-        $requestCookie = $requestCookieFactory->create(self::$staticApplicationClient, $this->getSessionIdentifier());
+        $requestCookie = $requestCookieFactory->create($this->applicationClient, $this->getSessionIdentifier());
 
         $sourcesUrl = $urlGenerator->generate(Routes::SOURCES_NAME->value);
 
-        $crawler = self::$kernelBrowser->request(
+        $crawler = $this->kernelBrowser->request(
             method: 'GET',
             uri: $sourcesUrl,
             server: [
@@ -40,7 +40,7 @@ class SourcesTest extends AbstractSourcesTest
             ]
         );
 
-        self::assertSame(200, self::$kernelBrowser->getResponse()->getStatusCode());
+        self::assertSame(200, $this->kernelBrowser->getResponse()->getStatusCode());
 
         $sourcesList = $crawler->filter('#sources_list');
         self::assertSame(0, $sourcesList->count());
@@ -51,13 +51,13 @@ class SourcesTest extends AbstractSourcesTest
             'label' => $label,
         ]);
 
-        self::$kernelBrowser->submit($addFileSourceForm);
+        $this->kernelBrowser->submit($addFileSourceForm);
 
-        $response = self::$kernelBrowser->getResponse();
+        $response = $this->kernelBrowser->getResponse();
         self::assertSame(302, $response->getStatusCode());
         self::assertSame($sourcesUrl, $response->headers->get('location'));
 
-        $crawler = self::$kernelBrowser->request(
+        $crawler = $this->kernelBrowser->request(
             method: 'GET',
             uri: $sourcesUrl,
             server: [
@@ -65,7 +65,7 @@ class SourcesTest extends AbstractSourcesTest
             ]
         );
 
-        self::assertSame(200, self::$kernelBrowser->getResponse()->getStatusCode());
+        self::assertSame(200, $this->kernelBrowser->getResponse()->getStatusCode());
 
         $sourcesList = $crawler->filter('#sources_list');
         self::assertSame(1, $sourcesList->count());
