@@ -1,7 +1,7 @@
 services:
   users-service:
     env_file: users.env
-    image: ghcr.io/smartassert/users:6.0
+    image: ghcr.io/smartassert/users:7.1
     profiles: ["functional"]
     container_name: users-service
     environment:
