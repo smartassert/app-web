@@ -77,4 +77,45 @@ class SourcesTest extends AbstractSourcesTest
         $source = $sourceItems->first();
         self::assertSame('file ' . $label, $source->text());
     }
+
+    public function testAddFileSourceApiUnauthorized(): void
+    {
+        $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
+        \assert($urlGenerator instanceof UrlGeneratorInterface);
+
+        $requestCookieFactory = self::getContainer()->get(RequestCookieFactory::class);
+        \assert($requestCookieFactory instanceof RequestCookieFactory);
+
+        $requestCookie = $requestCookieFactory->create($this->applicationClient, $this->getSessionIdentifier());
+
+        $crawler = $this->kernelBrowser->request(
+            method: 'GET',
+            uri: '/sources',
+            server: [
+                'HTTP_COOKIE' => $requestCookie,
+            ]
+        );
+
+        self::assertSame(200, $this->kernelBrowser->getResponse()->getStatusCode());
+
+        $usersDataRepository = new DataRepository(
+            'pgsql:host=localhost;port=5432;dbname=users;user=postgres;password=password!'
+        );
+        $usersDataRepository->getConnection()->query('delete from public.api_key');
+
+        $label = md5((string) rand());
+
+        $addFileSourceForm = $crawler->filter('#file_source_add input[type=submit]')->form([
+            'label' => $label,
+        ]);
+
+        $this->kernelBrowser->submit($addFileSourceForm);
+
+        $response = $this->kernelBrowser->getResponse();
+        self::assertSame(302, $response->getStatusCode());
+        self::assertSame(
+            '/sign-in/?email=user@example.com&route=eyJuYW1lIjoiZGFzaGJvYXJkIiwicGFyYW1ldGVycyI6W119',
+            $response->headers->get('location')
+        );
+    }
 }
