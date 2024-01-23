@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Enum\SignInErrorState;
+use App\Exception\ApiException;
 use App\RedirectRoute\Factory;
 use App\Response\RedirectResponseFactory;
 use SmartAssert\ApiClient\Exception\Http\UnauthorizedException;
@@ -14,7 +15,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-readonly class ApiUnauthorizedExceptionHandler implements EventSubscriberInterface
+readonly class ApiExceptionHandler implements EventSubscriberInterface
 {
     public function __construct(
         private Security $security,
@@ -30,15 +31,20 @@ readonly class ApiUnauthorizedExceptionHandler implements EventSubscriberInterfa
     {
         return [
             KernelEvents::EXCEPTION => [
-                ['handleApiUnauthorizedException', 0],
+                ['handleApiException', 0],
             ],
         ];
     }
 
-    public function handleApiUnauthorizedException(ExceptionEvent $event): void
+    public function handleApiException(ExceptionEvent $event): void
     {
         $throwable = $event->getThrowable();
-        if (!$throwable instanceof UnauthorizedException) {
+        if (!$throwable instanceof ApiException) {
+            return;
+        }
+
+        $exception = $throwable->exception;
+        if (!$exception instanceof UnauthorizedException) {
             return;
         }
 
