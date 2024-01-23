@@ -4,17 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Enum\ApiService;
 use App\Enum\Routes;
+use App\Exception\ApiException;
 use App\Response\RedirectResponse;
 use App\Security\ApiKey;
-use SmartAssert\ApiClient\Exception\Error\ErrorException;
-use SmartAssert\ApiClient\Exception\Http\HttpClientException;
-use SmartAssert\ApiClient\Exception\Http\HttpException;
-use SmartAssert\ApiClient\Exception\Http\NotFoundException;
-use SmartAssert\ApiClient\Exception\Http\UnauthorizedException;
-use SmartAssert\ApiClient\Exception\Http\UnexpectedContentTypeException;
-use SmartAssert\ApiClient\Exception\Http\UnexpectedDataException;
-use SmartAssert\ApiClient\Exception\IncompleteDataException;
 use SmartAssert\ApiClient\FileSourceClient;
 use SmartAssert\ApiClient\SourceClient;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,19 +44,16 @@ readonly class SourceController
     }
 
     /**
-     * @throws UnauthorizedException
-     * @throws ErrorException
-     * @throws IncompleteDataException
-     * @throws HttpException
-     * @throws NotFoundException
-     * @throws UnexpectedContentTypeException
-     * @throws HttpClientException
-     * @throws UnexpectedDataException
+     * @throws ApiException
      */
     #[Route('/sources/file', name: 'sources_add_file_source', methods: ['POST'])]
     public function addFileSource(ApiKey $apiKey, Request $request): Response
     {
-        $this->fileSourceClient->create($apiKey->key, $request->request->getString('label'));
+        try {
+            $this->fileSourceClient->create($apiKey->key, $request->request->getString('label'));
+        } catch (\Throwable $e) {
+            throw new ApiException(ApiService::SOURCES, $e);
+        }
 
         return new RedirectResponse($this->urlGenerator->generate('sources'));
     }
