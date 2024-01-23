@@ -11,6 +11,7 @@ class DataRepository
     public function __construct(
         private readonly string $databaseDsn,
     ) {
+        self::$connection = null;
     }
 
     /**
