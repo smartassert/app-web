@@ -70,14 +70,15 @@ services:
                 - '@SmartAssert\ServiceRequest\Deserializer\Error\StorageErrorDeserializer'
 
     SmartAssert\ApiClient\Exception\Error\Factory: ~
-
-    SmartAssert\ApiClient\ServiceClient\HttpHandler: ~
-
-    SmartAssert\ApiClient\ServiceClient\RequestBuilder: ~
-
-    SmartAssert\ApiClient\UsersClient:
+    SmartAssert\ApiClient\ServiceClient\HttpHandler:
         arguments:
             $urlGenerator: '@smartassert.api-client.url-generator'
+
+    SmartAssert\ApiClient\Factory\User\TokenFactory: ~
+    SmartAssert\ApiClient\Factory\User\UserFactory: ~
+    SmartAssert\ApiClient\Factory\User\ApiKeyFactory: ~
+
+    SmartAssert\ApiClient\UsersClient: ~
 
     App\Security\Encrypter:
         arguments:
