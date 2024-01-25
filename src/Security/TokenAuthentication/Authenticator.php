@@ -9,7 +9,7 @@ use App\RefreshableToken\Encrypter;
 use App\Response\RedirectResponseFactory;
 use App\Security\RequestTokenExtractor;
 use App\Security\User;
-use SmartAssert\ApiClient\Exception\Http\HttpClientException;
+use SmartAssert\ApiClient\Exception\Http\FailedRequestException;
 use SmartAssert\ApiClient\Exception\Http\HttpException;
 use SmartAssert\ApiClient\Exception\Http\NotFoundException;
 use SmartAssert\ApiClient\Exception\Http\UnauthorizedException;
@@ -58,12 +58,12 @@ readonly class Authenticator implements AuthenticatorInterface
     }
 
     /**
-     * @throws HttpClientException
      * @throws HttpException
      * @throws IncompleteDataException
      * @throws NotFoundException
      * @throws UnexpectedContentTypeException
      * @throws UnexpectedDataException
+     * @throws FailedRequestException
      */
     public function authenticate(Request $request): Passport
     {
