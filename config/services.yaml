@@ -87,26 +87,13 @@ services:
     SmartAssert\ApiClient\Factory\User\TokenFactory: ~
     SmartAssert\ApiClient\Factory\User\UserFactory: ~
     SmartAssert\ApiClient\Factory\User\ApiKeyFactory: ~
-
-    SmartAssert\ApiClient\UsersClient: ~
-
-    SmartAssert\ApiClient\FileClient:
-      arguments:
-        $urlGenerator: '@smartassert.api-client.url-generator'
-
-    SmartAssert\ApiClient\FileSourceClient:
-      arguments:
-        $urlGenerator: '@smartassert.api-client.url-generator'
-
-    SmartAssert\ApiClient\GitSourceClient:
-      arguments:
-        $urlGenerator: '@smartassert.api-client.url-generator'
-
     SmartAssert\ApiClient\Factory\Source\SourceFactory: ~
 
-    SmartAssert\ApiClient\SourceClient:
-      arguments:
-        $urlGenerator: '@smartassert.api-client.url-generator'
+    SmartAssert\ApiClient\UsersClient: ~
+    SmartAssert\ApiClient\FileClient: ~
+    SmartAssert\ApiClient\FileSourceClient: ~
+    SmartAssert\ApiClient\GitSourceClient: ~
+    SmartAssert\ApiClient\SourceClient: ~
 
     App\Security\Encrypter:
         arguments:
