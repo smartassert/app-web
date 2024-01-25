@@ -39,4 +39,11 @@ readonly class RedirectResponseFactory
             $this->urlGenerator->generate(Routes::DASHBOARD_NAME->value)
         );
     }
+
+    public function create(RedirectRoute $redirectRoute): RedirectResponse
+    {
+        return new RedirectResponse(
+            $this->urlGenerator->generate($redirectRoute->name, $redirectRoute->parameters),
+        );
+    }
 }
