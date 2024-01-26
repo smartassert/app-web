@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Enum\ApiService;
 use App\Enum\Routes;
 use App\Exception\ApiException;
+use App\RedirectRoute\RedirectRoute;
 use App\Response\RedirectResponse;
 use App\Security\ApiKey;
 use SmartAssert\ApiClient\FileSourceClient;
@@ -52,7 +53,11 @@ readonly class SourceController
         try {
             $this->fileSourceClient->create($apiKey->key, $request->request->getString('label'));
         } catch (\Throwable $e) {
-            throw new ApiException(ApiService::SOURCES, $e);
+            throw new ApiException(
+                ApiService::SOURCES,
+                $e,
+                new RedirectRoute(Routes::SOURCES_NAME->value)
+            );
         }
 
         return new RedirectResponse($this->urlGenerator->generate('sources'));
