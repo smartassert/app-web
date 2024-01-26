@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Enum\ApiService;
 use App\Enum\Routes;
 use App\Exception\ApiException;
+use App\FormError\Factory;
 use App\RedirectRoute\RedirectRoute;
 use App\Response\RedirectResponse;
 use App\Security\ApiKey;
@@ -37,10 +38,11 @@ readonly class SourceController
      * @throws LoaderError
      */
     #[Route('/sources', name: Routes::SOURCES_NAME->value, methods: ['GET'])]
-    public function index(ApiKey $apiKey): Response
+    public function index(ApiKey $apiKey, Request $request, Factory $formErrorFactory): Response
     {
         return new Response($this->twig->render('source/index.html.twig', [
             'sources' => $this->sourceClient->list($apiKey->key),
+            'form_error' => $formErrorFactory->create(),
         ]));
     }
 
@@ -60,6 +62,6 @@ readonly class SourceController
             );
         }
 
-        return new RedirectResponse($this->urlGenerator->generate('sources'));
+        return new RedirectResponse($this->urlGenerator->generate(Routes::SOURCES_NAME->value));
     }
 }
