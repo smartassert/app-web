@@ -11,7 +11,7 @@ readonly class RedirectRoute
      */
     public function __construct(
         public string $name,
-        public array $parameters,
+        public array $parameters = [],
     ) {
     }
 }
