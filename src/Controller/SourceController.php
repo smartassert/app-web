@@ -8,6 +8,7 @@ use App\Enum\ApiService;
 use App\Enum\Routes;
 use App\Exception\ApiException;
 use App\Response\RedirectResponseFactory;
+use App\FormError\Factory;
 use App\Security\ApiKey;
 use SmartAssert\ApiClient\FileSourceClient;
 use SmartAssert\ApiClient\SourceClient;
@@ -35,10 +36,11 @@ readonly class SourceController
      * @throws LoaderError
      */
     #[Route('/sources', name: Routes::SOURCES_NAME->value, methods: ['GET'])]
-    public function index(ApiKey $apiKey): Response
+    public function index(ApiKey $apiKey, Request $request, Factory $formErrorFactory): Response
     {
         return new Response($this->twig->render('source/index.html.twig', [
             'sources' => $this->sourceClient->list($apiKey->key),
+            'form_error' => $formErrorFactory->create(),
         ]));
     }
 

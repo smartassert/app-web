@@ -21,13 +21,29 @@
 
     <h2>Sources</h2>
     {{ include ('partial/source/list.html.twig') }}
+    {% set has_file_source_add_error = form_error and form_error.formName == 'file_source_add' %}
 
     <h3>Add file source</h3>
-    <form id="file_source_add" method="post" action="{{ path('sources_add_file_source') }}">
-        <label>
+    <form
+          id="file_source_add"
+          method="post"
+          action="{{ path('sources_add_file_source') }}"
+          {% if has_file_source_add_error %}class="error"{% endif %}
+    >
+        {% if has_file_source_add_error %}<span class="error">{{ form_error.message }}</span><br>{% endif %}
+
+        <label
+                for="file_source_add_label"
+                {% if has_file_source_add_error and form_error.fieldName == 'label' %}class="error"{% endif %}
+
+        >
             Label
-            <input type="text" name="label" value="{{ label|default('') }}">
         </label>
+        <input
+                id="file_source_add_label"
+                type="text" name="label" value="{{ label|default('') }}"
+                {% if has_file_source_add_error and form_error.fieldName == 'label' %}class="error"{% endif %}
+        >
         <input type="submit" value="Add">
     </form>
 </div>
