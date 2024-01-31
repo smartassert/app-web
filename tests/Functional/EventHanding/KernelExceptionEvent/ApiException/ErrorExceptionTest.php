@@ -16,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -70,5 +71,46 @@ class ErrorExceptionTest extends WebTestCase
 
         self::assertSame($errorExceptionName, $session->getFlashBag()->get('error_name')[0]);
         self::assertSame($error, $session->get('error'));
+    }
+
+    public function testRedirectResponseIsSetOnEvent(): void
+    {
+        $eventDispatcher = self::getContainer()->get(EventDispatcherInterface::class);
+        \assert($eventDispatcher instanceof EventDispatcherInterface);
+        \assert($eventDispatcher instanceof EventDispatcher);
+
+        $kernel = self::getContainer()->get(KernelInterface::class);
+        \assert($kernel instanceof KernelInterface);
+
+        $request = \Mockery::mock(Request::class);
+        $request
+            ->shouldReceive('getSession')
+            ->andReturn(\Mockery::mock(SessionInterface::class))
+        ;
+
+        $request->attributes = new ParameterBag(['_route' => 'sources_add_file_source']);
+
+        $response = \Mockery::mock(ResponseInterface::class);
+        $response
+            ->shouldReceive('getStatusCode')
+            ->andReturn(400)
+        ;
+
+        $errorExceptionName = md5((string) rand());
+        $error = \Mockery::mock(ErrorInterface::class);
+
+        $errorException = new ErrorException(
+            $errorExceptionName,
+            \Mockery::mock(RequestInterface::class),
+            $response,
+            $error,
+        );
+
+        $exception = new ApiException(ApiService::SOURCES, $errorException);
+
+        $event = new ExceptionEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, $exception);
+        $eventDispatcher->dispatch($event, 'kernel.exception');
+
+        self::assertSame('/sources', $event->getResponse()?->headers->get('location'));
     }
 }
