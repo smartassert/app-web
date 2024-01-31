@@ -6,7 +6,6 @@ namespace App\Tests\Functional\EventHanding\KernelExceptionEvent\ApiException;
 
 use App\Enum\ApiService;
 use App\Exception\ApiException;
-use App\RedirectRoute\RedirectRoute;
 use App\Tests\Services\SessionHandler;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\RequestInterface;
@@ -15,6 +14,7 @@ use SmartAssert\ApiClient\Exception\Error\ErrorException;
 use SmartAssert\ServiceRequest\Error\ErrorInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -45,6 +45,8 @@ class ErrorExceptionTest extends WebTestCase
             ->andReturn($session)
         ;
 
+        $request->attributes = new ParameterBag(['_route' => 'sources_add_file_source']);
+
         $response = \Mockery::mock(ResponseInterface::class);
         $response
             ->shouldReceive('getStatusCode')
@@ -61,11 +63,7 @@ class ErrorExceptionTest extends WebTestCase
             $error,
         );
 
-        $exception = new ApiException(
-            ApiService::SOURCES,
-            $errorException,
-            new RedirectRoute('dashboard')
-        );
+        $exception = new ApiException(ApiService::SOURCES, $errorException);
 
         $event = new ExceptionEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, $exception);
         $eventDispatcher->dispatch($event, 'kernel.exception');
