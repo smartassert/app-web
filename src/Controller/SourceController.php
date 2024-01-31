@@ -8,15 +8,13 @@ use App\Enum\ApiService;
 use App\Enum\Routes;
 use App\Exception\ApiException;
 use App\FormError\Factory;
-use App\RedirectRoute\RedirectRoute;
-use App\Response\RedirectResponse;
+use App\Response\RedirectResponseFactory;
 use App\Security\ApiKey;
 use SmartAssert\ApiClient\FileSourceClient;
 use SmartAssert\ApiClient\SourceClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment as TwigEnvironment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -28,7 +26,7 @@ readonly class SourceController
         private TwigEnvironment $twig,
         private SourceClient $sourceClient,
         private FileSourceClient $fileSourceClient,
-        private UrlGeneratorInterface $urlGenerator,
+        private RedirectResponseFactory $redirectResponseFactory,
     ) {
     }
 
@@ -55,13 +53,9 @@ readonly class SourceController
         try {
             $this->fileSourceClient->create($apiKey->key, $request->request->getString('label'));
         } catch (\Throwable $e) {
-            throw new ApiException(
-                ApiService::SOURCES,
-                $e,
-                new RedirectRoute(Routes::SOURCES_NAME->value)
-            );
+            throw new ApiException(ApiService::SOURCES, $e);
         }
 
-        return new RedirectResponse($this->urlGenerator->generate(Routes::SOURCES_NAME->value));
+        return $this->redirectResponseFactory->createForRequest($request);
     }
 }
