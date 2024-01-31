@@ -11,6 +11,11 @@ parameters:
                 - 'sign_in_view'
 
         -
+            name: !php/enum App\Enum\Routes::SOURCES_NAME->value
+            sources:
+                - 'sources_add_file_source'
+
+        -
             name: !php/enum App\Enum\Routes::SIGN_IN_VIEW_NAME->value
             sources:
                 - 'log_out_handle'
@@ -132,3 +137,7 @@ services:
         arguments:
             $actionToFormMap:
                 "post_file-source": "file_source_add"
+
+    App\Response\TargetMapper:
+        arguments:
+            $targetDataCollection: '%redirect_targets%'

@@ -6,7 +6,6 @@ namespace App\EventSubscriber;
 
 use App\Exception\ApiException;
 use App\RedirectRoute\Factory;
-use App\RedirectRoute\RedirectRoute;
 use App\Response\RedirectResponseFactory;
 use SmartAssert\ApiClient\Exception\ClientException;
 use SmartAssert\ApiClient\Exception\Error\ErrorException;
@@ -55,7 +54,7 @@ readonly class ApiExceptionResponseHandler implements EventSubscriberInterface
 
         $innerException = $clientException->getInnerException();
         if ($innerException instanceof ErrorException) {
-            $response = $this->handleErrorException($throwable->redirectRoute);
+            $response = $this->redirectResponseFactory->createForRequest($event->getRequest());
         }
 
         if ($innerException instanceof UnauthorizedException) {
@@ -71,12 +70,5 @@ readonly class ApiExceptionResponseHandler implements EventSubscriberInterface
         if ($response instanceof Response) {
             $event->setResponse($response);
         }
-    }
-
-    private function handleErrorException(?RedirectRoute $redirectRoute): ?Response
-    {
-        return $redirectRoute instanceof RedirectRoute
-            ? $this->redirectResponseFactory->create($redirectRoute)
-            : null;
     }
 }
