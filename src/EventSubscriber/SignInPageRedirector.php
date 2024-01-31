@@ -28,12 +28,12 @@ readonly class SignInPageRedirector implements EventSubscriberInterface
     {
         return [
             KernelEvents::REQUEST => [
-                ['redirectSignInRequestWithAuthenticationTokenToDashboard', 0],
+                ['redirectSignInRequestWithAuthentication', 0],
             ],
         ];
     }
 
-    public function redirectSignInRequestWithAuthenticationTokenToDashboard(RequestEvent $event): void
+    public function redirectSignInRequestWithAuthentication(RequestEvent $event): void
     {
         if (Routes::SIGN_IN_VIEW_NAME->value !== $event->getRequest()->attributes->get('_route')) {
             return;
