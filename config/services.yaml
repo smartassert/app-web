@@ -54,8 +54,8 @@ services:
         arguments:
             $baseUrl: '%env(string:API_CLIENT_BASE_URL)%'
 
-    SmartAssert\ServiceRequest\Deserializer\Field\Deserializer: ~
-    SmartAssert\ServiceRequest\Deserializer\Error\ErrorFieldDeserializer: ~
+    SmartAssert\ServiceRequest\Deserializer\Parameter\Deserializer: ~
+    SmartAssert\ServiceRequest\Deserializer\Error\ErrorParameterDeserializer: ~
     SmartAssert\ServiceRequest\Deserializer\Error\BadRequestErrorDeserializer: ~
     SmartAssert\ServiceRequest\Deserializer\Error\DuplicateObjectErrorDeserializer: ~
     SmartAssert\ServiceRequest\Deserializer\Error\ModifyReadOnlyEntityDeserializer: ~
