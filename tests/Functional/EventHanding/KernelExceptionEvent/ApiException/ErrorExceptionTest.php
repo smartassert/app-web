@@ -8,8 +8,8 @@ use App\Enum\ApiService;
 use App\Exception\ApiException;
 use App\Tests\Services\SessionHandler;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use SmartAssert\ApiClient\Exception\ClientException;
 use SmartAssert\ApiClient\Exception\Error\ErrorException;
 use SmartAssert\ServiceRequest\Error\ErrorInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -54,22 +54,16 @@ class ErrorExceptionTest extends WebTestCase
             ->andReturn(400)
         ;
 
-        $errorExceptionName = md5((string) rand());
+        $exceptionRequestName = md5((string) rand());
         $error = \Mockery::mock(ErrorInterface::class);
 
-        $errorException = new ErrorException(
-            $errorExceptionName,
-            \Mockery::mock(RequestInterface::class),
-            $response,
-            $error,
-        );
-
-        $exception = new ApiException(ApiService::SOURCES, $errorException);
+        $clientException = new ClientException($exceptionRequestName, new ErrorException($error));
+        $exception = new ApiException(ApiService::SOURCES, $clientException);
 
         $event = new ExceptionEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, $exception);
         $eventDispatcher->dispatch($event, 'kernel.exception');
 
-        self::assertSame($errorExceptionName, $session->getFlashBag()->get('error_name')[0]);
+        self::assertSame($exceptionRequestName, $session->getFlashBag()->get('error_name')[0]);
         self::assertSame($error, $session->get('error'));
     }
 
@@ -96,17 +90,11 @@ class ErrorExceptionTest extends WebTestCase
             ->andReturn(400)
         ;
 
-        $errorExceptionName = md5((string) rand());
+        $exceptionRequestName = md5((string) rand());
         $error = \Mockery::mock(ErrorInterface::class);
 
-        $errorException = new ErrorException(
-            $errorExceptionName,
-            \Mockery::mock(RequestInterface::class),
-            $response,
-            $error,
-        );
-
-        $exception = new ApiException(ApiService::SOURCES, $errorException);
+        $clientException = new ClientException($exceptionRequestName, new ErrorException($error));
+        $exception = new ApiException(ApiService::SOURCES, $clientException);
 
         $event = new ExceptionEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, $exception);
         $eventDispatcher->dispatch($event, 'kernel.exception');
