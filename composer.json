@@ -13,7 +13,7 @@
         "doctrine/orm": "^2.16",
         "guzzlehttp/guzzle": "^7.8",
         "guzzlehttp/psr7": "*",
-        "smartassert/api-client": "^13.2",
+        "smartassert/api-client": "^14.0",
         "symfony/console": "7.0.*",
         "symfony/dotenv": "7.0.*",
         "symfony/flex": "^2",

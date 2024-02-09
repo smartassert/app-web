@@ -13,13 +13,8 @@ use App\Response\RedirectResponse;
 use App\Response\RedirectResponseFactory;
 use App\Security\ApiKeyBadge;
 use App\Security\User;
-use SmartAssert\ApiClient\Exception\Http\FailedRequestException;
-use SmartAssert\ApiClient\Exception\Http\HttpException;
-use SmartAssert\ApiClient\Exception\Http\NotFoundException;
-use SmartAssert\ApiClient\Exception\Http\UnauthorizedException;
-use SmartAssert\ApiClient\Exception\Http\UnexpectedContentTypeException;
-use SmartAssert\ApiClient\Exception\Http\UnexpectedDataException;
-use SmartAssert\ApiClient\Exception\IncompleteResponseDataException;
+use SmartAssert\ApiClient\Exception\ClientException;
+use SmartAssert\ApiClient\Exception\UnauthorizedException;
 use SmartAssert\ApiClient\UsersClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -61,12 +56,7 @@ readonly class Authenticator implements AuthenticatorInterface
     }
 
     /**
-     * @throws HttpException
-     * @throws IncompleteResponseDataException
-     * @throws NotFoundException
-     * @throws UnexpectedContentTypeException
-     * @throws UnexpectedDataException
-     * @throws FailedRequestException
+     * @throws ClientException
      */
     public function authenticate(Request $request): Passport
     {
@@ -84,8 +74,14 @@ readonly class Authenticator implements AuthenticatorInterface
             $token = $this->usersClient->createToken($userIdentifier, $password);
             $apiKey = $this->usersClient->getApiKey($token->token);
             $user = new User($userIdentifier, $token);
-        } catch (UnauthorizedException) {
-            throw new BadCredentialsException($userIdentifier);
+        } catch (ClientException $clientException) {
+            $innerException = $clientException->getInnerException();
+
+            if ($innerException instanceof UnauthorizedException) {
+                throw throw new BadCredentialsException($userIdentifier);
+            }
+
+            throw $clientException;
         }
 
         return new SelfValidatingPassport(
