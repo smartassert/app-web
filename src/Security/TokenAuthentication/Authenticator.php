@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Security\TokenAuthentication;
 
+use App\Enum\ApiService;
+use App\Exception\ApiException;
 use App\RedirectRoute\Factory as RedirectRouteFactory;
 use App\RefreshableToken\Encrypter;
 use App\Response\RedirectResponseFactory;
@@ -53,7 +55,7 @@ readonly class Authenticator implements AuthenticatorInterface
     }
 
     /**
-     * @throws ClientException
+     * @throws ApiException
      */
     public function authenticate(Request $request): Passport
     {
@@ -86,7 +88,9 @@ readonly class Authenticator implements AuthenticatorInterface
                 }
             }
 
-            throw $clientException;
+            throw new ApiException(ApiService::USERS, $clientException);
+        } catch (\Throwable $e) {
+            throw new ApiException(ApiService::USERS, $e);
         }
 
         return new SelfValidatingPassport(new UserBadge(
