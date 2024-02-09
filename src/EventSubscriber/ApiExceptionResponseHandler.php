@@ -50,6 +50,11 @@ readonly class ApiExceptionResponseHandler implements EventSubscriberInterface
             return;
         }
 
+        $clientException = $throwable->exception;
+        if (!$clientException instanceof ClientException) {
+            return;
+        }
+
         $response = null;
 
         $innerException = $clientException->getInnerException();
