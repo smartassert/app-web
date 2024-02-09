@@ -6,8 +6,9 @@ namespace App\EventSubscriber;
 
 use App\Enum\SignInErrorState;
 use App\Exception\ApiException;
-use SmartAssert\ApiClient\Exception\ErrorExceptionInterface;
-use SmartAssert\ApiClient\Exception\Http\UnauthorizedException;
+use SmartAssert\ApiClient\Exception\ClientException;
+use SmartAssert\ApiClient\Exception\Error\ErrorException;
+use SmartAssert\ApiClient\Exception\UnauthorizedException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -34,29 +35,24 @@ readonly class ApiExceptionSessionHandler implements EventSubscriberInterface
             return;
         }
 
+        $clientException = $throwable->exception;
+        if (!$clientException instanceof ClientException) {
+            return;
+        }
+
         $session = $event->getRequest()->getSession();
         if (!$session instanceof Session) {
             return;
         }
 
-        $exception = $throwable->exception;
-        if ($exception instanceof ErrorExceptionInterface) {
-            $this->handleErrorException($exception, $session);
+        $innerException = $clientException->getInnerException();
+        if ($innerException instanceof ErrorException) {
+            $session->getFlashBag()->set('error_name', $clientException->getRequestName());
+            $session->set('error', $innerException->getError());
         }
 
-        if ($exception instanceof UnauthorizedException) {
-            $this->handleUnauthorizedException($session);
+        if ($innerException instanceof UnauthorizedException) {
+            $session->getFlashBag()->set('error', SignInErrorState::API_UNAUTHORIZED->value);
         }
-    }
-
-    private function handleErrorException(ErrorExceptionInterface $exception, Session $session): void
-    {
-        $session->getFlashBag()->set('error_name', $exception->getRequestName());
-        $session->set('error', $exception->getError());
-    }
-
-    private function handleUnauthorizedException(Session $session): void
-    {
-        $session->getFlashBag()->set('error', SignInErrorState::API_UNAUTHORIZED->value);
     }
 }
