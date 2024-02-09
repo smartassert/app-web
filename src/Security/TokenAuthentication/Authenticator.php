@@ -9,13 +9,8 @@ use App\RefreshableToken\Encrypter;
 use App\Response\RedirectResponseFactory;
 use App\Security\RequestTokenExtractor;
 use App\Security\User;
-use SmartAssert\ApiClient\Exception\Http\FailedRequestException;
-use SmartAssert\ApiClient\Exception\Http\HttpException;
-use SmartAssert\ApiClient\Exception\Http\NotFoundException;
-use SmartAssert\ApiClient\Exception\Http\UnauthorizedException;
-use SmartAssert\ApiClient\Exception\Http\UnexpectedContentTypeException;
-use SmartAssert\ApiClient\Exception\Http\UnexpectedDataException;
-use SmartAssert\ApiClient\Exception\IncompleteResponseDataException;
+use SmartAssert\ApiClient\Exception\ClientException;
+use SmartAssert\ApiClient\Exception\UnauthorizedException;
 use SmartAssert\ApiClient\UsersClient;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Bundle\SecurityBundle\Security\FirewallConfig;
@@ -58,12 +53,7 @@ readonly class Authenticator implements AuthenticatorInterface
     }
 
     /**
-     * @throws HttpException
-     * @throws IncompleteResponseDataException
-     * @throws NotFoundException
-     * @throws UnexpectedContentTypeException
-     * @throws UnexpectedDataException
-     * @throws FailedRequestException
+     * @throws ClientException
      */
     public function authenticate(Request $request): Passport
     {
@@ -78,15 +68,25 @@ readonly class Authenticator implements AuthenticatorInterface
         try {
             $remoteUser = $this->usersClient->verifyToken($token->token);
             $user = new User($remoteUser->userIdentifier, $token);
-        } catch (UnauthorizedException) {
-            try {
-                $newToken = $this->usersClient->refreshToken($token->refreshToken);
-                $request->cookies->set('token', $this->tokenEncrypter->encrypt($newToken));
+        } catch (ClientException $clientException) {
+            $innerException = $clientException->getInnerException();
 
-                return $this->authenticate($request);
-            } catch (UnauthorizedException) {
-                throw new BadCredentialsException();
+            if ($innerException instanceof UnauthorizedException) {
+                try {
+                    $newToken = $this->usersClient->refreshToken($token->refreshToken);
+                    $request->cookies->set('token', $this->tokenEncrypter->encrypt($newToken));
+
+                    return $this->authenticate($request);
+                } catch (ClientException $clientException) {
+                    $innerException = $clientException->getInnerException();
+
+                    if ($innerException instanceof UnauthorizedException) {
+                        throw new BadCredentialsException();
+                    }
+                }
             }
+
+            throw $clientException;
         }
 
         return new SelfValidatingPassport(new UserBadge(
