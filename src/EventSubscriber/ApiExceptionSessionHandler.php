@@ -51,7 +51,7 @@ readonly class ApiExceptionSessionHandler implements EventSubscriberInterface
 
     private function handleErrorException(ErrorExceptionInterface $exception, Session $session): void
     {
-        $session->getFlashBag()->set('error_name', $exception->getName());
+        $session->getFlashBag()->set('error_name', $exception->getRequestName());
         $session->set('error', $exception->getError());
     }
 
