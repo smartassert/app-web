@@ -35,13 +35,6 @@ readonly class RedirectResponseFactory
         );
     }
 
-    public function createforDashboard(): RedirectResponse
-    {
-        return new RedirectResponse(
-            $this->urlGenerator->generate(Routes::DASHBOARD_NAME->value)
-        );
-    }
-
     public function create(RedirectRoute $redirectRoute): RedirectResponse
     {
         return new RedirectResponse(
