@@ -4,6 +4,16 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    redirect_targets:
+        -
+            name: !php/enum App\Enum\Routes::DASHBOARD_NAME->value
+            sources:
+                - 'sign_in_view'
+
+        -
+            name: !php/enum App\Enum\Routes::SIGN_IN_VIEW_NAME->value
+            sources:
+                - 'log_out_handle'
 
 services:
     # default configuration for services in *this* file
