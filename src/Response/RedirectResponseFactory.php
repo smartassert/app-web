@@ -42,6 +42,13 @@ readonly class RedirectResponseFactory
         );
     }
 
+    public function create(RedirectRoute $redirectRoute): RedirectResponse
+    {
+        return new RedirectResponse(
+            $this->urlGenerator->generate($redirectRoute->name, $redirectRoute->parameters),
+        );
+    }
+
     public function createForRequest(Request $request): RedirectResponse
     {
         $targetRoute = $this->targetMapper->getForRequest($request);
