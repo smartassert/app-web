@@ -7,6 +7,7 @@ namespace App\Response;
 use App\Enum\Routes;
 use App\RedirectRoute\RedirectRoute;
 use App\RedirectRoute\Serializer;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 readonly class RedirectResponseFactory
@@ -14,6 +15,7 @@ readonly class RedirectResponseFactory
     public function __construct(
         private UrlGeneratorInterface $urlGenerator,
         private Serializer $redirectRouteSerializer,
+        private TargetMapper $targetMapper,
     ) {
     }
 
@@ -33,10 +35,20 @@ readonly class RedirectResponseFactory
         );
     }
 
-    public function createforDashboard(): RedirectResponse
+    public function create(RedirectRoute $redirectRoute): RedirectResponse
     {
         return new RedirectResponse(
-            $this->urlGenerator->generate(Routes::DASHBOARD_NAME->value)
+            $this->urlGenerator->generate($redirectRoute->name, $redirectRoute->parameters),
         );
+    }
+
+    public function createForRequest(Request $request): RedirectResponse
+    {
+        $targetRoute = $this->targetMapper->getForRequest($request);
+        if (null === $targetRoute) {
+            $targetRoute = 'dashboard';
+        }
+
+        return $this->create(new RedirectRoute($targetRoute));
     }
 }

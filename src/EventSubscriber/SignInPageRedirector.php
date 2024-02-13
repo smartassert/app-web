@@ -47,7 +47,7 @@ readonly class SignInPageRedirector implements EventSubscriberInterface
             return;
         }
 
-        $event->setResponse($this->redirectResponseFactory->createforDashboard());
+        $event->setResponse($this->redirectResponseFactory->createForRequest($event->getRequest()));
         $event->stopPropagation();
     }
 }
