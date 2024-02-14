@@ -46,6 +46,15 @@ class TargetMapperTest extends WebTestCase
                 })(),
                 'expected' => 'dashboard',
             ],
+            'add file source => sources' => [
+                'request' => (function () {
+                    $request = \Mockery::mock(Request::class);
+                    $request->attributes = new ParameterBag(['_route' => 'sources_add_file_source']);
+
+                    return $request;
+                })(),
+                'expected' => 'sources',
+            ],
         ];
     }
 }

@@ -10,4 +10,5 @@ enum Routes: string
     case SIGN_IN_VIEW_PATH = '/sign-in/';
     case DASHBOARD_NAME = 'dashboard';
     case LOG_OUT_NAME = 'log_out_handle';
+    case SOURCES_NAME = 'sources';
 }

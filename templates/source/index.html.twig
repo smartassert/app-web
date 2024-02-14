@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sources{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1 style="display:inline;">Sources</h1>
+
+    <form method="get" action="{{ path('dashboard') }}" style="display:inline; margin-left: 6px; vertical-align: super;">
+        <input type="submit" value="Dashboard">
+    </form>
+
+    <form method="post" action="{{ path('log_out_handle') }}" style="display:inline; margin-left: 6px; vertical-align: super;">
+        <input type="submit" value="Log out">
+    </form>
+
+    <h2>Sources</h2>
+    {{ include ('partial/source/list.html.twig') }}
+
+    <h3>Add file source</h3>
+    <form id="file_source_add" method="post" action="{{ path('sources_add_file_source') }}">
+        <label>
+            Label
+            <input type="text" name="label" value="{{ label|default('') }}">
+        </label>
+        <input type="submit" value="Add">
+    </form>
+</div>
+{% endblock %}
