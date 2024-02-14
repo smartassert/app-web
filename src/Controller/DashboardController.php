@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Enum\ApiService;
 use App\Enum\Routes;
+use App\Exception\ApiException;
 use App\Security\ApiKey;
 use SmartAssert\ApiClient\Exception\ClientException;
 use SmartAssert\ApiClient\SourceClient;
@@ -27,13 +29,22 @@ readonly class DashboardController
      * @throws RuntimeError
      * @throws SyntaxError
      * @throws LoaderError
-     * @throws ClientException
+     * @throws ApiException
      */
     #[Route('/', name: Routes::DASHBOARD_NAME->value, methods: ['GET'])]
     public function index(ApiKey $apiKey): Response
     {
-        return new Response($this->twig->render('dashboard/index.html.twig', [
-            'sources' => $this->sourceClient->list($apiKey->key),
-        ]));
+        try {
+            $sources = $this->sourceClient->list($apiKey->key);
+        } catch (ClientException $clientException) {
+            throw new ApiException(ApiService::SOURCES, $clientException);
+        }
+
+        return new Response($this->twig->render(
+            'dashboard/index.html.twig',
+            [
+                'sources' => $sources,
+            ]
+        ));
     }
 }
