@@ -87,8 +87,13 @@ services:
     SmartAssert\ApiClient\Factory\User\TokenFactory: ~
     SmartAssert\ApiClient\Factory\User\UserFactory: ~
     SmartAssert\ApiClient\Factory\User\ApiKeyFactory: ~
+    SmartAssert\ApiClient\Factory\Source\SourceFactory: ~
 
     SmartAssert\ApiClient\UsersClient: ~
+    SmartAssert\ApiClient\FileClient: ~
+    SmartAssert\ApiClient\FileSourceClient: ~
+    SmartAssert\ApiClient\GitSourceClient: ~
+    SmartAssert\ApiClient\SourceClient: ~
 
     App\Security\Encrypter:
         arguments:

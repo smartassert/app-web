@@ -21,6 +21,7 @@ class DashboardTest extends AbstractDashboardTest
 
         $response = $this->applicationClient->makeDashboardReadRequest($requestCookie);
         self::assertSame(200, $response->getStatusCode());
+        $requestCookie = $requestCookieFactory->createFromResponse($response, $this->getSessionIdentifier());
 
         $jwtTokenTtl = $this->getUsersServiceJwtTokenTtl();
         $waitTime = $jwtTokenTtl + 1;
