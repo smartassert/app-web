@@ -22,7 +22,7 @@
         </div>
     {% endif %}
 
-    {% if "unauthorized" == error %}
+    {% if error ends with "unauthorized" %}
         <div class="error">
             Unauthorized!
         </div>
