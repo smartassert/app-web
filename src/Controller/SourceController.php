@@ -8,12 +8,9 @@ use App\Enum\ApiService;
 use App\Enum\Routes;
 use App\Exception\ApiException;
 use App\FormError\Factory;
-use App\Response\RedirectResponseFactory;
 use App\Security\ApiKey;
 use SmartAssert\ApiClient\Exception\ClientException;
-use SmartAssert\ApiClient\FileSourceClient;
 use SmartAssert\ApiClient\SourceClient;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment as TwigEnvironment;
@@ -26,8 +23,6 @@ readonly class SourceController
     public function __construct(
         private TwigEnvironment $twig,
         private SourceClient $sourceClient,
-        private FileSourceClient $fileSourceClient,
-        private RedirectResponseFactory $redirectResponseFactory,
     ) {
     }
 
@@ -53,20 +48,5 @@ readonly class SourceController
                 'form_error' => $formErrorFactory->create(),
             ]
         ));
-    }
-
-    /**
-     * @throws ApiException
-     */
-    #[Route('/sources/file', name: 'sources_add_file_source', methods: ['POST'])]
-    public function addFileSource(ApiKey $apiKey, Request $request): Response
-    {
-        try {
-            $this->fileSourceClient->create($apiKey->key, $request->request->getString('label'));
-        } catch (\Throwable $e) {
-            throw new ApiException(ApiService::SOURCES, $e);
-        }
-
-        return $this->redirectResponseFactory->createForRequest($request);
     }
 }
