@@ -68,4 +68,17 @@ readonly class Client
             ['cookie' => $cookie]
         );
     }
+
+    public function makeFileSourceAddRequest(string $cookie, string $label): ResponseInterface
+    {
+        return $this->client->makeRequest(
+            'POST',
+            '/sources/file',
+            [
+                'cookie' => $cookie,
+                'content-type' => 'application/x-www-form-urlencoded',
+            ],
+            http_build_query(['label' => $label])
+        );
+    }
 }
