@@ -199,4 +199,32 @@ class SourcesTest extends AbstractSourcesTest
         $formField = $formElement->filter('#file_source_add_label');
         self::assertSame('error', $formField->attr('class'));
     }
+
+    public function testViewSourcesApiUnauthorized(): void
+    {
+        $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
+        \assert($urlGenerator instanceof UrlGeneratorInterface);
+
+        $requestCookieFactory = self::getContainer()->get(RequestCookieFactory::class);
+        \assert($requestCookieFactory instanceof RequestCookieFactory);
+
+        $requestCookie = $requestCookieFactory->create($this->applicationClient, $this->getSessionIdentifier());
+
+        $response = $this->applicationClient->makeSourcesReadRequest($requestCookie);
+
+        self::assertSame(200, $response->getStatusCode());
+
+        $usersDataRepository = new DataRepository(
+            'pgsql:host=localhost;port=5432;dbname=users;user=postgres;password=password!'
+        );
+        $usersDataRepository->getConnection()->query('delete from public.api_key');
+
+        $response = $this->applicationClient->makeSourcesReadRequest($requestCookie);
+
+        self::assertSame(302, $response->getStatusCode());
+        self::assertSame(
+            '/sign-in/?email=user@example.com&route=eyJuYW1lIjoiZGFzaGJvYXJkIiwicGFyYW1ldGVycyI6W119',
+            $response->getHeaderLine('location')
+        );
+    }
 }
