@@ -19,6 +19,11 @@ class WrongSizeHandler implements TypeHandlerInterface
             return 'This value is too small or too large.';
         }
 
+        $value = $error->getParameter()->getValue();
+        if ('' === $value) {
+            return 'This value must not be empty.';
+        }
+
         $minimum = $size->getMinimum();
         $maximum = $size->getMaximum();
 
