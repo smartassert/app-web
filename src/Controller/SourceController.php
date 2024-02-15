@@ -10,6 +10,7 @@ use App\Exception\ApiException;
 use App\FormError\Factory;
 use App\Response\RedirectResponseFactory;
 use App\Security\ApiKey;
+use SmartAssert\ApiClient\Exception\ClientException;
 use SmartAssert\ApiClient\FileSourceClient;
 use SmartAssert\ApiClient\SourceClient;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,14 +35,24 @@ readonly class SourceController
      * @throws RuntimeError
      * @throws SyntaxError
      * @throws LoaderError
+     * @throws ApiException
      */
     #[Route('/sources', name: Routes::SOURCES_NAME->value, methods: ['GET'])]
     public function index(ApiKey $apiKey, Factory $formErrorFactory): Response
     {
-        return new Response($this->twig->render('source/index.html.twig', [
-            'sources' => $this->sourceClient->list($apiKey->key),
-            'form_error' => $formErrorFactory->create(),
-        ]));
+        try {
+            $sources = $this->sourceClient->list($apiKey->key);
+        } catch (ClientException $e) {
+            throw new ApiException(ApiService::SOURCES, $e);
+        }
+
+        return new Response($this->twig->render(
+            'source/index.html.twig',
+            [
+                'sources' => $sources,
+                'form_error' => $formErrorFactory->create(),
+            ]
+        ));
     }
 
     /**
