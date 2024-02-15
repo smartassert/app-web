@@ -36,7 +36,7 @@ readonly class SourceController
      * @throws LoaderError
      */
     #[Route('/sources', name: Routes::SOURCES_NAME->value, methods: ['GET'])]
-    public function index(ApiKey $apiKey, Request $request, Factory $formErrorFactory): Response
+    public function index(ApiKey $apiKey, Factory $formErrorFactory): Response
     {
         return new Response($this->twig->render('source/index.html.twig', [
             'sources' => $this->sourceClient->list($apiKey->key),
