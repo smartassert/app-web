@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Tests\Application;
 
+use App\Tests\Model\Credentials;
 use App\Tests\Services\ApplicationClient\Client;
+use App\Tests\Services\CredentialsFactory;
 use App\Tests\Services\DataRepository;
-use App\Tests\Services\RequestCookieFactory;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -15,20 +16,20 @@ abstract class AbstractApiUnauthorizedHandlingTest extends AbstractApplicationTe
     /**
      * @dataProvider handleApiUnauthorizedExceptionDataProvider
      *
-     * @param callable(Client, string): ResponseInterface $successfulAction
-     * @param callable(Client, string): ResponseInterface $failureAction
+     * @param callable(Client, Credentials): ResponseInterface $successfulAction
+     * @param callable(Client, Credentials): ResponseInterface $failureAction
      */
     public function testHandleApiUnauthorizedException(callable $successfulAction, callable $failureAction): void
     {
         $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
         \assert($urlGenerator instanceof UrlGeneratorInterface);
 
-        $requestCookieFactory = self::getContainer()->get(RequestCookieFactory::class);
-        \assert($requestCookieFactory instanceof RequestCookieFactory);
+        $credentialsFactory = self::getContainer()->get(CredentialsFactory::class);
+        \assert($credentialsFactory instanceof CredentialsFactory);
 
-        $requestCookie = $requestCookieFactory->create($this->applicationClient, $this->getSessionIdentifier());
+        $credentials = $credentialsFactory->create($this->applicationClient, $this->getSessionIdentifier());
 
-        $response = $successfulAction($this->applicationClient, $requestCookie);
+        $response = $successfulAction($this->applicationClient, $credentials);
 
         self::assertSame(200, $response->getStatusCode());
 
@@ -37,7 +38,7 @@ abstract class AbstractApiUnauthorizedHandlingTest extends AbstractApplicationTe
         );
         $usersDataRepository->getConnection()->query('delete from public.api_key');
 
-        $response = $failureAction($this->applicationClient, $requestCookie);
+        $response = $failureAction($this->applicationClient, $credentials);
 
         echo $response->getBody()->getContents();
 
@@ -55,19 +56,19 @@ abstract class AbstractApiUnauthorizedHandlingTest extends AbstractApplicationTe
     {
         return [
             'read sources' => [
-                'successfulAction' => function (Client $applicationClient, string $requestCookie) {
-                    return $applicationClient->makeSourcesReadRequest($requestCookie);
+                'successfulAction' => function (Client $applicationClient, Credentials $cookie) {
+                    return $applicationClient->makeSourcesReadRequest($cookie);
                 },
-                'failureAction' => function (Client $applicationClient, string $requestCookie) {
-                    return $applicationClient->makeSourcesReadRequest($requestCookie);
+                'failureAction' => function (Client $applicationClient, Credentials $cookie) {
+                    return $applicationClient->makeSourcesReadRequest($cookie);
                 },
             ],
             'add file source' => [
-                'successfulAction' => function (Client $applicationClient, string $requestCookie) {
-                    return $applicationClient->makeSourcesReadRequest($requestCookie);
+                'successfulAction' => function (Client $applicationClient, Credentials $cookie) {
+                    return $applicationClient->makeSourcesReadRequest($cookie);
                 },
-                'failureAction' => function (Client $applicationClient, string $requestCookie) {
-                    return $applicationClient->makeFileSourceAddRequest($requestCookie, md5((string) rand()));
+                'failureAction' => function (Client $applicationClient, Credentials $cookie) {
+                    return $applicationClient->makeFileSourceAddRequest($cookie, md5((string) rand()));
                 },
             ],
         ];

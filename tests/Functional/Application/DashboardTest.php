@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Application;
 
 use App\Tests\Application\AbstractDashboardTest;
+use App\Tests\Services\CredentialsFactory;
 use App\Tests\Services\DataRepository;
-use App\Tests\Services\RequestCookieFactory;
 
 class DashboardTest extends AbstractDashboardTest
 {
@@ -15,12 +15,12 @@ class DashboardTest extends AbstractDashboardTest
 
     public function testGetDashboardApiUnauthorized(): void
     {
-        $requestCookieFactory = self::getContainer()->get(RequestCookieFactory::class);
-        \assert($requestCookieFactory instanceof RequestCookieFactory);
+        $credentialsFactory = self::getContainer()->get(CredentialsFactory::class);
+        \assert($credentialsFactory instanceof CredentialsFactory);
 
-        $requestCookie = $requestCookieFactory->create($this->applicationClient, $this->getSessionIdentifier());
+        $credentials = $credentialsFactory->create($this->applicationClient, $this->getSessionIdentifier());
 
-        $response = $this->applicationClient->makeDashboardReadRequest($requestCookie);
+        $response = $this->applicationClient->makeDashboardReadRequest($credentials);
         self::assertSame(200, $response->getStatusCode());
 
         $usersDataRepository = new DataRepository(
@@ -28,7 +28,7 @@ class DashboardTest extends AbstractDashboardTest
         );
         $usersDataRepository->getConnection()->query('delete from public.api_key');
 
-        $response = $this->applicationClient->makeDashboardReadRequest($requestCookie);
+        $response = $this->applicationClient->makeDashboardReadRequest($credentials);
         self::assertSame(302, $response->getStatusCode());
         self::assertSame(
             '/sign-in/?email=user@example.com&route=eyJuYW1lIjoiZGFzaGJvYXJkIiwicGFyYW1ldGVycyI6W119',

@@ -6,8 +6,8 @@ namespace App\Tests\Functional\Application;
 
 use App\Enum\Routes;
 use App\Tests\Application\AbstractSourcesTest;
+use App\Tests\Services\CredentialsFactory;
 use App\Tests\Services\DataRepository;
-use App\Tests\Services\RequestCookieFactory;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class SourcesTest extends AbstractSourcesTest
@@ -25,10 +25,10 @@ class SourcesTest extends AbstractSourcesTest
         $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
         \assert($urlGenerator instanceof UrlGeneratorInterface);
 
-        $requestCookieFactory = self::getContainer()->get(RequestCookieFactory::class);
-        \assert($requestCookieFactory instanceof RequestCookieFactory);
+        $credentialsFactory = self::getContainer()->get(CredentialsFactory::class);
+        \assert($credentialsFactory instanceof CredentialsFactory);
 
-        $requestCookie = $requestCookieFactory->create($this->applicationClient, $this->getSessionIdentifier());
+        $credentials = $credentialsFactory->create($this->applicationClient, $this->getSessionIdentifier());
 
         $sourcesUrl = $urlGenerator->generate(Routes::SOURCES_NAME->value);
 
@@ -36,7 +36,7 @@ class SourcesTest extends AbstractSourcesTest
             method: 'GET',
             uri: $sourcesUrl,
             server: [
-                'HTTP_COOKIE' => $requestCookie,
+                'HTTP_COOKIE' => $credentials,
             ]
         );
 
@@ -61,7 +61,7 @@ class SourcesTest extends AbstractSourcesTest
             method: 'GET',
             uri: $sourcesUrl,
             server: [
-                'HTTP_COOKIE' => $requestCookie,
+                'HTTP_COOKIE' => $credentials,
             ]
         );
 
@@ -88,10 +88,10 @@ class SourcesTest extends AbstractSourcesTest
         $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
         \assert($urlGenerator instanceof UrlGeneratorInterface);
 
-        $requestCookieFactory = self::getContainer()->get(RequestCookieFactory::class);
-        \assert($requestCookieFactory instanceof RequestCookieFactory);
+        $credentialsFactory = self::getContainer()->get(CredentialsFactory::class);
+        \assert($credentialsFactory instanceof CredentialsFactory);
 
-        $requestCookie = $requestCookieFactory->create($this->applicationClient, $this->getSessionIdentifier());
+        $credentials = $credentialsFactory->create($this->applicationClient, $this->getSessionIdentifier());
 
         $sourcesUrl = $urlGenerator->generate(Routes::SOURCES_NAME->value);
 
@@ -99,7 +99,7 @@ class SourcesTest extends AbstractSourcesTest
             method: 'GET',
             uri: $sourcesUrl,
             server: [
-                'HTTP_COOKIE' => $requestCookie,
+                'HTTP_COOKIE' => $credentials,
             ]
         );
 
@@ -136,7 +136,7 @@ class SourcesTest extends AbstractSourcesTest
             method: 'GET',
             uri: $sourcesUrl,
             server: [
-                'HTTP_COOKIE' => $requestCookie,
+                'HTTP_COOKIE' => $credentials,
             ]
         );
 
