@@ -44,6 +44,8 @@ readonly class ApiKeyMissingExceptionHandler implements EventSubscriberInterface
         $user = $this->security->getUser();
         $userIdentifier = $user instanceof UserInterface ? $user->getUserIdentifier() : null;
 
+        $this->security->logout(false);
+
         $event->setResponse($this->redirectResponseFactory->createForSignIn(
             $userIdentifier,
             $this->redirectRouteFactory->getDefault(),
