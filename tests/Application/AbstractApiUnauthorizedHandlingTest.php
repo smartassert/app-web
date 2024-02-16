@@ -55,7 +55,15 @@ abstract class AbstractApiUnauthorizedHandlingTest extends AbstractApplicationTe
     public function handleApiUnauthorizedExceptionDataProvider(): array
     {
         return [
-            'read sources' => [
+            'dashboard' => [
+                'successfulAction' => function (Client $applicationClient, Credentials $cookie) {
+                    return $applicationClient->makeDashboardReadRequest($cookie);
+                },
+                'failureAction' => function (Client $applicationClient, Credentials $cookie) {
+                    return $applicationClient->makeDashboardReadRequest($cookie);
+                },
+            ],
+            'sources' => [
                 'successfulAction' => function (Client $applicationClient, Credentials $cookie) {
                     return $applicationClient->makeSourcesReadRequest($cookie);
                 },
