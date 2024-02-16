@@ -3,7 +3,13 @@
 {% else %}
 <ul id="sources_list">
     {% for source in sources %}
-        <li>{{ source.type }} {{ source.label }}</li>
+        <li>
+          {% if 'file' == source.type %}
+            <a href="{{ path('sources_view_file_source', {id: source.id}) }}">{{ source.type }} {{ source.label }}</a>
+          {% else %}
+            {{ source.type }} {{ source.label }}
+          {% endif %}
+        </li>
     {% endfor %}
 </ul>
 {% endif %}

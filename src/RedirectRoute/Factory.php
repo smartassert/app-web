@@ -29,7 +29,14 @@ class Factory
             }
         }
 
-        return new RedirectRoute($name, $queryParameters);
+        $requestParameters = [];
+        foreach ($request->attributes as $key => $value) {
+            if (!str_starts_with($key, '_')) {
+                $requestParameters[$key] = $value;
+            }
+        }
+
+        return new RedirectRoute($name, array_merge($queryParameters, $requestParameters));
     }
 
     public function getDefault(): RedirectRoute

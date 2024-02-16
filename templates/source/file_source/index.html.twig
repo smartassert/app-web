@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}File source "{{ source.label }}"{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1 style="display:inline;">File source "{{ source.label }}"</h1>
+
+    <form method="get" action="{{ path('dashboard') }}" style="display:inline; margin-left: 6px; vertical-align: super;">
+        <input type="submit" value="Dashboard">
+    </form>
+
+    <form method="get" action="{{ path('sources') }}" style="display:inline; margin-left: 6px; vertical-align: super;">
+        <input type="submit" value="Sources">
+    </form>
+
+    <form method="post" action="{{ path('log_out_handle') }}" style="display:inline; margin-left: 6px; vertical-align: super;">
+        <input type="submit" value="Log out">
+    </form>
+
+    <h2>Files</h2>
+    {% if files|length == 0 %}
+        <p>File source "{{ source.label }}" has no files.</p>
+    {% else %}
+        <ul id="files_list">
+            {% for file in files %}
+                <li>{{ file }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+
+
+</div>
+{% endblock %}

@@ -82,4 +82,13 @@ readonly class Client
             http_build_query(['label' => $label])
         );
     }
+
+    public function makeFileSourceReadRequest(?Credentials $credentials, string $id): ResponseInterface
+    {
+        return $this->client->makeRequest(
+            'GET',
+            '/sources/file/' . $id,
+            ['cookie' => (string) $credentials]
+        );
+    }
 }
