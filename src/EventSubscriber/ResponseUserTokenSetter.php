@@ -55,9 +55,8 @@ readonly class ResponseUserTokenSetter implements EventSubscriberInterface
 
     public function remove(LogoutEvent $event): void
     {
-        $response = $this->redirectResponseFactory->createForSignIn(userIdentifier: null, route: null);
-        $response->headers->setCookie(Cookie::create('token'));
-
-        $event->setResponse($response);
+        $event->setResponse(
+            $this->redirectResponseFactory->createForSignIn(userIdentifier: null, route: null)
+        );
     }
 }

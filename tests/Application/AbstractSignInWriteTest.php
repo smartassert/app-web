@@ -43,10 +43,14 @@ abstract class AbstractSignInWriteTest extends AbstractApplicationTestCase
         self::assertSame('', $response->getBody()->getContents());
 
         $responseCookieValue = $response->getHeaderLine('set-cookie');
-        if ('' !== $responseCookieValue) {
-            $responseCookie = Cookie::fromString($response->getHeaderLine('set-cookie'));
-            self::assertNotSame('token', $responseCookie->getName());
+        if ('' === $responseCookieValue) {
+            return;
         }
+
+        $responseCookie = Cookie::fromString($response->getHeaderLine('set-cookie'));
+        self::assertSame('token', $responseCookie->getName());
+        self::assertSame('deleted', $responseCookie->getValue());
+        self::assertSame(0, $responseCookie->getMaxAge());
     }
 
     public function testWriteSuccess(): void
