@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Application;
 
-use App\Tests\Application\AbstractDashboardTest;
+use App\Tests\Application\AbstractInvalidTokenTest;
 
-class DashboardTest extends AbstractDashboardTest
+class InvalidTokenTest extends AbstractInvalidTokenTest
 {
     use GetClientAdapterTrait;
     use GetSessionIdentifierTrait;
