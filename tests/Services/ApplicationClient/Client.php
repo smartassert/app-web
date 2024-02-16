@@ -91,4 +91,21 @@ readonly class Client
             ['cookie' => (string) $credentials]
         );
     }
+
+    public function makeFileSourceFileCreateRequest(
+        ?Credentials $credentials,
+        string $id,
+        string $filename,
+        string $content
+    ): ResponseInterface {
+        return $this->client->makeRequest(
+            'POST',
+            '/sources/file/' . $id . '/' . $filename,
+            [
+                'cookie' => (string) $credentials,
+                'content-type' => 'application/yaml',
+            ],
+            $content
+        );
+    }
 }
