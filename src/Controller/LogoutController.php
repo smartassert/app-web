@@ -5,26 +5,26 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Enum\Routes;
-use App\Response\RedirectResponseFactory;
+use App\Response\RedirectResponse;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 readonly class LogoutController
 {
     public function __construct(
         private Security $security,
-        private RedirectResponseFactory $redirectResponseFactory,
+        private UrlGeneratorInterface $urlGenerator,
     ) {
     }
 
     #[Route('/logout/', name: Routes::LOG_OUT_NAME->value, methods: ['POST'])]
-    public function handle(Request $request): Response
+    public function handle(): Response
     {
         $response = $this->security->logout(validateCsrfToken: false);
         if (null === $response) {
-            $response = $this->redirectResponseFactory->createForRequest($request);
+            $response = new RedirectResponse($this->urlGenerator->generate(Routes::SIGN_IN_VIEW_NAME->value));
         }
 
         return $response;

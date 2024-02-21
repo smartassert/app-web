@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
+use App\Enum\Routes;
 use App\Exception\ApiException;
-use App\Response\RedirectResponseFactory;
-use SmartAssert\ApiClient\Exception\ClientException;
-use SmartAssert\ApiClient\Exception\Error\ErrorException;
+use App\Response\RedirectResponse;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 readonly class ApiExceptionResponseHandler implements EventSubscriberInterface
 {
     public function __construct(
-        private RedirectResponseFactory $redirectResponseFactory,
+        private UrlGeneratorInterface $urlGenerator,
     ) {
     }
 
@@ -39,21 +39,9 @@ readonly class ApiExceptionResponseHandler implements EventSubscriberInterface
             return;
         }
 
-        $clientException = $throwable->exception;
-        if (!$clientException instanceof ClientException) {
-            return;
-        }
-
-        $clientException = $throwable->exception;
-        if (!$clientException instanceof ClientException) {
-            return;
-        }
-
-        $response = null;
-
-        $innerException = $clientException->getInnerException();
-        if ($innerException instanceof ErrorException) {
-            $response = $this->redirectResponseFactory->createForRequest($event->getRequest());
+        $response = $throwable->response;
+        if (null === $response) {
+            $response = new RedirectResponse($this->urlGenerator->generate(Routes::DASHBOARD_NAME->value));
         }
 
         if ($response instanceof Response) {
