@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
-use App\Enum\SignInErrorState;
 use App\Exception\ApiException;
 use SmartAssert\ApiClient\Exception\ClientException;
 use SmartAssert\ApiClient\Exception\Error\ErrorException;
-use SmartAssert\ApiClient\Exception\UnauthorizedException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -49,10 +47,6 @@ readonly class ApiExceptionSessionHandler implements EventSubscriberInterface
         if ($innerException instanceof ErrorException) {
             $session->getFlashBag()->set('error_name', $clientException->getRequestName());
             $session->set('error', $innerException->getError());
-        }
-
-        if ($innerException instanceof UnauthorizedException) {
-            $session->getFlashBag()->set('error', SignInErrorState::API_UNAUTHORIZED->value);
         }
     }
 }

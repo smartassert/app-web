@@ -5,24 +5,18 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Exception\ApiException;
-use App\RedirectRoute\Factory;
 use App\Response\RedirectResponseFactory;
 use SmartAssert\ApiClient\Exception\ClientException;
 use SmartAssert\ApiClient\Exception\Error\ErrorException;
-use SmartAssert\ApiClient\Exception\UnauthorizedException;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 readonly class ApiExceptionResponseHandler implements EventSubscriberInterface
 {
     public function __construct(
-        private Security $security,
         private RedirectResponseFactory $redirectResponseFactory,
-        private Factory $redirectRouteFactory,
     ) {
     }
 
@@ -60,16 +54,6 @@ readonly class ApiExceptionResponseHandler implements EventSubscriberInterface
         $innerException = $clientException->getInnerException();
         if ($innerException instanceof ErrorException) {
             $response = $this->redirectResponseFactory->createForRequest($event->getRequest());
-        }
-
-        if ($innerException instanceof UnauthorizedException) {
-            $user = $this->security->getUser();
-            $userIdentifier = $user instanceof UserInterface ? $user->getUserIdentifier() : null;
-
-            $response = $this->redirectResponseFactory->createForSignIn(
-                $userIdentifier,
-                $this->redirectRouteFactory->getDefault(),
-            );
         }
 
         if ($response instanceof Response) {
