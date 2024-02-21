@@ -6,6 +6,7 @@ namespace App\Tests\Functional\EventHanding\KernelExceptionEvent\ApiException;
 
 use App\Enum\ApiService;
 use App\Exception\ApiException;
+use App\Response\RedirectResponse;
 use App\Tests\Services\SessionHandler;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -93,12 +94,14 @@ class ErrorExceptionTest extends WebTestCase
         $exceptionRequestName = md5((string) rand());
         $error = \Mockery::mock(ErrorInterface::class);
 
+        $redirectResponse = new RedirectResponse(md5((string) rand()));
+
         $clientException = new ClientException($exceptionRequestName, new ErrorException($error));
-        $exception = new ApiException(ApiService::SOURCES, $clientException);
+        $exception = new ApiException(ApiService::SOURCES, $clientException, $redirectResponse);
 
         $event = new ExceptionEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, $exception);
         $eventDispatcher->dispatch($event, 'kernel.exception');
 
-        self::assertSame('/sources', $event->getResponse()?->headers->get('location'));
+        self::assertSame($redirectResponse->headers->get('location'), $event->getResponse()?->headers->get('location'));
     }
 }

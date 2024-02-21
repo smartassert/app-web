@@ -53,7 +53,10 @@ readonly class ApiExceptionResponseHandler implements EventSubscriberInterface
 
         $innerException = $clientException->getInnerException();
         if ($innerException instanceof ErrorException) {
-            $response = $this->redirectResponseFactory->createForRequest($event->getRequest());
+            $response = $throwable->response;
+            if (null === $response) {
+                $response = $this->redirectResponseFactory->createForRequest($event->getRequest());
+            }
         }
 
         if ($response instanceof Response) {

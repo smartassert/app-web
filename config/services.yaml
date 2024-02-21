@@ -10,10 +10,10 @@ parameters:
             sources:
                 - 'sign_in_view'
 
-        -
-            name: !php/enum App\Enum\Routes::SOURCES_NAME->value
-            sources:
-                - 'sources_add_file_source'
+#        -
+#            name: !php/enum App\Enum\Routes::SOURCES_NAME->value
+#            sources:
+#                - 'sources_add_file_source'
 
         -
             name: !php/enum App\Enum\Routes::SIGN_IN_VIEW_NAME->value
