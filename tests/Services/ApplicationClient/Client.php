@@ -100,12 +100,12 @@ readonly class Client
     ): ResponseInterface {
         return $this->client->makeRequest(
             'POST',
-            '/sources/file/' . $id . '/' . $filename,
+            '/sources/file/' . $id,
             [
                 'cookie' => (string) $credentials,
-                'content-type' => 'application/yaml',
+                'content-type' => 'application/x-www-form-urlencoded',
             ],
-            $content
+            http_build_query(['filename' => $filename, 'content' => $content])
         );
     }
 }
