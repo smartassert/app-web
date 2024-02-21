@@ -11,7 +11,7 @@ services:
     restart: unless-stopped
 
   sources-service:
-    image: ghcr.io/smartassert/sources:15.0
+    image: ghcr.io/smartassert/sources:16.0
     profiles: ["functional"]
     container_name: sources-service
     environment:
