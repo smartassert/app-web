@@ -10,11 +10,6 @@ parameters:
             sources:
                 - 'sign_in_view'
 
-        -
-            name: !php/enum App\Enum\Routes::SIGN_IN_VIEW_NAME->value
-            sources:
-                - 'log_out_handle'
-
 services:
     # default configuration for services in *this* file
     _defaults:
