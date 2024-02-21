@@ -3,13 +3,6 @@
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
-parameters:
-    redirect_targets:
-        -
-            name: !php/enum App\Enum\Routes::DASHBOARD_NAME->value
-            sources:
-                - 'sign_in_view'
-
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -110,10 +103,6 @@ services:
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
         arguments:
             - '%env(DATABASE_URL)%'
-
-    App\Response\TargetMapper:
-        arguments:
-            $targetDataCollection: '%redirect_targets%'
 
     App\FormError\MessageFactory\BadRequestErrorHandler\BadRequestErrorHandler:
         arguments:
