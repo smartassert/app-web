@@ -33,14 +33,16 @@ readonly class FileSourceFileController
     )]
     public function create(ApiKey $apiKey, FileSourceFileRequest $request): Response
     {
+        $response = new RedirectResponse(
+            $this->urlGenerator->generate('sources_view_file_source', ['id' => $request->sourceId])
+        );
+
         try {
             $this->fileClient->create($apiKey->key, $request->sourceId, $request->filename, $request->content);
         } catch (ClientException $e) {
-            throw new ApiException(ApiService::SOURCES, $e);
+            throw new ApiException(ApiService::SOURCES, $e, $response);
         }
 
-        return new RedirectResponse(
-            $this->urlGenerator->generate('sources_view_file_source', ['id' => $request->sourceId])
-        );
+        return $response;
     }
 }

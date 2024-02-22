@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Enum\ApiService;
 use App\Exception\ApiException;
+use App\FormError\Factory;
 use App\Response\RedirectResponse;
 use App\Security\ApiKey;
 use SmartAssert\ApiClient\Exception\ClientException;
@@ -39,7 +40,7 @@ readonly class FileSourceController
      * @throws ApiException
      */
     #[Route('/sources/file/{id<[A-Z90-9]{26}>}', name: 'sources_view_file_source', methods: ['GET'])]
-    public function view(ApiKey $apiKey, string $id): Response
+    public function view(ApiKey $apiKey, Factory $formErrorFactory, string $id): Response
     {
         try {
             $source = $this->sourceClient->get($apiKey->key, $id);
@@ -53,6 +54,7 @@ readonly class FileSourceController
             [
                 'source' => $source,
                 'files' => $files,
+                'form_error' => $formErrorFactory->create(),
             ]
         ));
     }
