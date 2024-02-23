@@ -41,7 +41,7 @@
         </label>
         <input
                 id="file_source_add_label"
-                type="text" name="label" value="{{ label|default('') }}"
+                type="text" name="label" value="{{ file_source_label|default('') }}"
                 {% if has_file_source_add_error and form_error.fieldName == 'label' %}class="error"{% endif %}
         >
         <input type="submit" value="Add">

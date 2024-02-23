@@ -8,6 +8,8 @@ use App\Enum\ApiService;
 use App\Enum\Routes;
 use App\Exception\ApiException;
 use App\FormError\Factory;
+use App\Request\FileSourceCreateRequest;
+use App\Request\PayloadStore;
 use App\Security\ApiKey;
 use SmartAssert\ApiClient\Exception\ClientException;
 use SmartAssert\ApiClient\SourceClient;
@@ -23,6 +25,7 @@ readonly class SourceController
     public function __construct(
         private TwigEnvironment $twig,
         private SourceClient $sourceClient,
+        private PayloadStore $payloadStore,
     ) {
     }
 
@@ -46,7 +49,18 @@ readonly class SourceController
             [
                 'sources' => $sources,
                 'form_error' => $formErrorFactory->create(),
+                'file_source_label' => (string) $this->getFileSourceLabel(),
             ]
         ));
+    }
+
+    private function getFileSourceLabel(): ?string
+    {
+        $payload = $this->payloadStore->get();
+        if (!$payload instanceof FileSourceCreateRequest) {
+            return null;
+        }
+
+        return $payload->label;
     }
 }

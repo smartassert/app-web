@@ -108,7 +108,8 @@ class FileSourceTest extends AbstractFileSourceTest
         $sourcesList = $crawler->filter('#sources_list');
         self::assertSame(0, $sourcesList->count());
 
-        $label = '';
+        $label = str_repeat('.', 256);
+        //        $label = '';
 
         $formElement = $crawler->filter('#file_source_add');
         self::assertNull($formElement->attr('class'));
@@ -150,12 +151,13 @@ class FileSourceTest extends AbstractFileSourceTest
 
         $errorContainer = $formElement->filter('span.error');
         self::assertSame(1, $errorContainer->count());
-        self::assertSame('This value must not be empty.', $errorContainer->innerText());
+        self::assertSame('This value must be between 1 and 255 characters long.', $errorContainer->innerText());
 
         $formFieldLabel = $formElement->filter('[for=file_source_add_label]');
         self::assertSame('error', $formFieldLabel->attr('class'));
 
         $formField = $formElement->filter('#file_source_add_label');
         self::assertSame('error', $formField->attr('class'));
+        self::assertSame($label, $formField->attr('value'));
     }
 }
