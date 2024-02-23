@@ -9,9 +9,9 @@ use App\Exception\ApiException;
 use App\FormError\Factory;
 use App\Request\FileSourceCreateRequest;
 use App\Request\FileSourceFileRequest;
-use App\Request\PayloadStore;
 use App\Response\RedirectResponse;
 use App\Security\ApiKey;
+use App\SessionStore\RequestPayloadStore;
 use SmartAssert\ApiClient\Exception\ClientException;
 use SmartAssert\ApiClient\FileSourceClient;
 use SmartAssert\ApiClient\SourceClient;
@@ -30,7 +30,7 @@ readonly class FileSourceController
         private SourceClient $sourceClient,
         private FileSourceClient $fileSourceClient,
         private UrlGeneratorInterface $urlGenerator,
-        private PayloadStore $payloadStore,
+        private RequestPayloadStore $requestPayloadStore,
     ) {
     }
 
@@ -58,7 +58,7 @@ readonly class FileSourceController
                 'source' => $source,
                 'files' => $files,
                 'form_error' => $formErrorFactory->create(),
-                'file_source_file_request' => $this->payloadStore->get(FileSourceFileRequest::class),
+                'file_source_file_request' => $this->requestPayloadStore->get(FileSourceFileRequest::class),
             ]
         ));
     }
@@ -74,7 +74,7 @@ readonly class FileSourceController
         try {
             $this->fileSourceClient->create($apiKey->key, $request->label);
         } catch (\Throwable $e) {
-            $this->payloadStore->set($request);
+            $this->requestPayloadStore->set($request);
 
             throw new ApiException(ApiService::SOURCES, $e, $response);
         }
