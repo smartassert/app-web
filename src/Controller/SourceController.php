@@ -9,8 +9,8 @@ use App\Enum\Routes;
 use App\Exception\ApiException;
 use App\FormError\Factory;
 use App\Request\FileSourceCreateRequest;
-use App\Request\PayloadStore;
 use App\Security\ApiKey;
+use App\SessionStore\RequestPayloadStore;
 use SmartAssert\ApiClient\Exception\ClientException;
 use SmartAssert\ApiClient\SourceClient;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,7 +25,7 @@ readonly class SourceController
     public function __construct(
         private TwigEnvironment $twig,
         private SourceClient $sourceClient,
-        private PayloadStore $payloadStore,
+        private RequestPayloadStore $payloadStore,
     ) {
     }
 

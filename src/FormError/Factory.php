@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace App\FormError;
 
+use App\Error\NamedError;
 use App\FormError\MessageFactory\MessageFactory;
-use SmartAssert\ServiceRequest\Error\ErrorInterface;
+use App\SessionStore\ErrorStore;
 use SmartAssert\ServiceRequest\Error\HasParameterInterface;
-use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 
 readonly class Factory
 {
@@ -17,49 +15,30 @@ readonly class Factory
      * @param array<string, string> $actionToFormMap
      */
     public function __construct(
-        private RequestStack $requestStack,
         private array $actionToFormMap,
         private MessageFactory $messageFactory,
+        private ErrorStore $errorStore,
     ) {
     }
 
     public function create(): ?FormError
     {
-        $request = $this->requestStack->getCurrentRequest();
-        if (null === $request) {
+        $error = $this->errorStore->get();
+        if (!$error instanceof NamedError) {
             return null;
         }
 
-        try {
-            $session = $request->getSession();
-        } catch (SessionNotFoundException) {
-            return null;
-        }
-
-        if (!$session instanceof FlashBagAwareSessionInterface) {
-            return null;
-        }
-
-        $actions = $session->getFlashBag()->get('error_name');
-        $action = $actions[0] ?? null;
-        if (null === $action) {
-            return null;
-        }
-
-        $formName = $this->actionToFormMap[$action] ?? null;
+        $formName = $this->actionToFormMap[$error->name] ?? null;
         if (!is_string($formName)) {
             return null;
         }
 
-        $error = $request->getSession()->get('error');
-        if (!$error instanceof ErrorInterface) {
-            return null;
-        }
+        $innerError = $error->error;
 
-        $fieldName = $error instanceof HasParameterInterface
-            ? $error->getParameter()->getName()
+        $fieldName = $innerError instanceof HasParameterInterface
+            ? $innerError->getParameter()->getName()
             : null;
 
-        return new FormError($formName, $fieldName, $this->messageFactory->generate($error));
+        return new FormError($formName, $fieldName, $this->messageFactory->generate($innerError));
     }
 }

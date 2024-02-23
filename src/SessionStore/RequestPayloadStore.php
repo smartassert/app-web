@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Request;
+namespace App\SessionStore;
 
 use Symfony\Component\HttpFoundation\RequestStack;
 
-readonly class PayloadStore
+readonly class RequestPayloadStore
 {
     public function __construct(
         private RequestStack $requestStack,
