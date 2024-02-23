@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional\EventHanding\KernelExceptionEvent\ApiException;
 
 use App\Enum\ApiService;
+use App\Error\NamedError;
 use App\Exception\ApiException;
 use App\Response\RedirectResponse;
 use App\Tests\Services\SessionHandler;
@@ -24,7 +25,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class ErrorExceptionTest extends WebTestCase
 {
-    public function testErrorNameAndErrorAreSetInSession(): void
+    public function testErrorIsSetInSession(): void
     {
         $client = self::createClient();
 
@@ -68,8 +69,11 @@ class ErrorExceptionTest extends WebTestCase
         $event = new ExceptionEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, $exception);
         $eventDispatcher->dispatch($event, 'kernel.exception');
 
-        self::assertSame($exceptionRequestName, $session->get('error_name'));
-        self::assertSame($error, $session->get('error'));
+        $namedError = $session->get('error');
+        self::assertInstanceOf(NamedError::class, $namedError);
+
+        self::assertSame($exceptionRequestName, $namedError->name);
+        self::assertSame($error, $namedError->error);
     }
 
     public function testRedirectResponseIsSetOnEvent(): void

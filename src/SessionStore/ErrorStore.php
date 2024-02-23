@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\SessionStore;
 
-use SmartAssert\ServiceRequest\Error\ErrorInterface;
+use App\Error\NamedError;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 readonly class ErrorStore
@@ -14,7 +14,7 @@ readonly class ErrorStore
     ) {
     }
 
-    public function set(ErrorInterface $error): void
+    public function set(NamedError $error): void
     {
         $request = $this->requestStack->getCurrentRequest();
         if (null === $request) {
@@ -24,7 +24,7 @@ readonly class ErrorStore
         $request->getSession()->set('error', $error);
     }
 
-    public function get(): ?ErrorInterface
+    public function get(): ?NamedError
     {
         $request = $this->requestStack->getCurrentRequest();
         if (null === $request) {
@@ -36,6 +36,6 @@ readonly class ErrorStore
         $error = $session->get('error');
         $session->remove('error');
 
-        return $error instanceof ErrorInterface ? $error : null;
+        return $error instanceof NamedError ? $error : null;
     }
 }

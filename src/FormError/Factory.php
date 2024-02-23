@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\FormError;
 
+use App\Error\NamedError;
 use App\FormError\MessageFactory\MessageFactory;
-use App\SessionStore\ErrorNameStore;
 use App\SessionStore\ErrorStore;
-use SmartAssert\ServiceRequest\Error\ErrorInterface;
 use SmartAssert\ServiceRequest\Error\HasParameterInterface;
 
 readonly class Factory
@@ -18,29 +17,28 @@ readonly class Factory
     public function __construct(
         private array $actionToFormMap,
         private MessageFactory $messageFactory,
-        private ErrorNameStore $errorNameStore,
         private ErrorStore $errorStore,
     ) {
     }
 
     public function create(): ?FormError
     {
-        $action = $this->errorNameStore->get();
+        $error = $this->errorStore->get();
+        if (!$error instanceof NamedError) {
+            return null;
+        }
 
-        $formName = $this->actionToFormMap[$action] ?? null;
+        $formName = $this->actionToFormMap[$error->name] ?? null;
         if (!is_string($formName)) {
             return null;
         }
 
-        $error = $this->errorStore->get();
-        if (!$error instanceof ErrorInterface) {
-            return null;
-        }
+        $innerError = $error->error;
 
-        $fieldName = $error instanceof HasParameterInterface
-            ? $error->getParameter()->getName()
+        $fieldName = $innerError instanceof HasParameterInterface
+            ? $innerError->getParameter()->getName()
             : null;
 
-        return new FormError($formName, $fieldName, $this->messageFactory->generate($error));
+        return new FormError($formName, $fieldName, $this->messageFactory->generate($innerError));
     }
 }
