@@ -27,7 +27,7 @@
     <form
           id="file_source_add"
           method="post"
-          action="{{ path('sources_add_file_source') }}"
+          action="{{ path('sources_create_file_source') }}"
           {% if has_file_source_add_error %}class="error"{% endif %}
     >
         {% if has_file_source_add_error %}<span class="error">{{ form_error.message }}</span><br>{% endif %}
