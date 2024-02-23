@@ -14,8 +14,16 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
     use GetClientAdapterTrait;
     use GetSessionIdentifierTrait;
 
-    public function testAddFileSourceFileBadRequest(): void
-    {
+    /**
+     * @dataProvider createFileSourceFileBadRequestDataProvider
+     */
+    public function testCreateFileSourceFileBadRequest(
+        string $filename,
+        string $content,
+        string $expectedErrorMessage,
+        bool $expectedFilenameHasError,
+        bool $expectedContentHasError,
+    ): void {
         $sourcesDataRepository = new DataRepository(
             'pgsql:host=localhost;port=5432;dbname=sources;user=postgres;password=password!'
         );
@@ -60,9 +68,6 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
         $filesList = $crawler->filter('#files_list');
         self::assertSame(0, $filesList->count());
 
-        $filename = '';
-        $content = md5((string) rand());
-
         $addFileSourceFileForm = $crawler->filter('#file_source_file_add input[type=submit]')->form([
             'filename' => $filename,
             'content' => $content,
@@ -92,12 +97,41 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
 
         $errorContainer = $formElement->filter('span.error');
         self::assertSame(1, $errorContainer->count());
-        self::assertSame('This value is invalid. It must be a valid "yaml_filename".', $errorContainer->innerText());
+        self::assertSame($expectedErrorMessage, $errorContainer->innerText());
 
-        $formFieldLabel = $formElement->filter('[for=file_source_file_add_filename]');
-        self::assertSame('error', $formFieldLabel->attr('class'));
+        $filenameLabel = $formElement->filter('[for=file_source_file_add_filename]');
+        self::assertSame($expectedFilenameHasError, 'error' === $filenameLabel->attr('class'));
 
-        $formField = $formElement->filter('#file_source_file_add_filename');
-        self::assertSame('error', $formField->attr('class'));
+        $filenameField = $formElement->filter('#file_source_file_add_filename');
+        self::assertSame($expectedFilenameHasError, 'error' === $filenameField->attr('class'));
+
+        $contentLabel = $formElement->filter('[for=file_source_file_add_content]');
+        self::assertSame($expectedContentHasError, 'error' === $contentLabel->attr('class'));
+
+        $contentField = $formElement->filter('#file_source_file_add_content');
+        self::assertSame($expectedContentHasError, 'error' === $contentField->attr('class'));
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function createFileSourceFileBadRequestDataProvider(): array
+    {
+        return [
+            'filename empty' => [
+                'filename' => '',
+                'content' => md5((string) rand()),
+                'expectedErrorMessage' => 'This value is invalid. It must be a valid "yaml_filename".',
+                'expectedFilenameHasError' => true,
+                'expectedContentHasError' => false,
+            ],
+            'content not valid yaml' => [
+                'filename' => md5((string) rand()) . '.yaml',
+                'content' => "-\n.",
+                'expectedErrorMessage' => 'This value is invalid. It must be a valid "yaml".',
+                'expectedFilenameHasError' => false,
+                'expectedContentHasError' => true,
+            ],
+        ];
     }
 }
