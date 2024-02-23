@@ -58,7 +58,7 @@ readonly class FileSourceController
                 'source' => $source,
                 'files' => $files,
                 'form_error' => $formErrorFactory->create(),
-                'file_source_file_request' => $this->getPreviousFileSourceFileRequest(),
+                'file_source_file_request' => $this->payloadStore->get(FileSourceFileRequest::class),
             ]
         ));
     }
@@ -80,10 +80,5 @@ readonly class FileSourceController
         }
 
         return $response;
-    }
-
-    private function getPreviousFileSourceFileRequest(): ?FileSourceFileRequest
-    {
-        return $this->payloadStore->get(FileSourceFileRequest::class);
     }
 }
