@@ -6,6 +6,7 @@ namespace App\EventSubscriber;
 
 use App\Exception\ApiException;
 use App\SessionStore\ErrorNameStore;
+use App\SessionStore\ErrorStore;
 use SmartAssert\ApiClient\Exception\ClientException;
 use SmartAssert\ApiClient\Exception\Error\ErrorException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -16,6 +17,7 @@ readonly class ApiExceptionSessionHandler implements EventSubscriberInterface
 {
     public function __construct(
         private ErrorNameStore $errorNameStore,
+        private ErrorStore $errorStore,
     ) {
     }
 
@@ -45,10 +47,9 @@ readonly class ApiExceptionSessionHandler implements EventSubscriberInterface
 
         $this->errorNameStore->set($clientException->getRequestName());
 
-        $session = $event->getRequest()->getSession();
         $innerException = $clientException->getInnerException();
         if ($innerException instanceof ErrorException) {
-            $session->set('error', $innerException->getError());
+            $this->errorStore->set($innerException->getError());
         }
     }
 }

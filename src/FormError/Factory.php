@@ -6,9 +6,9 @@ namespace App\FormError;
 
 use App\FormError\MessageFactory\MessageFactory;
 use App\SessionStore\ErrorNameStore;
+use App\SessionStore\ErrorStore;
 use SmartAssert\ServiceRequest\Error\ErrorInterface;
 use SmartAssert\ServiceRequest\Error\HasParameterInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 readonly class Factory
 {
@@ -16,20 +16,15 @@ readonly class Factory
      * @param array<string, string> $actionToFormMap
      */
     public function __construct(
-        private RequestStack $requestStack,
         private array $actionToFormMap,
         private MessageFactory $messageFactory,
         private ErrorNameStore $errorNameStore,
+        private ErrorStore $errorStore,
     ) {
     }
 
     public function create(): ?FormError
     {
-        $request = $this->requestStack->getCurrentRequest();
-        if (null === $request) {
-            return null;
-        }
-
         $action = $this->errorNameStore->get();
 
         $formName = $this->actionToFormMap[$action] ?? null;
@@ -37,7 +32,7 @@ readonly class Factory
             return null;
         }
 
-        $error = $request->getSession()->get('error');
+        $error = $this->errorStore->get();
         if (!$error instanceof ErrorInterface) {
             return null;
         }
