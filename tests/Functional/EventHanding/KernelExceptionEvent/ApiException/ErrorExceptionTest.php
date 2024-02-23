@@ -17,7 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -49,6 +49,10 @@ class ErrorExceptionTest extends WebTestCase
 
         $request->attributes = new ParameterBag(['_route' => 'sources_create_file_source']);
 
+        $requestStack = self::getContainer()->get(RequestStack::class);
+        \assert($requestStack instanceof RequestStack);
+        $requestStack->push($request);
+
         $response = \Mockery::mock(ResponseInterface::class);
         $response
             ->shouldReceive('getStatusCode')
@@ -64,12 +68,20 @@ class ErrorExceptionTest extends WebTestCase
         $event = new ExceptionEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, $exception);
         $eventDispatcher->dispatch($event, 'kernel.exception');
 
-        self::assertSame($exceptionRequestName, $session->getFlashBag()->get('error_name')[0]);
+        self::assertSame($exceptionRequestName, $session->get('error_name'));
         self::assertSame($error, $session->get('error'));
     }
 
     public function testRedirectResponseIsSetOnEvent(): void
     {
+        $client = self::createClient();
+
+        $sessionHandler = self::getContainer()->get(SessionHandler::class);
+        \assert($sessionHandler instanceof SessionHandler);
+
+        $session = $sessionHandler->create();
+        $sessionHandler->persist($client, $session);
+
         $eventDispatcher = self::getContainer()->get(EventDispatcherInterface::class);
         \assert($eventDispatcher instanceof EventDispatcherInterface);
         \assert($eventDispatcher instanceof EventDispatcher);
@@ -80,10 +92,14 @@ class ErrorExceptionTest extends WebTestCase
         $request = \Mockery::mock(Request::class);
         $request
             ->shouldReceive('getSession')
-            ->andReturn(\Mockery::mock(SessionInterface::class))
+            ->andReturn($session)
         ;
 
         $request->attributes = new ParameterBag(['_route' => 'sources_create_file_source']);
+
+        $requestStack = self::getContainer()->get(RequestStack::class);
+        \assert($requestStack instanceof RequestStack);
+        $requestStack->push($request);
 
         $response = \Mockery::mock(ResponseInterface::class);
         $response
