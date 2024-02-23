@@ -116,3 +116,4 @@ services:
         arguments:
             $actionToFormMap:
                 "post_file-source": "file_source_add"
+                "post_file-source-file": "file_source_file_add"

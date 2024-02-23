@@ -29,12 +29,54 @@
     {% else %}
         <ul id="files_list">
             {% for file in files %}
-                <li>{{ file }}</li>
+                <li>{{ file.path }} ({{ file.size}} bytes)</li>
             {% endfor %}
         </ul>
     {% endif %}
 
+    {% set has_file_source_file_add_error = form_error and form_error.formName == 'file_source_file_add' %}
 
+    <h3>Add file</h3>
+    <form
+            id="file_source_file_add"
+            method="post"
+            action="{{ path('sources_create_file_source_file', {id: source.id}) }}"
+            {% if has_file_source_file_add_error %}class="error"{% endif %}
+    >
+        {% if has_file_source_file_add_error and form_error.fieldName == 'filename' %}<span class="error">{{ form_error.message }}</span><br>{% endif %}
+        <label
+                for="file_source_file_add_filename"
+                {% if has_file_source_file_add_error and form_error.fieldName == 'filename' %}class="error"{% endif %}
+        >
+            Filename
+        </label>
+        <input
+                id="file_source_file_add_filename"
+                type="text"
+                name="filename"
+                {% if has_file_source_file_add_error and form_error.fieldName == 'filename' %}class="error"{% endif %}
+        >
+        <br>
+
+        {% if has_file_source_file_add_error and form_error.fieldName == 'content' %}<span class="error">{{ form_error.message }}</span><br>{% endif %}
+        <label
+                for="file_source_file_add_content"
+                style="vertical-align: top"
+                {% if has_file_source_file_add_error and form_error.fieldName == 'content' %}class="error"{% endif %}
+        >
+            Content
+        </label>
+        <textarea
+                id="file_source_file_add_content"
+                rows="20"
+                cols="80"
+                name="content"
+                {% if has_file_source_file_add_error and form_error.fieldName == 'content' %}class="error"{% endif %}
+        ></textarea>
+        <br>
+
+        <input type="submit" value="Add">
+    </form>
 
 </div>
 {% endblock %}

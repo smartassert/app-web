@@ -91,4 +91,21 @@ readonly class Client
             ['cookie' => (string) $credentials]
         );
     }
+
+    public function makeFileSourceFileCreateRequest(
+        ?Credentials $credentials,
+        string $id,
+        string $filename,
+        string $content
+    ): ResponseInterface {
+        return $this->client->makeRequest(
+            'POST',
+            '/sources/file/' . $id,
+            [
+                'cookie' => (string) $credentials,
+                'content-type' => 'application/x-www-form-urlencoded',
+            ],
+            http_build_query(['filename' => $filename, 'content' => $content])
+        );
+    }
 }

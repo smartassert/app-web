@@ -14,6 +14,14 @@ class InvalidHandler implements TypeHandlerInterface
             return null;
         }
 
-        return 'This value is invalid.';
+        $message = 'This value is invalid.';
+
+        $requiredDataType = $error->getParameter()->getRequirements()?->getDataType();
+
+        if (null !== $requiredDataType && 'string' !== $requiredDataType) {
+            $message .= ' It must be a valid "' . $requiredDataType . '".';
+        }
+
+        return $message;
     }
 }
