@@ -30,7 +30,6 @@ abstract class AbstractApiUnauthorizedHandlingTest extends AbstractApplicationTe
         $credentials = $credentialsFactory->create($this->applicationClient, $this->getSessionIdentifier());
 
         $response = $successfulAction($this->applicationClient, $credentials);
-
         self::assertSame(200, $response->getStatusCode());
 
         $usersDataRepository = new DataRepository(
@@ -39,9 +38,6 @@ abstract class AbstractApiUnauthorizedHandlingTest extends AbstractApplicationTe
         $usersDataRepository->getConnection()->query('delete from public.api_key');
 
         $response = $failureAction($this->applicationClient, $credentials);
-
-        echo $response->getBody()->getContents();
-
         self::assertSame(302, $response->getStatusCode());
         self::assertSame(
             '/sign-in/?email=user@example.com&route=eyJuYW1lIjoiZGFzaGJvYXJkIiwicGFyYW1ldGVycyI6W119',
