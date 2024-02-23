@@ -35,6 +35,8 @@
     {% endif %}
 
     {% set has_file_source_file_add_error = form_error and form_error.formName == 'file_source_file_add' %}
+    {% set file_source_file_filename = file_source_file_request ? file_source_file_request.filename : '' %}
+    {% set file_source_file_content = file_source_file_request ? file_source_file_request.content : '' %}
 
     <h3>Add file</h3>
     <form
@@ -54,6 +56,7 @@
                 id="file_source_file_add_filename"
                 type="text"
                 name="filename"
+                value="{{ file_source_file_request ? file_source_file_request.filename : '' }}"
                 {% if has_file_source_file_add_error and form_error.fieldName == 'filename' %}class="error"{% endif %}
         >
         <br>
@@ -72,7 +75,7 @@
                 cols="80"
                 name="content"
                 {% if has_file_source_file_add_error and form_error.fieldName == 'content' %}class="error"{% endif %}
-        ></textarea>
+        >{{ file_source_file_request ? file_source_file_request.content : '' }}</textarea>
         <br>
 
         <input type="submit" value="Add">

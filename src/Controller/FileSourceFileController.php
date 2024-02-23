@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Enum\ApiService;
 use App\Exception\ApiException;
 use App\Request\FileSourceFileRequest;
+use App\Request\PayloadStore;
 use App\Response\RedirectResponse;
 use App\Security\ApiKey;
 use SmartAssert\ApiClient\Exception\ClientException;
@@ -31,7 +32,7 @@ readonly class FileSourceFileController
         name: 'sources_create_file_source_file',
         methods: ['POST']
     )]
-    public function create(ApiKey $apiKey, FileSourceFileRequest $request): Response
+    public function create(ApiKey $apiKey, FileSourceFileRequest $request, PayloadStore $payloadStore): Response
     {
         $response = new RedirectResponse(
             $this->urlGenerator->generate('sources_view_file_source', ['id' => $request->sourceId])
@@ -40,6 +41,8 @@ readonly class FileSourceFileController
         try {
             $this->fileClient->create($apiKey->key, $request->sourceId, $request->filename, $request->content);
         } catch (ClientException $e) {
+            $payloadStore->set($request);
+
             throw new ApiException(ApiService::SOURCES, $e, $response);
         }
 
