@@ -104,12 +104,14 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
 
         $filenameField = $formElement->filter('#file_source_file_add_filename');
         self::assertSame($expectedFilenameHasError, 'error' === $filenameField->attr('class'));
+        self::assertSame($filename, $filenameField->attr('value'));
 
         $contentLabel = $formElement->filter('[for=file_source_file_add_content]');
         self::assertSame($expectedContentHasError, 'error' === $contentLabel->attr('class'));
 
         $contentField = $formElement->filter('#file_source_file_add_content');
         self::assertSame($expectedContentHasError, 'error' === $contentField->attr('class'));
+        self::assertSame($content, $contentField->html());
     }
 
     /**

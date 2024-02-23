@@ -8,6 +8,7 @@ use App\Enum\ApiService;
 use App\Exception\ApiException;
 use App\FormError\Factory;
 use App\Request\FileSourceCreateRequest;
+use App\Request\FileSourceFileRequest;
 use App\Request\PayloadStore;
 use App\Response\RedirectResponse;
 use App\Security\ApiKey;
@@ -29,6 +30,7 @@ readonly class FileSourceController
         private SourceClient $sourceClient,
         private FileSourceClient $fileSourceClient,
         private UrlGeneratorInterface $urlGenerator,
+        private PayloadStore $payloadStore,
     ) {
     }
 
@@ -56,6 +58,7 @@ readonly class FileSourceController
                 'source' => $source,
                 'files' => $files,
                 'form_error' => $formErrorFactory->create(),
+                'file_source_file_request' => $this->getPreviousFileSourceFileRequest(),
             ]
         ));
     }
@@ -64,18 +67,25 @@ readonly class FileSourceController
      * @throws ApiException
      */
     #[Route('/sources/file', name: 'sources_create_file_source', methods: ['POST'])]
-    public function create(ApiKey $apiKey, FileSourceCreateRequest $request, PayloadStore $payloadStore): Response
+    public function create(ApiKey $apiKey, FileSourceCreateRequest $request): Response
     {
         $response = new RedirectResponse($this->urlGenerator->generate('sources'));
 
         try {
             $this->fileSourceClient->create($apiKey->key, $request->label);
         } catch (\Throwable $e) {
-            $payloadStore->set($request);
+            $this->payloadStore->set($request);
 
             throw new ApiException(ApiService::SOURCES, $e, $response);
         }
 
         return $response;
+    }
+
+    private function getPreviousFileSourceFileRequest(): ?FileSourceFileRequest
+    {
+        $request = $this->payloadStore->get();
+
+        return $request instanceof FileSourceFileRequest ? $request : null;
     }
 }
