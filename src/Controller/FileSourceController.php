@@ -84,8 +84,6 @@ readonly class FileSourceController
 
     private function getPreviousFileSourceFileRequest(): ?FileSourceFileRequest
     {
-        $request = $this->payloadStore->get();
-
-        return $request instanceof FileSourceFileRequest ? $request : null;
+        return $this->payloadStore->get(FileSourceFileRequest::class);
     }
 }
