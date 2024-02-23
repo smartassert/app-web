@@ -18,15 +18,29 @@ readonly class PayloadStore
         $this->requestStack->getCurrentRequest()?->getSession()->set('payload', $payload);
     }
 
-    public function get(): ?object
+    /**
+     * @template T of object
+     *
+     * @param class-string<T> $expectedType
+     *
+     * @return null|T
+     */
+    public function get(string $expectedType): ?object
     {
         $request = $this->requestStack->getCurrentRequest();
         if (null === $request) {
             return null;
         }
 
-        $payload = $request->getSession()->get('payload');
+        $session = $request->getSession();
+        $payload = $session->get('payload');
 
-        return is_object($payload) ? $payload : null;
+        if (!$payload instanceof $expectedType) {
+            return null;
+        }
+
+        $session->remove('payload');
+
+        return $payload;
     }
 }

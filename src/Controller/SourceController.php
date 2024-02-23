@@ -56,11 +56,6 @@ readonly class SourceController
 
     private function getFileSourceLabel(): ?string
     {
-        $payload = $this->payloadStore->get();
-        if (!$payload instanceof FileSourceCreateRequest) {
-            return null;
-        }
-
-        return $payload->label;
+        return $this->payloadStore->get(FileSourceCreateRequest::class)?->label;
     }
 }
