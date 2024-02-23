@@ -7,12 +7,12 @@ namespace App\Controller;
 use App\Enum\ApiService;
 use App\Exception\ApiException;
 use App\FormError\Factory;
+use App\Request\FileSourceCreateRequest;
 use App\Response\RedirectResponse;
 use App\Security\ApiKey;
 use SmartAssert\ApiClient\Exception\ClientException;
 use SmartAssert\ApiClient\FileSourceClient;
 use SmartAssert\ApiClient\SourceClient;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -63,12 +63,12 @@ readonly class FileSourceController
      * @throws ApiException
      */
     #[Route('/sources/file', name: 'sources_create_file_source', methods: ['POST'])]
-    public function create(ApiKey $apiKey, Request $request): Response
+    public function create(ApiKey $apiKey, FileSourceCreateRequest $request): Response
     {
         $response = new RedirectResponse($this->urlGenerator->generate('sources'));
 
         try {
-            $this->fileSourceClient->create($apiKey->key, $request->request->getString('label'));
+            $this->fileSourceClient->create($apiKey->key, $request->label);
         } catch (\Throwable $e) {
             throw new ApiException(ApiService::SOURCES, $e, $response);
         }
