@@ -47,7 +47,7 @@ class ErrorExceptionTest extends WebTestCase
             ->andReturn($session)
         ;
 
-        $request->attributes = new ParameterBag(['_route' => 'sources_add_file_source']);
+        $request->attributes = new ParameterBag(['_route' => 'sources_create_file_source']);
 
         $response = \Mockery::mock(ResponseInterface::class);
         $response
@@ -83,7 +83,7 @@ class ErrorExceptionTest extends WebTestCase
             ->andReturn(\Mockery::mock(SessionInterface::class))
         ;
 
-        $request->attributes = new ParameterBag(['_route' => 'sources_add_file_source']);
+        $request->attributes = new ParameterBag(['_route' => 'sources_create_file_source']);
 
         $response = \Mockery::mock(ResponseInterface::class);
         $response

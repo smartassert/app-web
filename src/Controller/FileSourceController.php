@@ -62,8 +62,8 @@ readonly class FileSourceController
     /**
      * @throws ApiException
      */
-    #[Route('/sources/file', name: 'sources_add_file_source', methods: ['POST'])]
-    public function add(ApiKey $apiKey, Request $request): Response
+    #[Route('/sources/file', name: 'sources_create_file_source', methods: ['POST'])]
+    public function create(ApiKey $apiKey, Request $request): Response
     {
         $response = new RedirectResponse($this->urlGenerator->generate('sources'));
 

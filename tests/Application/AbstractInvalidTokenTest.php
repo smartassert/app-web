@@ -72,7 +72,7 @@ abstract class AbstractInvalidTokenTest extends AbstractApplicationTestCase
                 'action' => function (Client $applicationClient, Credentials $credentials) {
                     return $applicationClient->makeFileSourceAddRequest($credentials, md5((string) rand()));
                 },
-                'expectedRedirectRoute' => new RedirectRoute('sources_add_file_source'),
+                'expectedRedirectRoute' => new RedirectRoute('sources_create_file_source'),
             ],
         ];
     }
