@@ -26,11 +26,7 @@ abstract class AbstractFileSourceTest extends AbstractApplicationTestCase
         $credentials->create($this->applicationClient, $this->getSessionIdentifier());
 
         $sourcesResponse = $this->applicationClient->makeSourcesReadRequest($credentials);
-        $credentials->refresh(
-            $sourcesResponse,
-            $this->getSessionIdentifier(),
-            $cookieExtractor->extract($sourcesResponse, $this->getSessionIdentifier())
-        );
+        $credentials->refresh($sourcesResponse, $this->getSessionIdentifier());
 
         $label = md5((string) rand());
         $addFileSourceResponse = $this->applicationClient->makeFileSourceAddRequest($credentials, $label);
