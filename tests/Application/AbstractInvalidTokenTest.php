@@ -56,7 +56,7 @@ abstract class AbstractInvalidTokenTest extends AbstractApplicationTestCase
             ],
             'view sources' => [
                 'action' => function (Client $applicationClient, string $credentials) use ($sourceId) {
-                    return $applicationClient->makeFileSourceReadRequest($credentials, $sourceId);
+                    return $applicationClient->makeFileSourceReadRequest($sourceId, $credentials);
                 },
                 'expectedRedirectRoute' => new RedirectRoute('sources_view_file_source', ['id' => $sourceId]),
             ],
@@ -68,7 +68,7 @@ abstract class AbstractInvalidTokenTest extends AbstractApplicationTestCase
             ],
             'add file source' => [
                 'action' => function (Client $applicationClient, string $credentials) {
-                    return $applicationClient->makeFileSourceAddRequest($credentials, md5((string) rand()));
+                    return $applicationClient->makeFileSourceAddRequest(md5((string) rand()), $credentials);
                 },
                 'expectedRedirectRoute' => new RedirectRoute('sources_create_file_source'),
             ],

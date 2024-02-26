@@ -7,7 +7,6 @@ namespace App\Tests\Application;
 use App\Enum\Routes;
 use App\RedirectRoute\RedirectRoute;
 use App\RedirectRoute\Serializer;
-use App\Tests\Services\Credentials;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 
@@ -18,7 +17,7 @@ abstract class AbstractLogoutTest extends AbstractApplicationTestCase
      */
     public function testReadBadMethod(string $method): void
     {
-        $response = $this->applicationClient->makeLogoutRequest('', $method);
+        $response = $this->applicationClient->makeLogoutRequest($method);
 
         self::assertSame(405, $response->getStatusCode());
     }
@@ -49,19 +48,14 @@ abstract class AbstractLogoutTest extends AbstractApplicationTestCase
         $expectedRedirectRoute = new RedirectRoute(Routes::SIGN_IN_VIEW_NAME->value, []);
         $expectedLocation = '/sign-in/?route=' . $redirectRouteSerializer->serialize($expectedRedirectRoute);
 
-        $response = $this->applicationClient->makeLogoutRequest('');
+        $response = $this->applicationClient->makeLogoutRequest(credentials: '');
 
         $this->assertLogoutSuccessResponse($response, $expectedLocation);
     }
 
     public function testLogoutSuccessWithAuthentication(): void
     {
-        $credentials = self::getContainer()->get(Credentials::class);
-        \assert($credentials instanceof Credentials);
-
-        $credentials->create($this->applicationClient, $this->getSessionIdentifier());
-
-        $response = $this->applicationClient->makeLogoutRequest($credentials);
+        $response = $this->applicationClient->makeLogoutRequest();
 
         $this->assertLogoutSuccessResponse($response, '/sign-in/');
     }

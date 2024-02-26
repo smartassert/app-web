@@ -4,19 +4,25 @@ declare(strict_types=1);
 
 namespace App\Tests\Services\ApplicationClient;
 
+use App\Tests\Services\CookieExtractor;
 use Psr\Http\Message\ResponseInterface;
 use SmartAssert\SymfonyTestClient\ClientInterface;
 
-readonly class Client
+class Client
 {
+    private string $sessionId;
+    private string $token;
+
     public function __construct(
-        private ClientInterface $client,
+        private readonly ClientInterface $client,
+        private readonly string $sessionIdentifier,
+        private readonly CookieExtractor $responseCookieExtractor,
     ) {
     }
 
     public function makeSignInPageReadRequest(
         string $userIdentifier = null,
-        string|\Stringable $credentials = null,
+        string $credentials = null,
         string $method = 'GET'
     ): ResponseInterface {
         $url = '/sign-in/';
@@ -50,63 +56,119 @@ readonly class Client
         );
     }
 
-    public function makeDashboardReadRequest(string|\Stringable $credentials): ResponseInterface
+    public function makeDashboardReadRequest(?string $credentials = null): ResponseInterface
     {
-        return $this->client->makeRequest('GET', '/', ['cookie' => (string) $credentials]);
+        $credentials = null === $credentials ? $this->foo() : $credentials;
+        $response = $this->client->makeRequest('GET', '/', ['cookie' => $credentials]);
+
+        $this->handleFooResponse($response);
+
+        return $response;
     }
 
-    public function makeLogoutRequest(
-        string|\Stringable $credentials,
-        string $method = 'POST'
-    ): ResponseInterface {
-        return $this->client->makeRequest($method, '/logout/', ['cookie' => (string) $credentials]);
+    public function makeLogoutRequest(string $method = 'POST', ?string $credentials = null): ResponseInterface
+    {
+        $credentials = null === $credentials ? $this->foo() : $credentials;
+
+        $response = $this->client->makeRequest($method, '/logout/', ['cookie' => $credentials]);
+
+        $this->handleFooResponse($response);
+
+        return $response;
     }
 
-    public function makeSourcesReadRequest(string|\Stringable $credentials): ResponseInterface
+    public function makeSourcesReadRequest(?string $credentials = null): ResponseInterface
     {
-        return $this->client->makeRequest(
+        $credentials = null === $credentials ? $this->foo() : $credentials;
+
+        $response = $this->client->makeRequest(
             'GET',
             '/sources',
-            ['cookie' => (string) $credentials]
+            ['cookie' => $credentials]
         );
+
+        $this->handleFooResponse($response);
+
+        return $response;
     }
 
-    public function makeFileSourceAddRequest(string|\Stringable $credentials, string $label): ResponseInterface
+    public function makeFileSourceAddRequest(string $label, ?string $credentials = null): ResponseInterface
     {
-        return $this->client->makeRequest(
+        $credentials = null === $credentials ? $this->foo() : $credentials;
+
+        $response = $this->client->makeRequest(
             'POST',
             '/sources/file',
             [
-                'cookie' => (string) $credentials,
+                'cookie' => $credentials,
                 'content-type' => 'application/x-www-form-urlencoded',
             ],
             http_build_query(['label' => $label])
         );
+
+        $this->handleFooResponse($response);
+
+        return $response;
     }
 
-    public function makeFileSourceReadRequest(string|\Stringable $credentials, string $id): ResponseInterface
+    public function makeFileSourceReadRequest(string $id, ?string $credentials = null): ResponseInterface
     {
-        return $this->client->makeRequest(
+        $credentials = null === $credentials ? $this->foo() : $credentials;
+
+        $response = $this->client->makeRequest(
             'GET',
             '/sources/file/' . $id,
-            ['cookie' => (string) $credentials]
+            ['cookie' => $credentials]
         );
+
+        $this->handleFooResponse($response);
+
+        return $response;
     }
 
-    public function makeFileSourceFileCreateRequest(
-        string|\Stringable $credentials,
-        string $id,
-        string $filename,
-        string $content
-    ): ResponseInterface {
-        return $this->client->makeRequest(
+    public function makeFileSourceFileCreateRequest(string $id, string $filename, string $content): ResponseInterface
+    {
+        $response = $this->client->makeRequest(
             'POST',
             '/sources/file/' . $id,
             [
-                'cookie' => (string) $credentials,
+                'cookie' => $this->foo(),
                 'content-type' => 'application/x-www-form-urlencoded',
             ],
             http_build_query(['filename' => $filename, 'content' => $content])
         );
+
+        $this->handleFooResponse($response);
+
+        return $response;
+    }
+
+    public function foo(): string
+    {
+        if (!isset($this->sessionId) && !isset($this->token)) {
+            $this->createFoo();
+        }
+
+        return sprintf('%s=%s; token=%s', $this->sessionIdentifier, $this->sessionId, $this->token);
+    }
+
+    private function createFoo(): void
+    {
+        $response = $this->makeSignInPageWriteRequest(
+            'user@example.com',
+            'password'
+        );
+
+        $this->handleFooResponse($response);
+    }
+
+    private function handleFooResponse(ResponseInterface $response): void
+    {
+        $sessionId = $this->responseCookieExtractor->extract($response, $this->sessionIdentifier);
+        if (is_string($sessionId)) {
+            $this->sessionId = $sessionId;
+        }
+
+        $this->token = (string) $this->responseCookieExtractor->extract($response, 'token');
     }
 }

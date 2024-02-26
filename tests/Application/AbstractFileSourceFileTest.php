@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Application;
 
-use App\Tests\Services\CookieExtractor;
-use App\Tests\Services\Credentials;
 use App\Tests\Services\DataRepository;
 
 abstract class AbstractFileSourceFileTest extends AbstractApplicationTestCase
@@ -17,22 +15,12 @@ abstract class AbstractFileSourceFileTest extends AbstractApplicationTestCase
         );
         $sourcesDataRepository->removeAllFor(['file_source', 'git_source', 'source']);
 
-        $credentials = self::getContainer()->get(Credentials::class);
-        \assert($credentials instanceof Credentials);
-
-        $cookieExtractor = self::getContainer()->get(CookieExtractor::class);
-        \assert($cookieExtractor instanceof CookieExtractor);
-
-        $credentials->create($this->applicationClient, $this->getSessionIdentifier());
-
         $label = md5((string) rand());
-        $addFileSourceResponse = $this->applicationClient->makeFileSourceAddRequest($credentials, $label);
-
-        $credentials->refresh($addFileSourceResponse, $this->getSessionIdentifier());
+        $addFileSourceResponse = $this->applicationClient->makeFileSourceAddRequest($label);
 
         self::assertSame(302, $addFileSourceResponse->getStatusCode());
 
-        $sourcesResponse = $this->applicationClient->makeSourcesReadRequest($credentials);
+        $sourcesResponse = $this->applicationClient->makeSourcesReadRequest();
         self::assertSame(200, $sourcesResponse->getStatusCode());
 
         $sourcesBody = $sourcesResponse->getBody()->getContents();
@@ -47,7 +35,6 @@ abstract class AbstractFileSourceFileTest extends AbstractApplicationTestCase
         $content = md5((string) rand());
 
         $createFileSourceFileResponse = $this->applicationClient->makeFileSourceFileCreateRequest(
-            $credentials,
             $fileSourceId,
             $filename,
             $content
