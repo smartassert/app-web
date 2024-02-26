@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Application;
 
 use App\Tests\Services\ApplicationClient\Client;
-use App\Tests\Services\CredentialsStore;
+use App\Tests\Services\Credentials;
 use App\Tests\Services\DataRepository;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -23,12 +23,12 @@ abstract class AbstractApiUnauthorizedHandlingTest extends AbstractApplicationTe
         $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
         \assert($urlGenerator instanceof UrlGeneratorInterface);
 
-        $credentialsStore = self::getContainer()->get(CredentialsStore::class);
-        \assert($credentialsStore instanceof CredentialsStore);
+        $credentials = self::getContainer()->get(Credentials::class);
+        \assert($credentials instanceof Credentials);
 
-        $credentialsStore->create($this->applicationClient, $this->getSessionIdentifier());
+        $credentials->create($this->applicationClient, $this->getSessionIdentifier());
 
-        $response = $successfulAction($this->applicationClient, (string) $credentialsStore);
+        $response = $successfulAction($this->applicationClient, (string) $credentials);
         self::assertSame(200, $response->getStatusCode());
 
         $usersDataRepository = new DataRepository(
@@ -36,7 +36,7 @@ abstract class AbstractApiUnauthorizedHandlingTest extends AbstractApplicationTe
         );
         $usersDataRepository->getConnection()->query('delete from public.api_key');
 
-        $response = $failureAction($this->applicationClient, (string) $credentialsStore);
+        $response = $failureAction($this->applicationClient, (string) $credentials);
         self::assertSame(302, $response->getStatusCode());
         self::assertSame(
             '/sign-in/?email=user@example.com&route=eyJuYW1lIjoiZGFzaGJvYXJkIiwicGFyYW1ldGVycyI6W119',

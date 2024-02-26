@@ -6,7 +6,7 @@ namespace App\Tests\Functional\Application;
 
 use App\Tests\Application\AbstractFileSourceFileTest;
 use App\Tests\Services\CookieExtractor;
-use App\Tests\Services\CredentialsStore;
+use App\Tests\Services\Credentials;
 use App\Tests\Services\DataRepository;
 
 class FileSourceFileTest extends AbstractFileSourceFileTest
@@ -29,20 +29,17 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
         );
         $sourcesDataRepository->removeAllFor(['file_source', 'git_source', 'source']);
 
-        $credentialsStore = self::getContainer()->get(CredentialsStore::class);
-        \assert($credentialsStore instanceof CredentialsStore);
+        $credentials = self::getContainer()->get(Credentials::class);
+        \assert($credentials instanceof Credentials);
 
         $cookieExtractor = self::getContainer()->get(CookieExtractor::class);
         \assert($cookieExtractor instanceof CookieExtractor);
 
-        $credentialsStore->create($this->applicationClient, $this->getSessionIdentifier());
+        $credentials->create($this->applicationClient, $this->getSessionIdentifier());
 
         $label = md5((string) rand());
-        $addFileSourceResponse = $this->applicationClient->makeFileSourceAddRequest(
-            (string) $credentialsStore,
-            $label
-        );
-        $credentialsStore->refresh(
+        $addFileSourceResponse = $this->applicationClient->makeFileSourceAddRequest($credentials, $label);
+        $credentials->refresh(
             $addFileSourceResponse,
             $this->getSessionIdentifier(),
             $cookieExtractor->extract($addFileSourceResponse, $this->getSessionIdentifier())
@@ -50,7 +47,7 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
 
         self::assertSame(302, $addFileSourceResponse->getStatusCode());
 
-        $sourcesResponse = $this->applicationClient->makeSourcesReadRequest((string) $credentialsStore);
+        $sourcesResponse = $this->applicationClient->makeSourcesReadRequest($credentials);
         self::assertSame(200, $sourcesResponse->getStatusCode());
 
         $sourcesBody = $sourcesResponse->getBody()->getContents();
@@ -64,7 +61,7 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
             method: 'GET',
             uri: $fileSourceUrl,
             server: [
-                'HTTP_COOKIE' => (string) $credentialsStore,
+                'HTTP_COOKIE' => $credentials,
             ]
         );
 
@@ -86,7 +83,7 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
             method: 'GET',
             uri: $fileSourceUrl,
             server: [
-                'HTTP_COOKIE' => (string) $credentialsStore,
+                'HTTP_COOKIE' => $credentials,
             ]
         );
 

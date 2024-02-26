@@ -7,7 +7,7 @@ namespace App\Tests\Services;
 use App\Tests\Services\ApplicationClient\Client as ApplicationClient;
 use Psr\Http\Message\ResponseInterface;
 
-class CredentialsStore implements \Stringable
+class Credentials implements \Stringable
 {
     private string $sessionIdentifier = '';
     private string $sessionId = '';
@@ -28,11 +28,6 @@ class CredentialsStore implements \Stringable
         $response = $client->makeSignInPageWriteRequest('user@example.com', 'password');
 
         $this->refresh($response, $sessionIdentifier);
-    }
-
-    public function get(): string
-    {
-        return sprintf('%s=%s; token=%s', $this->sessionIdentifier, $this->sessionId, $this->token);
     }
 
     public function refresh(

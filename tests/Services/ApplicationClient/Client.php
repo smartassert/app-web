@@ -15,8 +15,8 @@ readonly class Client
     }
 
     public function makeSignInPageReadRequest(
-        ?string $userIdentifier = null,
-        ?string $credentials = null,
+        string $userIdentifier = null,
+        string|\Stringable $credentials = null,
         string $method = 'GET'
     ): ResponseInterface {
         $url = '/sign-in/';
@@ -50,49 +50,51 @@ readonly class Client
         );
     }
 
-    public function makeDashboardReadRequest(string $credentials): ResponseInterface
+    public function makeDashboardReadRequest(string|\Stringable $credentials): ResponseInterface
     {
-        return $this->client->makeRequest('GET', '/', ['cookie' => $credentials]);
+        return $this->client->makeRequest('GET', '/', ['cookie' => (string) $credentials]);
     }
 
-    public function makeLogoutRequest(?string $credentials = null, string $method = 'POST'): ResponseInterface
-    {
+    public function makeLogoutRequest(
+        string|\Stringable $credentials,
+        string $method = 'POST'
+    ): ResponseInterface {
         return $this->client->makeRequest($method, '/logout/', ['cookie' => (string) $credentials]);
     }
 
-    public function makeSourcesReadRequest(string $credentials): ResponseInterface
+    public function makeSourcesReadRequest(string|\Stringable $credentials): ResponseInterface
     {
         return $this->client->makeRequest(
             'GET',
             '/sources',
-            ['cookie' => $credentials]
+            ['cookie' => (string) $credentials]
         );
     }
 
-    public function makeFileSourceAddRequest(string $credentials, string $label): ResponseInterface
+    public function makeFileSourceAddRequest(string|\Stringable $credentials, string $label): ResponseInterface
     {
         return $this->client->makeRequest(
             'POST',
             '/sources/file',
             [
-                'cookie' => $credentials,
+                'cookie' => (string) $credentials,
                 'content-type' => 'application/x-www-form-urlencoded',
             ],
             http_build_query(['label' => $label])
         );
     }
 
-    public function makeFileSourceReadRequest(string $credentials, string $id): ResponseInterface
+    public function makeFileSourceReadRequest(string|\Stringable $credentials, string $id): ResponseInterface
     {
         return $this->client->makeRequest(
             'GET',
             '/sources/file/' . $id,
-            ['cookie' => $credentials]
+            ['cookie' => (string) $credentials]
         );
     }
 
     public function makeFileSourceFileCreateRequest(
-        string $credentials,
+        string|\Stringable $credentials,
         string $id,
         string $filename,
         string $content
@@ -101,7 +103,7 @@ readonly class Client
             'POST',
             '/sources/file/' . $id,
             [
-                'cookie' => $credentials,
+                'cookie' => (string) $credentials,
                 'content-type' => 'application/x-www-form-urlencoded',
             ],
             http_build_query(['filename' => $filename, 'content' => $content])
