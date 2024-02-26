@@ -24,9 +24,9 @@ class CredentialsStore
         $this->refresh($response, $sessionIdentifier);
     }
 
-    public function get(): Credentials
+    public function get(): string
     {
-        return $this->credentials;
+        return (string) $this->credentials;
     }
 
     public function refresh(

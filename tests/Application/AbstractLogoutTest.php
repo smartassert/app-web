@@ -61,7 +61,7 @@ abstract class AbstractLogoutTest extends AbstractApplicationTestCase
 
         $credentialsStore->create($this->applicationClient, $this->getSessionIdentifier());
 
-        $response = $this->applicationClient->makeLogoutRequest((string) $credentialsStore->get());
+        $response = $this->applicationClient->makeLogoutRequest($credentialsStore->get());
 
         $this->assertLogoutSuccessResponse($response, '/sign-in/');
     }
