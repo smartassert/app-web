@@ -17,7 +17,7 @@ class FileSourceTest extends AbstractFileSourceTest
     public function testAddFileSourceSuccess(): void
     {
         $sourcesDataRepository = new SourcesRepository();
-        $sourcesDataRepository->removeAllFor(['file_source', 'git_source', 'source']);
+        $sourcesDataRepository->removeAllSources();
 
         $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
         \assert($urlGenerator instanceof UrlGeneratorInterface);
@@ -73,7 +73,7 @@ class FileSourceTest extends AbstractFileSourceTest
     public function testAddFileSourceBadRequest(): void
     {
         $sourcesDataRepository = new SourcesRepository();
-        $sourcesDataRepository->removeAllFor(['file_source', 'git_source', 'source']);
+        $sourcesDataRepository->removeAllSources();
 
         $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
         \assert($urlGenerator instanceof UrlGeneratorInterface);

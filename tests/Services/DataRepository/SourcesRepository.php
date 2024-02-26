@@ -10,4 +10,9 @@ class SourcesRepository extends DataRepository
     {
         parent::__construct('pgsql:host=localhost;port=5432;dbname=sources;user=postgres;password=password!');
     }
+
+    public function removeAllSources(): void
+    {
+        $this->removeAllFor(['file_source', 'git_source', 'source']);
+    }
 }

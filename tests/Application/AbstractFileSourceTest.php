@@ -11,7 +11,7 @@ abstract class AbstractFileSourceTest extends AbstractApplicationTestCase
     public function testGetSuccess(): void
     {
         $sourcesDataRepository = new SourcesRepository();
-        $sourcesDataRepository->removeAllFor(['file_source', 'git_source', 'source']);
+        $sourcesDataRepository->removeAllSources();
 
         $label = md5((string) rand());
         $addFileSourceResponse = $this->applicationClient->makeFileSourceAddRequest($label);
