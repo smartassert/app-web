@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Tests\Services;
 
-use App\Tests\Model\Credentials;
 use App\Tests\Services\ApplicationClient\Client as ApplicationClient;
 use Psr\Http\Message\ResponseInterface;
 
 class CredentialsStore
 {
-    private Credentials $credentials;
+    private string $sessionIdentifier;
+    private string $sessionId;
+    private string $token;
 
     public function __construct(
         private readonly CookieExtractor $responseCookieExtractor,
@@ -26,7 +27,7 @@ class CredentialsStore
 
     public function get(): string
     {
-        return (string) $this->credentials;
+        return sprintf('%s=%s; token=%s', $this->sessionIdentifier, $this->sessionId, $this->token);
     }
 
     public function refresh(
@@ -37,10 +38,8 @@ class CredentialsStore
         $responseSessionId = $this->responseCookieExtractor->extract($response, $sessionIdentifier);
         $requestSessionId = is_string($responseSessionId) ? $responseSessionId : (string) $sessionId;
 
-        $this->credentials = new Credentials(
-            $sessionIdentifier,
-            $requestSessionId,
-            (string) $this->responseCookieExtractor->extract($response, 'token')
-        );
+        $this->sessionIdentifier = $sessionIdentifier;
+        $this->sessionId = $requestSessionId;
+        $this->token = (string) $this->responseCookieExtractor->extract($response, 'token');
     }
 }
