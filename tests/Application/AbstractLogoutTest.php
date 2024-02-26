@@ -7,7 +7,7 @@ namespace App\Tests\Application;
 use App\Enum\Routes;
 use App\RedirectRoute\RedirectRoute;
 use App\RedirectRoute\Serializer;
-use App\Tests\Services\CredentialsFactory;
+use App\Tests\Services\CredentialsStore;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 
@@ -56,12 +56,12 @@ abstract class AbstractLogoutTest extends AbstractApplicationTestCase
 
     public function testLogoutSuccessWithAuthentication(): void
     {
-        $credentialsFactory = self::getContainer()->get(CredentialsFactory::class);
-        \assert($credentialsFactory instanceof CredentialsFactory);
+        $credentialsStore = self::getContainer()->get(CredentialsStore::class);
+        \assert($credentialsStore instanceof CredentialsStore);
 
-        $credentials = $credentialsFactory->create($this->applicationClient, $this->getSessionIdentifier());
+        $credentialsStore->create($this->applicationClient, $this->getSessionIdentifier());
 
-        $response = $this->applicationClient->makeLogoutRequest($credentials);
+        $response = $this->applicationClient->makeLogoutRequest($credentialsStore->get());
 
         $this->assertLogoutSuccessResponse($response, '/sign-in/');
     }

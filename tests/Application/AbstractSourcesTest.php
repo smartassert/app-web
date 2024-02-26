@@ -4,23 +4,23 @@ declare(strict_types=1);
 
 namespace App\Tests\Application;
 
-use App\Tests\Services\CredentialsFactory;
+use App\Tests\Services\CredentialsStore;
 
 abstract class AbstractSourcesTest extends AbstractApplicationTestCase
 {
     public function testGetSuccess(): void
     {
-        $credentialsFactory = self::getContainer()->get(CredentialsFactory::class);
-        \assert($credentialsFactory instanceof CredentialsFactory);
+        $credentialsStore = self::getContainer()->get(CredentialsStore::class);
+        \assert($credentialsStore instanceof CredentialsStore);
 
-        $credentials = $credentialsFactory->create($this->applicationClient, $this->getSessionIdentifier());
+        $credentialsStore->create($this->applicationClient, $this->getSessionIdentifier());
 
-        $response = $this->applicationClient->makeSourcesReadRequest($credentials);
+        $response = $this->applicationClient->makeSourcesReadRequest($credentialsStore->get());
         self::assertSame(200, $response->getStatusCode());
         self::assertStringContainsString('text/html', $response->getHeaderLine('content-type'));
 
-        $credentials = $credentialsFactory->createFromResponse($response, $this->getSessionIdentifier());
-        $response = $this->applicationClient->makeSourcesReadRequest($credentials);
+        $credentialsStore->refresh($response, $this->getSessionIdentifier());
+        $response = $this->applicationClient->makeSourcesReadRequest($credentialsStore->get());
         self::assertSame(200, $response->getStatusCode());
         self::assertStringContainsString('text/html', $response->getHeaderLine('content-type'));
     }

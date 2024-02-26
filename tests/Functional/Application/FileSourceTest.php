@@ -6,7 +6,7 @@ namespace App\Tests\Functional\Application;
 
 use App\Enum\Routes;
 use App\Tests\Application\AbstractFileSourceTest;
-use App\Tests\Services\CredentialsFactory;
+use App\Tests\Services\CredentialsStore;
 use App\Tests\Services\DataRepository;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -25,10 +25,10 @@ class FileSourceTest extends AbstractFileSourceTest
         $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
         \assert($urlGenerator instanceof UrlGeneratorInterface);
 
-        $credentialsFactory = self::getContainer()->get(CredentialsFactory::class);
-        \assert($credentialsFactory instanceof CredentialsFactory);
+        $credentialsStore = self::getContainer()->get(CredentialsStore::class);
+        \assert($credentialsStore instanceof CredentialsStore);
 
-        $credentials = $credentialsFactory->create($this->applicationClient, $this->getSessionIdentifier());
+        $credentialsStore->create($this->applicationClient, $this->getSessionIdentifier());
 
         $sourcesUrl = $urlGenerator->generate(Routes::SOURCES_NAME->value);
 
@@ -36,7 +36,7 @@ class FileSourceTest extends AbstractFileSourceTest
             method: 'GET',
             uri: $sourcesUrl,
             server: [
-                'HTTP_COOKIE' => $credentials,
+                'HTTP_COOKIE' => $credentialsStore->get(),
             ]
         );
 
@@ -61,7 +61,7 @@ class FileSourceTest extends AbstractFileSourceTest
             method: 'GET',
             uri: $sourcesUrl,
             server: [
-                'HTTP_COOKIE' => $credentials,
+                'HTTP_COOKIE' => $credentialsStore->get(),
             ]
         );
 
@@ -88,10 +88,10 @@ class FileSourceTest extends AbstractFileSourceTest
         $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
         \assert($urlGenerator instanceof UrlGeneratorInterface);
 
-        $credentialsFactory = self::getContainer()->get(CredentialsFactory::class);
-        \assert($credentialsFactory instanceof CredentialsFactory);
+        $credentialsStore = self::getContainer()->get(CredentialsStore::class);
+        \assert($credentialsStore instanceof CredentialsStore);
 
-        $credentials = $credentialsFactory->create($this->applicationClient, $this->getSessionIdentifier());
+        $credentialsStore->create($this->applicationClient, $this->getSessionIdentifier());
 
         $sourcesUrl = $urlGenerator->generate(Routes::SOURCES_NAME->value);
 
@@ -99,7 +99,7 @@ class FileSourceTest extends AbstractFileSourceTest
             method: 'GET',
             uri: $sourcesUrl,
             server: [
-                'HTTP_COOKIE' => $credentials,
+                'HTTP_COOKIE' => $credentialsStore->get(),
             ]
         );
 
@@ -137,7 +137,7 @@ class FileSourceTest extends AbstractFileSourceTest
             method: 'GET',
             uri: $sourcesUrl,
             server: [
-                'HTTP_COOKIE' => $credentials,
+                'HTTP_COOKIE' => $credentialsStore->get(),
             ]
         );
 

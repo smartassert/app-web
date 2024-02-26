@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Integration;
 
 use App\Tests\Application\AbstractDashboardTest;
-use App\Tests\Services\CredentialsFactory;
+use App\Tests\Services\CredentialsStore;
 
 class DashboardTest extends AbstractDashboardTest
 {
@@ -14,21 +14,21 @@ class DashboardTest extends AbstractDashboardTest
 
     public function testExpiredUserTokenIsRefreshed(): void
     {
-        $credentialsFactory = self::getContainer()->get(CredentialsFactory::class);
-        \assert($credentialsFactory instanceof CredentialsFactory);
+        $credentialsStore = self::getContainer()->get(CredentialsStore::class);
+        \assert($credentialsStore instanceof CredentialsStore);
 
-        $credentials = $credentialsFactory->create($this->applicationClient, $this->getSessionIdentifier());
+        $credentialsStore->create($this->applicationClient, $this->getSessionIdentifier());
 
-        $response = $this->applicationClient->makeDashboardReadRequest($credentials);
+        $response = $this->applicationClient->makeDashboardReadRequest($credentialsStore->get());
         self::assertSame(200, $response->getStatusCode());
-        $credentials = $credentialsFactory->createFromResponse($response, $this->getSessionIdentifier());
+        $credentialsStore->refresh($response, $this->getSessionIdentifier());
 
         $jwtTokenTtl = $this->getUsersServiceJwtTokenTtl();
         $waitTime = $jwtTokenTtl + 1;
 
         sleep($waitTime);
 
-        $response = $this->applicationClient->makeDashboardReadRequest($credentials);
+        $response = $this->applicationClient->makeDashboardReadRequest($credentialsStore->get());
         self::assertSame(200, $response->getStatusCode());
     }
 

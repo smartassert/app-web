@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Application;
 
-use App\Tests\Services\CredentialsFactory;
+use App\Tests\Services\CredentialsStore;
 
 abstract class AbstractSignInReadTest extends AbstractApplicationTestCase
 {
@@ -43,12 +43,12 @@ abstract class AbstractSignInReadTest extends AbstractApplicationTestCase
 
     public function testReadWhenSignedInRedirectsToDashboard(): void
     {
-        $credentialsFactory = self::getContainer()->get(CredentialsFactory::class);
-        \assert($credentialsFactory instanceof CredentialsFactory);
+        $credentialsStore = self::getContainer()->get(CredentialsStore::class);
+        \assert($credentialsStore instanceof CredentialsStore);
 
-        $credentials = $credentialsFactory->create($this->applicationClient, $this->getSessionIdentifier());
+        $credentialsStore->create($this->applicationClient, $this->getSessionIdentifier());
 
-        $response = $this->applicationClient->makeSignInPageReadRequest(credentials: $credentials);
+        $response = $this->applicationClient->makeSignInPageReadRequest(credentials: $credentialsStore->get());
 
         self::assertSame(302, $response->getStatusCode());
         self::assertSame('', $response->getHeaderLine('content-type'));
