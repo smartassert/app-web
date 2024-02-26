@@ -14,7 +14,7 @@ abstract class AbstractApplicationTestCase extends WebTestCase
     protected KernelBrowser $kernelBrowser;
     protected Client $applicationClient;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
