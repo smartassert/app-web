@@ -25,7 +25,7 @@ abstract class AbstractFileSourceTest extends AbstractApplicationTestCase
 
         $credentialsStore->create($this->applicationClient, $this->getSessionIdentifier());
 
-        $sourcesResponse = $this->applicationClient->makeSourcesReadRequest($credentialsStore->get());
+        $sourcesResponse = $this->applicationClient->makeSourcesReadRequest((string) $credentialsStore);
         $credentialsStore->refresh(
             $sourcesResponse,
             $this->getSessionIdentifier(),
@@ -34,12 +34,12 @@ abstract class AbstractFileSourceTest extends AbstractApplicationTestCase
 
         $label = md5((string) rand());
         $addFileSourceResponse = $this->applicationClient->makeFileSourceAddRequest(
-            $credentialsStore->get(),
+            (string) $credentialsStore,
             $label
         );
         self::assertSame(302, $addFileSourceResponse->getStatusCode());
 
-        $sourcesResponse = $this->applicationClient->makeSourcesReadRequest($credentialsStore->get());
+        $sourcesResponse = $this->applicationClient->makeSourcesReadRequest((string) $credentialsStore);
         self::assertSame(200, $sourcesResponse->getStatusCode());
 
         $sourcesBody = $sourcesResponse->getBody()->getContents();
@@ -51,7 +51,7 @@ abstract class AbstractFileSourceTest extends AbstractApplicationTestCase
         $fileSourceId = str_replace('/sources/file/', '', $fileSourceUrl);
 
         $fileSourceReadResponse = $this->applicationClient->makeFileSourceReadRequest(
-            $credentialsStore->get(),
+            (string) $credentialsStore,
             $fileSourceId
         );
         self::assertSame(200, $fileSourceReadResponse->getStatusCode());

@@ -19,7 +19,7 @@ class DashboardTest extends AbstractDashboardTest
 
         $credentialsStore->create($this->applicationClient, $this->getSessionIdentifier());
 
-        $response = $this->applicationClient->makeDashboardReadRequest($credentialsStore->get());
+        $response = $this->applicationClient->makeDashboardReadRequest((string) $credentialsStore);
         self::assertSame(200, $response->getStatusCode());
         $credentialsStore->refresh($response, $this->getSessionIdentifier());
 
@@ -28,7 +28,7 @@ class DashboardTest extends AbstractDashboardTest
 
         sleep($waitTime);
 
-        $response = $this->applicationClient->makeDashboardReadRequest($credentialsStore->get());
+        $response = $this->applicationClient->makeDashboardReadRequest((string) $credentialsStore);
         self::assertSame(200, $response->getStatusCode());
     }
 

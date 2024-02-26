@@ -15,12 +15,12 @@ abstract class AbstractSourcesTest extends AbstractApplicationTestCase
 
         $credentialsStore->create($this->applicationClient, $this->getSessionIdentifier());
 
-        $response = $this->applicationClient->makeSourcesReadRequest($credentialsStore->get());
+        $response = $this->applicationClient->makeSourcesReadRequest((string) $credentialsStore);
         self::assertSame(200, $response->getStatusCode());
         self::assertStringContainsString('text/html', $response->getHeaderLine('content-type'));
 
         $credentialsStore->refresh($response, $this->getSessionIdentifier());
-        $response = $this->applicationClient->makeSourcesReadRequest($credentialsStore->get());
+        $response = $this->applicationClient->makeSourcesReadRequest((string) $credentialsStore);
         self::assertSame(200, $response->getStatusCode());
         self::assertStringContainsString('text/html', $response->getHeaderLine('content-type'));
     }

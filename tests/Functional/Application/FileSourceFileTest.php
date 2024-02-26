@@ -39,7 +39,7 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
 
         $label = md5((string) rand());
         $addFileSourceResponse = $this->applicationClient->makeFileSourceAddRequest(
-            $credentialsStore->get(),
+            (string) $credentialsStore,
             $label
         );
         $credentialsStore->refresh(
@@ -50,7 +50,7 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
 
         self::assertSame(302, $addFileSourceResponse->getStatusCode());
 
-        $sourcesResponse = $this->applicationClient->makeSourcesReadRequest($credentialsStore->get());
+        $sourcesResponse = $this->applicationClient->makeSourcesReadRequest((string) $credentialsStore);
         self::assertSame(200, $sourcesResponse->getStatusCode());
 
         $sourcesBody = $sourcesResponse->getBody()->getContents();
@@ -64,7 +64,7 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
             method: 'GET',
             uri: $fileSourceUrl,
             server: [
-                'HTTP_COOKIE' => $credentialsStore->get(),
+                'HTTP_COOKIE' => (string) $credentialsStore,
             ]
         );
 
@@ -86,7 +86,7 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
             method: 'GET',
             uri: $fileSourceUrl,
             server: [
-                'HTTP_COOKIE' => $credentialsStore->get(),
+                'HTTP_COOKIE' => (string) $credentialsStore,
             ]
         );
 

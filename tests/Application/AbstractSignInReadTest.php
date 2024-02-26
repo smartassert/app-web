@@ -48,7 +48,7 @@ abstract class AbstractSignInReadTest extends AbstractApplicationTestCase
 
         $credentialsStore->create($this->applicationClient, $this->getSessionIdentifier());
 
-        $response = $this->applicationClient->makeSignInPageReadRequest(credentials: $credentialsStore->get());
+        $response = $this->applicationClient->makeSignInPageReadRequest(credentials: (string) $credentialsStore);
 
         self::assertSame(302, $response->getStatusCode());
         self::assertSame('', $response->getHeaderLine('content-type'));
