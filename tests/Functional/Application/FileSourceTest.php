@@ -6,7 +6,7 @@ namespace App\Tests\Functional\Application;
 
 use App\Enum\Routes;
 use App\Tests\Application\AbstractFileSourceTest;
-use App\Tests\Services\DataRepository;
+use App\Tests\Services\DataRepository\SourcesRepository;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class FileSourceTest extends AbstractFileSourceTest
@@ -16,9 +16,7 @@ class FileSourceTest extends AbstractFileSourceTest
 
     public function testAddFileSourceSuccess(): void
     {
-        $sourcesDataRepository = new DataRepository(
-            'pgsql:host=localhost;port=5432;dbname=sources;user=postgres;password=password!'
-        );
+        $sourcesDataRepository = new SourcesRepository();
         $sourcesDataRepository->removeAllFor(['file_source', 'git_source', 'source']);
 
         $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
@@ -74,9 +72,7 @@ class FileSourceTest extends AbstractFileSourceTest
 
     public function testAddFileSourceBadRequest(): void
     {
-        $sourcesDataRepository = new DataRepository(
-            'pgsql:host=localhost;port=5432;dbname=sources;user=postgres;password=password!'
-        );
+        $sourcesDataRepository = new SourcesRepository();
         $sourcesDataRepository->removeAllFor(['file_source', 'git_source', 'source']);
 
         $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);

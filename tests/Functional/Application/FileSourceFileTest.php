@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Application;
 
 use App\Tests\Application\AbstractFileSourceFileTest;
-use App\Tests\Services\DataRepository;
+use App\Tests\Services\DataRepository\SourcesRepository;
 
 class FileSourceFileTest extends AbstractFileSourceFileTest
 {
@@ -22,9 +22,7 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
         bool $expectedFilenameHasError,
         bool $expectedContentHasError,
     ): void {
-        $sourcesDataRepository = new DataRepository(
-            'pgsql:host=localhost;port=5432;dbname=sources;user=postgres;password=password!'
-        );
+        $sourcesDataRepository = new SourcesRepository();
         $sourcesDataRepository->removeAllFor(['file_source', 'git_source', 'source']);
 
         $label = md5((string) rand());

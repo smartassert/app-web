@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Application;
 
 use App\Tests\Services\ApplicationClient\Client;
-use App\Tests\Services\DataRepository;
+use App\Tests\Services\DataRepository\DataRepository;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
