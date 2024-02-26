@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Application;
 
 use App\Tests\Application\AbstractFileSourceFileTest;
-use App\Tests\Services\CookieExtractor;
-use App\Tests\Services\Credentials;
 use App\Tests\Services\DataRepository;
 
 class FileSourceFileTest extends AbstractFileSourceFileTest
@@ -29,21 +27,11 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
         );
         $sourcesDataRepository->removeAllFor(['file_source', 'git_source', 'source']);
 
-        $credentials = self::getContainer()->get(Credentials::class);
-        \assert($credentials instanceof Credentials);
-
-        $cookieExtractor = self::getContainer()->get(CookieExtractor::class);
-        \assert($cookieExtractor instanceof CookieExtractor);
-
-        $credentials->create($this->applicationClient, $this->getSessionIdentifier());
-
         $label = md5((string) rand());
-        $addFileSourceResponse = $this->applicationClient->makeFileSourceAddRequest($credentials, $label);
-        $credentials->refresh($addFileSourceResponse, $this->getSessionIdentifier());
-
+        $addFileSourceResponse = $this->applicationClient->makeFileSourceAddRequest($label);
         self::assertSame(302, $addFileSourceResponse->getStatusCode());
 
-        $sourcesResponse = $this->applicationClient->makeSourcesReadRequest($credentials);
+        $sourcesResponse = $this->applicationClient->makeSourcesReadRequest();
         self::assertSame(200, $sourcesResponse->getStatusCode());
 
         $sourcesBody = $sourcesResponse->getBody()->getContents();
@@ -57,7 +45,7 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
             method: 'GET',
             uri: $fileSourceUrl,
             server: [
-                'HTTP_COOKIE' => $credentials,
+                'HTTP_COOKIE' => $this->applicationClient->foo(),
             ]
         );
 
@@ -79,7 +67,7 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
             method: 'GET',
             uri: $fileSourceUrl,
             server: [
-                'HTTP_COOKIE' => $credentials,
+                'HTTP_COOKIE' => $this->applicationClient->foo(),
             ]
         );
 

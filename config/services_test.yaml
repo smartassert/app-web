@@ -33,6 +33,3 @@ services:
 
   App\Tests\Services\CookieExtractor:
     public: true
-
-  App\Tests\Services\Credentials:
-    public: true

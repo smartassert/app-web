@@ -6,7 +6,6 @@ namespace App\Tests\Functional\Application;
 
 use App\Enum\Routes;
 use App\Tests\Application\AbstractFileSourceTest;
-use App\Tests\Services\Credentials;
 use App\Tests\Services\DataRepository;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -25,18 +24,13 @@ class FileSourceTest extends AbstractFileSourceTest
         $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
         \assert($urlGenerator instanceof UrlGeneratorInterface);
 
-        $credentials = self::getContainer()->get(Credentials::class);
-        \assert($credentials instanceof Credentials);
-
-        $credentials->create($this->applicationClient, $this->getSessionIdentifier());
-
         $sourcesUrl = $urlGenerator->generate(Routes::SOURCES_NAME->value);
 
         $crawler = $this->kernelBrowser->request(
             method: 'GET',
-            uri: $sourcesUrl,
+            uri: '/sources',
             server: [
-                'HTTP_COOKIE' => $credentials,
+                'HTTP_COOKIE' => $this->applicationClient->foo(),
             ]
         );
 
@@ -61,7 +55,7 @@ class FileSourceTest extends AbstractFileSourceTest
             method: 'GET',
             uri: $sourcesUrl,
             server: [
-                'HTTP_COOKIE' => $credentials,
+                'HTTP_COOKIE' => $this->applicationClient->foo(),
             ]
         );
 
@@ -88,18 +82,13 @@ class FileSourceTest extends AbstractFileSourceTest
         $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
         \assert($urlGenerator instanceof UrlGeneratorInterface);
 
-        $credentials = self::getContainer()->get(Credentials::class);
-        \assert($credentials instanceof Credentials);
-
-        $credentials->create($this->applicationClient, $this->getSessionIdentifier());
-
         $sourcesUrl = $urlGenerator->generate(Routes::SOURCES_NAME->value);
 
         $crawler = $this->kernelBrowser->request(
             method: 'GET',
             uri: $sourcesUrl,
             server: [
-                'HTTP_COOKIE' => $credentials,
+                'HTTP_COOKIE' => $this->applicationClient->foo(),
             ]
         );
 
@@ -136,7 +125,7 @@ class FileSourceTest extends AbstractFileSourceTest
             method: 'GET',
             uri: $sourcesUrl,
             server: [
-                'HTTP_COOKIE' => $credentials,
+                'HTTP_COOKIE' => $this->applicationClient->foo(),
             ]
         );
 
