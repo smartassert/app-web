@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Application;
 
-use App\Enum\SignInErrorState;
 use App\RedirectRoute\Factory;
 use App\RedirectRoute\Serializer;
 use App\Tests\Application\AbstractSignInWriteTest;
-use App\Tests\Services\SessionHandler;
 
 class SignInWriteTest extends AbstractSignInWriteTest
 {
@@ -26,11 +24,22 @@ class SignInWriteTest extends AbstractSignInWriteTest
         callable $expectedLocationCreator,
         string $expectedError,
     ): void {
-        $sessionHandler = self::getContainer()->get(SessionHandler::class);
-        \assert($sessionHandler instanceof SessionHandler);
+        $crawler = $this->kernelBrowser->request(
+            method: 'GET',
+            uri: '/sign-in/'
+        );
 
-        $session = $sessionHandler->create();
-        $sessionHandler->persist($this->kernelBrowser, $session);
+        self::assertSame(200, $this->kernelBrowser->getResponse()->getStatusCode());
+
+        $signInForm = $crawler->filter('input[type=submit]')->form([
+            'user-identifier' => $userIdentifier,
+            'password' => $password,
+        ]);
+
+        $this->kernelBrowser->submit($signInForm);
+
+        $response = $this->kernelBrowser->getResponse();
+        self::assertSame(302, $response->getStatusCode());
 
         $redirectRouteFactory = self::getContainer()->get(Factory::class);
         \assert($redirectRouteFactory instanceof Factory);
@@ -38,16 +47,24 @@ class SignInWriteTest extends AbstractSignInWriteTest
         $redirectRouteSerializer = self::getContainer()->get(Serializer::class);
         \assert($redirectRouteSerializer instanceof Serializer);
 
-        $response = $this->applicationClient->makeSignInPageWriteRequest($userIdentifier, $password);
+        $redirectLocation = $response->headers->get('location');
 
         self::assertSame(
             $expectedLocationCreator($redirectRouteFactory, $redirectRouteSerializer),
-            $response->getHeaderLine('location')
+            $redirectLocation
         );
 
-        self::assertTrue($session->getFlashBag()->has('error'));
-        $error = $session->getFlashBag()->get('error')[0];
-        self::assertSame($expectedError, $error);
+        $crawler = $this->kernelBrowser->request(
+            method: 'GET',
+            uri: $redirectLocation
+        );
+
+        $response = $this->kernelBrowser->getResponse();
+        self::assertSame(200, $response->getStatusCode());
+
+        $errorContainer = $crawler->filter('div.error');
+        self::assertCount(1, $errorContainer);
+        self::assertSame($expectedError, $errorContainer->text());
     }
 
     /**
@@ -67,7 +84,7 @@ class SignInWriteTest extends AbstractSignInWriteTest
 
                     return '/sign-in/?route=' . $serializedRedirectRoute;
                 },
-                'expectedError' => SignInErrorState::EMAIL_EMPTY->value,
+                'expectedError' => 'Email address empty!',
             ],
             'non-empty user-identifier, empty password' => [
                 'userIdentifier' => 'user@example.com',
@@ -80,7 +97,7 @@ class SignInWriteTest extends AbstractSignInWriteTest
 
                     return '/sign-in/?email=user@example.com&route=' . $serializedRedirectRoute;
                 },
-                'expectedError' => SignInErrorState::PASSWORD_EMPTY->value,
+                'expectedError' => 'Password empty!',
             ],
             'empty user-identifier, non-empty password' => [
                 'userIdentifier' => null,
@@ -93,7 +110,7 @@ class SignInWriteTest extends AbstractSignInWriteTest
 
                     return '/sign-in/?route=' . $serializedRedirectRoute;
                 },
-                'expectedError' => SignInErrorState::EMAIL_EMPTY->value,
+                'expectedError' => 'Email address empty!',
             ],
         ];
     }

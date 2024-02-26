@@ -11,7 +11,6 @@ readonly class SignInReadRequest
     public function __construct(
         public ?string $email,
         public RedirectRoute $route,
-        public ?string $error,
     ) {
     }
 }

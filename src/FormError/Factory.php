@@ -7,6 +7,7 @@ namespace App\FormError;
 use App\Error\NamedError;
 use App\FormError\MessageFactory\MessageFactory;
 use App\SessionStore\ErrorStore;
+use SmartAssert\ServiceRequest\Error\ErrorInterface;
 use SmartAssert\ServiceRequest\Error\HasParameterInterface;
 
 readonly class Factory
@@ -34,6 +35,9 @@ readonly class Factory
         }
 
         $innerError = $error->error;
+        if (!$innerError instanceof ErrorInterface) {
+            return null;
+        }
 
         $fieldName = $innerError instanceof HasParameterInterface
             ? $innerError->getParameter()->getName()

@@ -7,6 +7,7 @@ namespace App\Tests\Functional\EventHanding\KernelExceptionEvent\ApiException;
 use App\Enum\ApiService;
 use App\Enum\Routes;
 use App\Enum\SignInErrorState;
+use App\Error\NamedError;
 use App\Exception\ApiException;
 use App\Tests\Services\SessionHandler;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -16,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -53,6 +55,10 @@ class UnauthorizedExceptionTest extends WebTestCase
 
         $request->attributes = new ParameterBag(['_route' => Routes::DASHBOARD_NAME->value]);
 
+        $requestStack = self::getContainer()->get(RequestStack::class);
+        \assert($requestStack instanceof RequestStack);
+        $requestStack->push($request);
+
         $exception = new ApiException(
             ApiService::USERS,
             new ClientException(md5((string) rand()), new UnauthorizedException())
@@ -64,7 +70,10 @@ class UnauthorizedExceptionTest extends WebTestCase
 
     public function testErrorNameIsSetInSession(): void
     {
-        self::assertSame(SignInErrorState::API_UNAUTHORIZED->value, $this->session->getFlashBag()->get('error')[0]);
+        $error = $this->session->get('error');
+        self::assertInstanceOf(NamedError::class, $error);
+
+        self::assertSame(SignInErrorState::API_UNAUTHORIZED->value, $error->name);
     }
 
     public function testRedirectResponseIsSetOnEvent(): void

@@ -10,7 +10,7 @@ readonly class NamedError
 {
     public function __construct(
         public string $name,
-        public ErrorInterface $error,
+        public ?ErrorInterface $error = null,
     ) {
     }
 }

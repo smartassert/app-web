@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Security\CredentialAuthentication;
 
 use App\Enum\ApiService;
+use App\Error\NamedError;
 use App\Exception\ApiException;
 use App\Exception\BadCredentialsException;
 use App\Exception\PasswordMissingException;
@@ -15,12 +16,12 @@ use App\Response\RedirectResponse;
 use App\Response\RedirectResponseFactory;
 use App\Security\ApiKeyBadge;
 use App\Security\User;
+use App\SessionStore\ErrorStore;
 use SmartAssert\ApiClient\Exception\ClientException;
 use SmartAssert\ApiClient\Exception\UnauthorizedException;
 use SmartAssert\ApiClient\UsersClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -37,6 +38,7 @@ readonly class Authenticator implements AuthenticatorInterface
         private RedirectResponseFactory $redirectResponseFactory,
         private UrlGeneratorInterface $urlGenerator,
         private Serializer $serializer,
+        private ErrorStore $errorStore,
     ) {
     }
 
@@ -117,10 +119,7 @@ readonly class Authenticator implements AuthenticatorInterface
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         if ($exception instanceof SignInExceptionInterface) {
-            $session = $request->getSession();
-            if ($session instanceof Session) {
-                $session->getFlashBag()->set('error', $exception->getErrorState()->value);
-            }
+            $this->errorStore->set(new NamedError($exception->getErrorState()->value));
 
             return $this->redirectResponseFactory->createForSignIn(
                 userIdentifier: $exception->getUserIdentifier(),
