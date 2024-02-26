@@ -30,16 +30,14 @@ class Credentials implements \Stringable
         $this->refresh($response, $sessionIdentifier);
     }
 
-    public function refresh(
-        ResponseInterface $response,
-        string $sessionIdentifier,
-        ?string $sessionId = null,
-    ): void {
-        $responseSessionId = $this->responseCookieExtractor->extract($response, $sessionIdentifier);
-        $requestSessionId = is_string($responseSessionId) ? $responseSessionId : (string) $sessionId;
+    public function refresh(ResponseInterface $response, string $sessionIdentifier): void
+    {
+        $sessionId = $this->responseCookieExtractor->extract($response, $sessionIdentifier);
+        if (is_string($sessionId)) {
+            $this->sessionId = $sessionId;
+        }
 
         $this->sessionIdentifier = $sessionIdentifier;
-        $this->sessionId = $requestSessionId;
         $this->token = (string) $this->responseCookieExtractor->extract($response, 'token');
     }
 }

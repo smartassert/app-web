@@ -39,11 +39,7 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
 
         $label = md5((string) rand());
         $addFileSourceResponse = $this->applicationClient->makeFileSourceAddRequest($credentials, $label);
-        $credentials->refresh(
-            $addFileSourceResponse,
-            $this->getSessionIdentifier(),
-            $cookieExtractor->extract($addFileSourceResponse, $this->getSessionIdentifier())
-        );
+        $credentials->refresh($addFileSourceResponse, $this->getSessionIdentifier());
 
         self::assertSame(302, $addFileSourceResponse->getStatusCode());
 
