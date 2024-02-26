@@ -6,7 +6,7 @@ namespace App\Tests\Functional\Application;
 
 use App\Enum\Routes;
 use App\Tests\Application\AbstractFileSourceTest;
-use App\Tests\Services\CredentialsFactory;
+use App\Tests\Services\Credentials;
 use App\Tests\Services\DataRepository;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -25,10 +25,10 @@ class FileSourceTest extends AbstractFileSourceTest
         $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
         \assert($urlGenerator instanceof UrlGeneratorInterface);
 
-        $credentialsFactory = self::getContainer()->get(CredentialsFactory::class);
-        \assert($credentialsFactory instanceof CredentialsFactory);
+        $credentials = self::getContainer()->get(Credentials::class);
+        \assert($credentials instanceof Credentials);
 
-        $credentials = $credentialsFactory->create($this->applicationClient, $this->getSessionIdentifier());
+        $credentials->create($this->applicationClient, $this->getSessionIdentifier());
 
         $sourcesUrl = $urlGenerator->generate(Routes::SOURCES_NAME->value);
 
@@ -88,10 +88,10 @@ class FileSourceTest extends AbstractFileSourceTest
         $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
         \assert($urlGenerator instanceof UrlGeneratorInterface);
 
-        $credentialsFactory = self::getContainer()->get(CredentialsFactory::class);
-        \assert($credentialsFactory instanceof CredentialsFactory);
+        $credentials = self::getContainer()->get(Credentials::class);
+        \assert($credentials instanceof Credentials);
 
-        $credentials = $credentialsFactory->create($this->applicationClient, $this->getSessionIdentifier());
+        $credentials->create($this->applicationClient, $this->getSessionIdentifier());
 
         $sourcesUrl = $urlGenerator->generate(Routes::SOURCES_NAME->value);
 
@@ -109,7 +109,6 @@ class FileSourceTest extends AbstractFileSourceTest
         self::assertSame(0, $sourcesList->count());
 
         $label = str_repeat('.', 256);
-        //        $label = '';
 
         $formElement = $crawler->filter('#file_source_add');
         self::assertNull($formElement->attr('class'));

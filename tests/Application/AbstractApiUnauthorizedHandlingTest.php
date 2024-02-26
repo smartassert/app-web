@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Application;
 
-use App\Tests\Model\Credentials;
 use App\Tests\Services\ApplicationClient\Client;
-use App\Tests\Services\CredentialsFactory;
+use App\Tests\Services\Credentials;
 use App\Tests\Services\DataRepository;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -16,20 +15,20 @@ abstract class AbstractApiUnauthorizedHandlingTest extends AbstractApplicationTe
     /**
      * @dataProvider handleApiUnauthorizedExceptionDataProvider
      *
-     * @param callable(Client, Credentials): ResponseInterface $successfulAction
-     * @param callable(Client, Credentials): ResponseInterface $failureAction
+     * @param callable(Client, string): ResponseInterface $successfulAction
+     * @param callable(Client, string): ResponseInterface $failureAction
      */
     public function testHandleApiUnauthorizedException(callable $successfulAction, callable $failureAction): void
     {
         $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
         \assert($urlGenerator instanceof UrlGeneratorInterface);
 
-        $credentialsFactory = self::getContainer()->get(CredentialsFactory::class);
-        \assert($credentialsFactory instanceof CredentialsFactory);
+        $credentials = self::getContainer()->get(Credentials::class);
+        \assert($credentials instanceof Credentials);
 
-        $credentials = $credentialsFactory->create($this->applicationClient, $this->getSessionIdentifier());
+        $credentials->create($this->applicationClient, $this->getSessionIdentifier());
 
-        $response = $successfulAction($this->applicationClient, $credentials);
+        $response = $successfulAction($this->applicationClient, (string) $credentials);
         self::assertSame(200, $response->getStatusCode());
 
         $usersDataRepository = new DataRepository(
@@ -37,7 +36,7 @@ abstract class AbstractApiUnauthorizedHandlingTest extends AbstractApplicationTe
         );
         $usersDataRepository->getConnection()->query('delete from public.api_key');
 
-        $response = $failureAction($this->applicationClient, $credentials);
+        $response = $failureAction($this->applicationClient, (string) $credentials);
         self::assertSame(302, $response->getStatusCode());
         self::assertSame(
             '/sign-in/?email=user@example.com&route=eyJuYW1lIjoiZGFzaGJvYXJkIiwicGFyYW1ldGVycyI6W119',
@@ -52,27 +51,27 @@ abstract class AbstractApiUnauthorizedHandlingTest extends AbstractApplicationTe
     {
         return [
             'dashboard' => [
-                'successfulAction' => function (Client $applicationClient, Credentials $cookie) {
-                    return $applicationClient->makeDashboardReadRequest($cookie);
+                'successfulAction' => function (Client $applicationClient, string $credentials) {
+                    return $applicationClient->makeDashboardReadRequest($credentials);
                 },
-                'failureAction' => function (Client $applicationClient, Credentials $cookie) {
-                    return $applicationClient->makeDashboardReadRequest($cookie);
+                'failureAction' => function (Client $applicationClient, string $credentials) {
+                    return $applicationClient->makeDashboardReadRequest($credentials);
                 },
             ],
             'sources' => [
-                'successfulAction' => function (Client $applicationClient, Credentials $cookie) {
-                    return $applicationClient->makeSourcesReadRequest($cookie);
+                'successfulAction' => function (Client $applicationClient, string $credentials) {
+                    return $applicationClient->makeSourcesReadRequest($credentials);
                 },
-                'failureAction' => function (Client $applicationClient, Credentials $cookie) {
-                    return $applicationClient->makeSourcesReadRequest($cookie);
+                'failureAction' => function (Client $applicationClient, string $credentials) {
+                    return $applicationClient->makeSourcesReadRequest($credentials);
                 },
             ],
             'add file source' => [
-                'successfulAction' => function (Client $applicationClient, Credentials $cookie) {
-                    return $applicationClient->makeSourcesReadRequest($cookie);
+                'successfulAction' => function (Client $applicationClient, string $credentials) {
+                    return $applicationClient->makeSourcesReadRequest($credentials);
                 },
-                'failureAction' => function (Client $applicationClient, Credentials $cookie) {
-                    return $applicationClient->makeFileSourceAddRequest($cookie, md5((string) rand()));
+                'failureAction' => function (Client $applicationClient, string $credentials) {
+                    return $applicationClient->makeFileSourceAddRequest($credentials, md5((string) rand()));
                 },
             ],
         ];

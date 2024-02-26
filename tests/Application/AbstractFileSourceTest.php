@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Application;
 
 use App\Tests\Services\CookieExtractor;
-use App\Tests\Services\CredentialsFactory;
+use App\Tests\Services\Credentials;
 use App\Tests\Services\DataRepository;
 
 abstract class AbstractFileSourceTest extends AbstractApplicationTestCase
@@ -17,16 +17,16 @@ abstract class AbstractFileSourceTest extends AbstractApplicationTestCase
         );
         $sourcesDataRepository->removeAllFor(['file_source', 'git_source', 'source']);
 
-        $credentialsFactory = self::getContainer()->get(CredentialsFactory::class);
-        \assert($credentialsFactory instanceof CredentialsFactory);
+        $credentials = self::getContainer()->get(Credentials::class);
+        \assert($credentials instanceof Credentials);
 
         $cookieExtractor = self::getContainer()->get(CookieExtractor::class);
         \assert($cookieExtractor instanceof CookieExtractor);
 
-        $credentials = $credentialsFactory->create($this->applicationClient, $this->getSessionIdentifier());
+        $credentials->create($this->applicationClient, $this->getSessionIdentifier());
 
         $sourcesResponse = $this->applicationClient->makeSourcesReadRequest($credentials);
-        $credentials = $credentialsFactory->createFromResponse(
+        $credentials->refresh(
             $sourcesResponse,
             $this->getSessionIdentifier(),
             $cookieExtractor->extract($sourcesResponse, $this->getSessionIdentifier())

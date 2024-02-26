@@ -6,7 +6,7 @@ namespace App\Tests\Functional\Application;
 
 use App\Tests\Application\AbstractFileSourceFileTest;
 use App\Tests\Services\CookieExtractor;
-use App\Tests\Services\CredentialsFactory;
+use App\Tests\Services\Credentials;
 use App\Tests\Services\DataRepository;
 
 class FileSourceFileTest extends AbstractFileSourceFileTest
@@ -29,17 +29,17 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
         );
         $sourcesDataRepository->removeAllFor(['file_source', 'git_source', 'source']);
 
-        $credentialsFactory = self::getContainer()->get(CredentialsFactory::class);
-        \assert($credentialsFactory instanceof CredentialsFactory);
+        $credentials = self::getContainer()->get(Credentials::class);
+        \assert($credentials instanceof Credentials);
 
         $cookieExtractor = self::getContainer()->get(CookieExtractor::class);
         \assert($cookieExtractor instanceof CookieExtractor);
 
-        $credentials = $credentialsFactory->create($this->applicationClient, $this->getSessionIdentifier());
+        $credentials->create($this->applicationClient, $this->getSessionIdentifier());
 
         $label = md5((string) rand());
         $addFileSourceResponse = $this->applicationClient->makeFileSourceAddRequest($credentials, $label);
-        $credentials = $credentialsFactory->createFromResponse(
+        $credentials->refresh(
             $addFileSourceResponse,
             $this->getSessionIdentifier(),
             $cookieExtractor->extract($addFileSourceResponse, $this->getSessionIdentifier())

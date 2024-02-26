@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Services\ApplicationClient;
 
-use App\Tests\Model\Credentials;
 use Psr\Http\Message\ResponseInterface;
 use SmartAssert\SymfonyTestClient\ClientInterface;
 
@@ -16,8 +15,8 @@ readonly class Client
     }
 
     public function makeSignInPageReadRequest(
-        ?string $userIdentifier = null,
-        ?Credentials $credentials = null,
+        string $userIdentifier = null,
+        string|\Stringable $credentials = null,
         string $method = 'GET'
     ): ResponseInterface {
         $url = '/sign-in/';
@@ -51,17 +50,19 @@ readonly class Client
         );
     }
 
-    public function makeDashboardReadRequest(Credentials $credentials): ResponseInterface
+    public function makeDashboardReadRequest(string|\Stringable $credentials): ResponseInterface
     {
         return $this->client->makeRequest('GET', '/', ['cookie' => (string) $credentials]);
     }
 
-    public function makeLogoutRequest(?Credentials $credentials = null, string $method = 'POST'): ResponseInterface
-    {
+    public function makeLogoutRequest(
+        string|\Stringable $credentials,
+        string $method = 'POST'
+    ): ResponseInterface {
         return $this->client->makeRequest($method, '/logout/', ['cookie' => (string) $credentials]);
     }
 
-    public function makeSourcesReadRequest(?Credentials $credentials): ResponseInterface
+    public function makeSourcesReadRequest(string|\Stringable $credentials): ResponseInterface
     {
         return $this->client->makeRequest(
             'GET',
@@ -70,7 +71,7 @@ readonly class Client
         );
     }
 
-    public function makeFileSourceAddRequest(Credentials $credentials, string $label): ResponseInterface
+    public function makeFileSourceAddRequest(string|\Stringable $credentials, string $label): ResponseInterface
     {
         return $this->client->makeRequest(
             'POST',
@@ -83,7 +84,7 @@ readonly class Client
         );
     }
 
-    public function makeFileSourceReadRequest(?Credentials $credentials, string $id): ResponseInterface
+    public function makeFileSourceReadRequest(string|\Stringable $credentials, string $id): ResponseInterface
     {
         return $this->client->makeRequest(
             'GET',
@@ -93,7 +94,7 @@ readonly class Client
     }
 
     public function makeFileSourceFileCreateRequest(
-        ?Credentials $credentials,
+        string|\Stringable $credentials,
         string $id,
         string $filename,
         string $content
