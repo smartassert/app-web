@@ -15,12 +15,12 @@ abstract class AbstractDashboardTest extends AbstractApplicationTestCase
 
         $credentialsStore->create($this->applicationClient, $this->getSessionIdentifier());
 
-        $response = $this->applicationClient->makeDashboardReadRequest($credentialsStore->get());
+        $response = $this->applicationClient->makeDashboardReadRequest((string) $credentialsStore->get());
         self::assertSame(200, $response->getStatusCode());
         self::assertStringContainsString('text/html', $response->getHeaderLine('content-type'));
 
         $credentialsStore->refresh($response, $this->getSessionIdentifier());
-        $response = $this->applicationClient->makeDashboardReadRequest($credentialsStore->get());
+        $response = $this->applicationClient->makeDashboardReadRequest((string) $credentialsStore->get());
         self::assertSame(200, $response->getStatusCode());
         self::assertStringContainsString('text/html', $response->getHeaderLine('content-type'));
     }

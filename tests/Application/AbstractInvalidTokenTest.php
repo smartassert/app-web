@@ -7,7 +7,6 @@ namespace App\Tests\Application;
 use App\Enum\Routes;
 use App\RedirectRoute\RedirectRoute;
 use App\RedirectRoute\Serializer;
-use App\Tests\Model\Credentials;
 use App\Tests\Services\ApplicationClient\Client;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -18,14 +17,13 @@ abstract class AbstractInvalidTokenTest extends AbstractApplicationTestCase
     /**
      * @dataProvider handleApiUnauthorizedExceptionDataProvider
      *
-     * @param callable(Client, Credentials): ResponseInterface $action
+     * @param callable(Client, string): ResponseInterface $action
      */
     public function testMakeActionWithInvalidToken(callable $action, RedirectRoute $expectedRedirectRoute): void
     {
         $this->kernelBrowser->getCookieJar()->clear();
 
-        $credentials = new Credentials('', '', '');
-        $response = $action($this->applicationClient, $credentials);
+        $response = $action($this->applicationClient, '');
         self::assertSame(302, $response->getStatusCode());
 
         $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);
@@ -51,25 +49,25 @@ abstract class AbstractInvalidTokenTest extends AbstractApplicationTestCase
 
         return [
             'view dashboard' => [
-                'action' => function (Client $applicationClient, Credentials $credentials) {
+                'action' => function (Client $applicationClient, string $credentials) {
                     return $applicationClient->makeDashboardReadRequest($credentials);
                 },
                 'expectedRedirectRoute' => new RedirectRoute(Routes::DASHBOARD_NAME->value, []),
             ],
             'view sources' => [
-                'action' => function (Client $applicationClient, Credentials $credentials) use ($sourceId) {
+                'action' => function (Client $applicationClient, string $credentials) use ($sourceId) {
                     return $applicationClient->makeFileSourceReadRequest($credentials, $sourceId);
                 },
                 'expectedRedirectRoute' => new RedirectRoute('sources_view_file_source', ['id' => $sourceId]),
             ],
             'view file source' => [
-                'action' => function (Client $applicationClient, Credentials $credentials) {
+                'action' => function (Client $applicationClient, string $credentials) {
                     return $applicationClient->makeSourcesReadRequest($credentials);
                 },
                 'expectedRedirectRoute' => new RedirectRoute('sources'),
             ],
             'add file source' => [
-                'action' => function (Client $applicationClient, Credentials $credentials) {
+                'action' => function (Client $applicationClient, string $credentials) {
                     return $applicationClient->makeFileSourceAddRequest($credentials, md5((string) rand()));
                 },
                 'expectedRedirectRoute' => new RedirectRoute('sources_create_file_source'),
