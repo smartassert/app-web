@@ -45,7 +45,7 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
             method: 'GET',
             uri: $fileSourceUrl,
             server: [
-                'HTTP_COOKIE' => $this->applicationClient->foo(),
+                'HTTP_COOKIE' => $this->applicationClient->getCredentials(),
             ]
         );
 
@@ -67,7 +67,7 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
             method: 'GET',
             uri: $fileSourceUrl,
             server: [
-                'HTTP_COOKIE' => $this->applicationClient->foo(),
+                'HTTP_COOKIE' => $this->applicationClient->getCredentials(),
             ]
         );
 

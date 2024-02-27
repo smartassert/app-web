@@ -58,28 +58,28 @@ class Client
 
     public function makeDashboardReadRequest(?string $credentials = null): ResponseInterface
     {
-        $credentials = null === $credentials ? $this->foo() : $credentials;
+        $credentials = null === $credentials ? $this->getCredentials() : $credentials;
         $response = $this->client->makeRequest('GET', '/', ['cookie' => $credentials]);
 
-        $this->handleFooResponse($response);
+        $this->extractCredentialsFromResponse($response);
 
         return $response;
     }
 
     public function makeLogoutRequest(string $method = 'POST', ?string $credentials = null): ResponseInterface
     {
-        $credentials = null === $credentials ? $this->foo() : $credentials;
+        $credentials = null === $credentials ? $this->getCredentials() : $credentials;
 
         $response = $this->client->makeRequest($method, '/logout/', ['cookie' => $credentials]);
 
-        $this->handleFooResponse($response);
+        $this->extractCredentialsFromResponse($response);
 
         return $response;
     }
 
     public function makeSourcesReadRequest(?string $credentials = null): ResponseInterface
     {
-        $credentials = null === $credentials ? $this->foo() : $credentials;
+        $credentials = null === $credentials ? $this->getCredentials() : $credentials;
 
         $response = $this->client->makeRequest(
             'GET',
@@ -87,14 +87,14 @@ class Client
             ['cookie' => $credentials]
         );
 
-        $this->handleFooResponse($response);
+        $this->extractCredentialsFromResponse($response);
 
         return $response;
     }
 
     public function makeFileSourceAddRequest(string $label, ?string $credentials = null): ResponseInterface
     {
-        $credentials = null === $credentials ? $this->foo() : $credentials;
+        $credentials = null === $credentials ? $this->getCredentials() : $credentials;
 
         $response = $this->client->makeRequest(
             'POST',
@@ -106,14 +106,14 @@ class Client
             http_build_query(['label' => $label])
         );
 
-        $this->handleFooResponse($response);
+        $this->extractCredentialsFromResponse($response);
 
         return $response;
     }
 
     public function makeFileSourceReadRequest(string $id, ?string $credentials = null): ResponseInterface
     {
-        $credentials = null === $credentials ? $this->foo() : $credentials;
+        $credentials = null === $credentials ? $this->getCredentials() : $credentials;
 
         $response = $this->client->makeRequest(
             'GET',
@@ -121,7 +121,7 @@ class Client
             ['cookie' => $credentials]
         );
 
-        $this->handleFooResponse($response);
+        $this->extractCredentialsFromResponse($response);
 
         return $response;
     }
@@ -132,37 +132,32 @@ class Client
             'POST',
             '/sources/file/' . $id,
             [
-                'cookie' => $this->foo(),
+                'cookie' => $this->getCredentials(),
                 'content-type' => 'application/x-www-form-urlencoded',
             ],
             http_build_query(['filename' => $filename, 'content' => $content])
         );
 
-        $this->handleFooResponse($response);
+        $this->extractCredentialsFromResponse($response);
 
         return $response;
     }
 
-    public function foo(): string
+    public function getCredentials(): string
     {
         if (!isset($this->sessionId) && !isset($this->token)) {
-            $this->createFoo();
+            $response = $this->makeSignInPageWriteRequest(
+                'user@example.com',
+                'password'
+            );
+
+            $this->extractCredentialsFromResponse($response);
         }
 
         return sprintf('%s=%s; token=%s', $this->sessionIdentifier, $this->sessionId, $this->token);
     }
 
-    private function createFoo(): void
-    {
-        $response = $this->makeSignInPageWriteRequest(
-            'user@example.com',
-            'password'
-        );
-
-        $this->handleFooResponse($response);
-    }
-
-    private function handleFooResponse(ResponseInterface $response): void
+    private function extractCredentialsFromResponse(ResponseInterface $response): void
     {
         $sessionId = $this->responseCookieExtractor->extract($response, $this->sessionIdentifier);
         if (is_string($sessionId)) {
