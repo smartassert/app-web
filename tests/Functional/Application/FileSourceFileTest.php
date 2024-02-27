@@ -6,6 +6,7 @@ namespace App\Tests\Functional\Application;
 
 use App\Tests\Application\AbstractFileSourceFileTest;
 use App\Tests\Services\DataRepository\SourcesRepository;
+use App\Tests\Services\EntityFactory\FileSourceFactory;
 
 class FileSourceFileTest extends AbstractFileSourceFileTest
 {
@@ -25,19 +26,11 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
         $sourcesDataRepository = new SourcesRepository();
         $sourcesDataRepository->removeAllSources();
 
-        $label = md5((string) rand());
-        $addFileSourceResponse = $this->applicationClient->makeFileSourceAddRequest($label);
-        self::assertSame(302, $addFileSourceResponse->getStatusCode());
+        $fileSourceFactory = self::getContainer()->get(FileSourceFactory::class);
+        \assert($fileSourceFactory instanceof FileSourceFactory);
 
-        $sourcesResponse = $this->applicationClient->makeSourcesReadRequest();
-        self::assertSame(200, $sourcesResponse->getStatusCode());
-
-        $sourcesBody = $sourcesResponse->getBody()->getContents();
-
-        $fileSourceUrls = [];
-        preg_match('#/sources/file/[^"]+#', $sourcesBody, $fileSourceUrls);
-
-        $fileSourceUrl = $fileSourceUrls[0];
+        $fileSourceId = $fileSourceFactory->create($this->applicationClient, md5((string) rand()));
+        $fileSourceUrl = '/sources/file/' . $fileSourceId;
 
         $crawler = $this->kernelBrowser->request(
             method: 'GET',
