@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace App\Tests\Application;
 
-use App\Tests\Services\DataRepository;
+use App\Tests\Services\DataRepository\SourcesRepository;
 
 abstract class AbstractFileSourceTest extends AbstractApplicationTestCase
 {
     public function testGetSuccess(): void
     {
-        $sourcesDataRepository = new DataRepository(
-            'pgsql:host=localhost;port=5432;dbname=sources;user=postgres;password=password!'
-        );
-        $sourcesDataRepository->removeAllFor(['file_source', 'git_source', 'source']);
+        $sourcesDataRepository = new SourcesRepository();
+        $sourcesDataRepository->removeAllSources();
 
         $label = md5((string) rand());
         $addFileSourceResponse = $this->applicationClient->makeFileSourceAddRequest($label);
