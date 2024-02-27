@@ -8,6 +8,8 @@ use App\Enum\Routes;
 use App\RedirectRoute\RedirectRoute;
 use App\RedirectRoute\Serializer;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 readonly class RedirectResponseFactory
@@ -15,6 +17,7 @@ readonly class RedirectResponseFactory
     public function __construct(
         private UrlGeneratorInterface $urlGenerator,
         private Serializer $redirectRouteSerializer,
+        private RequestStack $requestStack,
     ) {
     }
 
@@ -36,5 +39,12 @@ readonly class RedirectResponseFactory
         $response->headers->setCookie(Cookie::create('token'));
 
         return $response;
+    }
+
+    public function createForCurrentUrl(): RedirectResponse
+    {
+        $request = $this->requestStack->getCurrentRequest();
+
+        return new RedirectResponse($request instanceof Request ? $request->getPathInfo() : '/');
     }
 }

@@ -8,7 +8,7 @@ use App\Enum\ApiService;
 use App\Exception\ApiException;
 use App\FormError\Factory;
 use App\Request\FileSourceFileRequest;
-use App\Response\RedirectResponse;
+use App\Response\RedirectResponseFactory;
 use App\Security\ApiKey;
 use App\SessionStore\RequestPayloadStore;
 use SmartAssert\ApiClient\Exception\ClientException;
@@ -16,7 +16,6 @@ use SmartAssert\ApiClient\FileClient;
 use SmartAssert\ApiClient\SourceClient;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment as TwigEnvironment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -29,8 +28,8 @@ readonly class FileSourceFileController
         private TwigEnvironment $twig,
         private SourceClient $sourceClient,
         private FileClient $fileClient,
-        private UrlGeneratorInterface $urlGenerator,
         private RequestPayloadStore $requestPayloadStore,
+        private RedirectResponseFactory $redirectResponseFactory,
     ) {
     }
 
@@ -74,9 +73,7 @@ readonly class FileSourceFileController
         FileSourceFileRequest $request,
         RequestPayloadStore $requestPayloadStore
     ): Response {
-        $response = new RedirectResponse(
-            $this->urlGenerator->generate('sources_view_file_source', ['id' => $request->sourceId])
-        );
+        $response = $this->redirectResponseFactory->createForCurrentUrl();
 
         try {
             $this->fileClient->create($apiKey->key, $request->sourceId, $request->filename, $request->content);
@@ -98,15 +95,7 @@ readonly class FileSourceFileController
         FileSourceFileRequest $request,
         RequestPayloadStore $requestPayloadStore
     ): Response {
-        $response = new RedirectResponse(
-            $this->urlGenerator->generate(
-                'sources_file_source_file_view',
-                [
-                    'id' => $request->sourceId,
-                    'filename' => $request->filename,
-                ]
-            )
-        );
+        $response = $this->redirectResponseFactory->createForCurrentUrl();
 
         try {
             $this->fileClient->update($apiKey->key, $request->sourceId, $request->filename, $request->content);
