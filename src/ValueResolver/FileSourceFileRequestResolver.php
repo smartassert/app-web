@@ -28,7 +28,11 @@ readonly class FileSourceFileRequestResolver implements ValueResolverInterface
             throw new UnresolvableFileSourceRequestException($request);
         }
 
-        $filename = $request->request->getString('filename');
+        $filename = $request->attributes->getString('filename');
+        if ('' === $filename) {
+            $filename = $request->request->getString('filename');
+        }
+
         $content = $request->request->getString('content');
 
         return [new FileSourceFileRequest($sourceId, $filename, $content)];

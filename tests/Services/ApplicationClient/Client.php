@@ -143,6 +143,23 @@ class Client
         return $response;
     }
 
+    public function makeFileSourceFileUpdateRequest(string $id, string $filename, string $content): ResponseInterface
+    {
+        $response = $this->client->makeRequest(
+            'POST',
+            '/sources/file/' . $id . '/' . $filename,
+            [
+                'cookie' => $this->getCredentials(),
+                'content-type' => 'application/x-www-form-urlencoded',
+            ],
+            http_build_query(['content' => $content])
+        );
+
+        $this->extractCredentialsFromResponse($response);
+
+        return $response;
+    }
+
     public function getCredentials(): string
     {
         if (!isset($this->sessionId) && !isset($this->token)) {
@@ -155,6 +172,17 @@ class Client
         }
 
         return sprintf('%s=%s; token=%s', $this->sessionIdentifier, $this->sessionId, $this->token);
+    }
+
+    public function makeFileSourceFileViewRequest(string $fileSourceId, string $filename): ResponseInterface
+    {
+        return $this->client->makeRequest(
+            'GET',
+            '/sources/file/' . $fileSourceId . '/' . $filename,
+            [
+                'cookie' => $this->getCredentials(),
+            ]
+        );
     }
 
     private function extractCredentialsFromResponse(ResponseInterface $response): void
