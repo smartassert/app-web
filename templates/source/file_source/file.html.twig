@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}File source "{{ source.label }}" file "{{ filename }}"{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1 style="display:inline;">File source "{{ source.label }}" file "{{ filename }}"</h1>
+
+    <form method="get" action="{{ path('dashboard') }}" style="display:inline; margin-left: 6px; vertical-align: super;">
+        <input type="submit" value="Dashboard">
+    </form>
+
+    <form method="get" action="{{ path('sources') }}" style="display:inline; margin-left: 6px; vertical-align: super;">
+        <input type="submit" value="Sources">
+    </form>
+
+    <form method="get" action="{{ path('sources_view_file_source', {id: source.id}) }}" style="display:inline; margin-left: 6px; vertical-align: super;">
+        <input type="submit" value="{{ source.label }}">
+    </form>
+
+    <form method="post" action="{{ path('log_out_handle') }}" style="display:inline; margin-left: 6px; vertical-align: super;">
+        <input type="submit" value="Log out">
+    </form>
+
+    {% set has_error = form_error and form_error.formName == 'file_source_file_update' %}
+    {% set file_source_file_content = has_error ? file_source_file_request.content : content %}
+
+    <h3>Modify "{{ filename }}"</h3>
+    <form
+            id="file_source_file_update"
+            method="post"
+            action="{{ path('sources_file_source_file_update', {id: source.id, filename: filename}) }}"
+            {% if has_error %}class="error"{% endif %}
+    >
+        {% if has_error %}<span class="error">{{ form_error.message }}</span><br>{% endif %}
+
+        <label
+                for="file_source_file_update_content"
+                style="vertical-align: top"
+                {% if has_error %}class="error"{% endif %}
+        >
+            Content
+        </label>
+        <textarea
+                id="file_source_file_update_content"
+                rows="20"
+                cols="80"
+                name="content"
+                {% if has_error %}class="error"{% endif %}
+        >{{ file_source_file_content }}</textarea>
+        <br>
+
+        <input type="submit" value="Modify">
+    </form>
+
+    {% if form_error %}
+        <form id="file_source_file_revert" method="get" action="{{ path(app.current_route, app.current_route_parameters) }}">
+            <input type="submit" value="Revert">
+        </form>
+    {% endif %}
+
+</div>
+{% endblock %}

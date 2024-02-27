@@ -29,7 +29,10 @@
     {% else %}
         <ul id="files_list">
             {% for file in files %}
-                <li>{{ file.path }} ({{ file.size}} bytes)</li>
+                <li>
+                    <a href="{{ path('sources_file_source_file_view', {id: source.id, filename: file.path}) }}">{{ file.path }}</a>
+                    ({{ file.size}} bytes)
+                </li>
             {% endfor %}
         </ul>
     {% endif %}
@@ -42,7 +45,7 @@
     <form
             id="file_source_file_add"
             method="post"
-            action="{{ path('sources_create_file_source_file', {id: source.id}) }}"
+            action="{{ path('sources_file_source_file_create', {id: source.id}) }}"
             {% if has_file_source_file_add_error %}class="error"{% endif %}
     >
         {% if has_file_source_file_add_error and form_error.fieldName == 'filename' %}<span class="error">{{ form_error.message }}</span><br>{% endif %}

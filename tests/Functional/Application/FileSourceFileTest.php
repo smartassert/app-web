@@ -7,6 +7,7 @@ namespace App\Tests\Functional\Application;
 use App\Tests\Application\AbstractFileSourceFileTest;
 use App\Tests\Services\DataRepository\SourcesRepository;
 use App\Tests\Services\EntityFactory\FileSourceFactory;
+use App\Tests\Services\EntityFactory\FileSourceFileFactory;
 
 class FileSourceFileTest extends AbstractFileSourceFileTest
 {
@@ -110,5 +111,39 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
                 'expectedContentHasError' => true,
             ],
         ];
+    }
+
+    public function testViewContentSuccess(): void
+    {
+        $sourcesDataRepository = new SourcesRepository();
+        $sourcesDataRepository->removeAllSources();
+
+        $fileSourceFactory = self::getContainer()->get(FileSourceFactory::class);
+        \assert($fileSourceFactory instanceof FileSourceFactory);
+
+        $fileSourceId = $fileSourceFactory->create($this->applicationClient, md5((string) rand()));
+        $filename = md5((string) rand()) . '.yaml';
+        $content = md5((string) rand());
+
+        $fileSourceFileFactory = self::getContainer()->get(FileSourceFileFactory::class);
+        \assert($fileSourceFileFactory instanceof FileSourceFileFactory);
+
+        $fileSourceFileFactory->create($this->applicationClient, $fileSourceId, $filename, $content);
+
+        $crawler = $this->kernelBrowser->request(
+            method: 'GET',
+            uri: '/sources/file/' . $fileSourceId . '/' . $filename,
+            server: [
+                'HTTP_COOKIE' => $this->applicationClient->getCredentials(),
+            ]
+        );
+
+        self::assertSame(200, $this->kernelBrowser->getResponse()->getStatusCode());
+
+        $modifyHeading = $crawler->filter('h3');
+        self::assertSame('Modify "' . $filename . '"', $modifyHeading->text());
+
+        $contentField = $crawler->filter('textarea');
+        self::assertSame($content, $contentField->html());
     }
 }
