@@ -8,5 +8,5 @@ use SmartAssert\ServiceRequest\Error\ErrorInterface;
 
 interface ErrorHandlerInterface
 {
-    public function create(ErrorInterface $error): ?string;
+    public function create(string $formName, ErrorInterface $error): ?string;
 }

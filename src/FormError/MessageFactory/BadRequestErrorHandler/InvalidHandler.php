@@ -8,7 +8,7 @@ use SmartAssert\ServiceRequest\Error\BadRequestErrorInterface;
 
 class InvalidHandler implements TypeHandlerInterface
 {
-    public function create(string $type, BadRequestErrorInterface $error): ?string
+    public function create(string $formName, string $type, BadRequestErrorInterface $error): ?string
     {
         if ('invalid' !== $type) {
             return null;

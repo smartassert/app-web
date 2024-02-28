@@ -43,6 +43,6 @@ readonly class Factory
             ? $innerError->getParameter()->getName()
             : null;
 
-        return new FormError($formName, $fieldName, $this->messageFactory->generate($innerError));
+        return new FormError($formName, $fieldName, $this->messageFactory->generate($formName, $innerError));
     }
 }

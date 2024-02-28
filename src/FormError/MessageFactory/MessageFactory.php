@@ -29,10 +29,10 @@ readonly class MessageFactory
         $this->handlers = $filteredErrorHandlers;
     }
 
-    public function generate(ErrorInterface $error): string
+    public function generate(string $formName, ErrorInterface $error): string
     {
         foreach ($this->handlers as $handler) {
-            $message = $handler->create($error);
+            $message = $handler->create($formName, $error);
 
             if (is_string($message)) {
                 return $message;
