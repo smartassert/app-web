@@ -29,6 +29,42 @@ abstract class AbstractFileSourceFileTest extends AbstractApplicationTestCase
         self::assertSame('/sources/file/' . $fileSourceId, $response->getHeaderLine('location'));
     }
 
+    public function testCreateDuplicateFilename(): void
+    {
+        $sourcesDataRepository = new SourcesRepository();
+        $sourcesDataRepository->removeAllSources();
+
+        $fileSourceFactory = self::getContainer()->get(FileSourceFactory::class);
+        \assert($fileSourceFactory instanceof FileSourceFactory);
+
+        $fileSourceId = $fileSourceFactory->create($this->applicationClient, md5((string) rand()));
+
+        $filename = md5((string) rand()) . '.yaml';
+        $content = md5((string) rand());
+
+        $this->applicationClient->makeFileSourceFileCreateRequest($fileSourceId, $filename, $content);
+        $createResponse = $this->applicationClient->makeFileSourceFileCreateRequest($fileSourceId, $filename, $content);
+
+        self::assertSame(302, $createResponse->getStatusCode());
+        self::assertSame('/sources/file/' . $fileSourceId, $createResponse->getHeaderLine('location'));
+
+        $viewResponse = $this->applicationClient->makeFileSourceReadRequest($fileSourceId);
+        self::assertSame(200, $viewResponse->getStatusCode());
+
+        self::assertStringContainsString(
+            sprintf(
+                '<span class="error">' .
+                'File source "%s" already has a file named "<a href="/sources/file/%s/%s">%s</a>".' .
+                '</span>',
+                $fileSourceId,
+                $fileSourceId,
+                $filename,
+                $filename,
+            ),
+            $viewResponse->getBody()->getContents()
+        );
+    }
+
     public function testViewSuccess(): void
     {
         $sourcesDataRepository = new SourcesRepository();

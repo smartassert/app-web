@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\FormError\MessageFactory\BadRequestErrorHandler;
+namespace App\FormError\MessageFactory\DuplicateObjectErrorHandler;
 
 use App\FormError\MessageFactory\ErrorHandlerInterface;
-use SmartAssert\ServiceRequest\Error\BadRequestErrorInterface;
+use SmartAssert\ServiceRequest\Error\DuplicateObjectErrorInterface;
 use SmartAssert\ServiceRequest\Error\ErrorInterface;
 
-class BadRequestErrorHandler implements ErrorHandlerInterface
+class DuplicateObjectErrorHandler implements ErrorHandlerInterface
 {
     /**
      * @var iterable<TypeHandlerInterface>
@@ -33,21 +33,18 @@ class BadRequestErrorHandler implements ErrorHandlerInterface
 
     public function create(string $formName, ErrorInterface $error): ?string
     {
-        if (!$error instanceof BadRequestErrorInterface) {
+        if (!$error instanceof DuplicateObjectErrorInterface) {
             return null;
         }
 
-        $type = $error->getType();
-        if (is_string($type)) {
-            foreach ($this->handlers as $handler) {
-                $message = $handler->create($formName, $type, $error);
+        foreach ($this->handlers as $handler) {
+            $message = $handler->create($formName, $error);
 
-                if (is_string($message)) {
-                    return $message;
-                }
+            if (is_string($message)) {
+                return $message;
             }
         }
 
-        return 'bad request!';
+        return 'duplicate object!';
     }
 }

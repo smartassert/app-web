@@ -8,7 +8,7 @@ use SmartAssert\ServiceRequest\Error\BadRequestErrorInterface;
 
 class WrongSizeHandler implements TypeHandlerInterface
 {
-    public function create(string $type, BadRequestErrorInterface $error): ?string
+    public function create(string $formName, string $type, BadRequestErrorInterface $error): ?string
     {
         if ('wrong_size' !== $type) {
             return null;

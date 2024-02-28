@@ -27,6 +27,24 @@ readonly class RequestPayloadStore
      */
     public function get(string $expectedType): ?object
     {
+        $payload = $this->peek($expectedType);
+
+        if (null !== $payload) {
+            $this->requestStack->getCurrentRequest()?->getSession()->remove('payload');
+        }
+
+        return $payload;
+    }
+
+    /**
+     * @template T of object
+     *
+     * @param class-string<T> $expectedType
+     *
+     * @return null|T
+     */
+    public function peek(string $expectedType): ?object
+    {
         $request = $this->requestStack->getCurrentRequest();
         if (null === $request) {
             return null;
@@ -38,8 +56,6 @@ readonly class RequestPayloadStore
         if (!$payload instanceof $expectedType) {
             return null;
         }
-
-        $session->remove('payload');
 
         return $payload;
     }

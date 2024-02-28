@@ -26,6 +26,9 @@ services:
         App\FormError\MessageFactory\BadRequestErrorHandler\TypeHandlerInterface:
             tags: ['app.form_error.message_factory.error_handler.bad_request.type']
 
+        App\FormError\MessageFactory\DuplicateObjectErrorHandler\TypeHandlerInterface:
+            tags: ['app.form_error.message_factory.error_handler.duplicate_object.type']
+
     App\Controller\:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
@@ -107,6 +110,10 @@ services:
     App\FormError\MessageFactory\BadRequestErrorHandler\BadRequestErrorHandler:
         arguments:
             $handlers: !tagged_iterator 'app.form_error.message_factory.error_handler.bad_request.type'
+
+    App\FormError\MessageFactory\DuplicateObjectErrorHandler\DuplicateObjectErrorHandler:
+        arguments:
+            $handlers: !tagged_iterator 'app.form_error.message_factory.error_handler.duplicate_object.type'
 
     App\FormError\MessageFactory\MessageFactory:
         arguments:

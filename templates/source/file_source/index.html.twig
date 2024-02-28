@@ -48,7 +48,7 @@
             action="{{ path('sources_file_source_file_create', {id: source.id}) }}"
             {% if has_file_source_file_add_error %}class="error"{% endif %}
     >
-        {% if has_file_source_file_add_error and form_error.fieldName == 'filename' %}<span class="error">{{ form_error.message }}</span><br>{% endif %}
+        {% if has_file_source_file_add_error and form_error.fieldName == 'filename' %}<span class="error">{{ form_error.message|raw }}</span><br>{% endif %}
         <label
                 for="file_source_file_add_filename"
                 {% if has_file_source_file_add_error and form_error.fieldName == 'filename' %}class="error"{% endif %}
