@@ -23,50 +23,55 @@
     {{ include ('partial/suite/list.html.twig') }}
 
     <h3>Add suite</h3>
-    <form
-            id="suite_add"
-            method="post"
-            action="{{ path('suites') }}"
-    >
 
-        <label
-                for="suite_add_source_id"
+    {% if sources|length == 0 %}
+        A test suite need a test source. <a href="{{ path('sources') }}">Add a source</a> before adding a suite.
+    {% else %}
+        <form
+                id="suite_add"
+                method="post"
+                action="{{ path('suites') }}"
         >
-            Test source
-        </label>
-        <select name="source_id" id="suite_add_source_id">
-            {% for source in sources %}
-                <option value="{{ source.id }}">({{ source.type }} source) {{ source.label }}</option>
-            {% endfor %}
-        </select>
-        <br>
 
-        <label
-                for="suite_add_label"
-        >
-            Label
-        </label>
-        <input
-                id="suite_add_label"
-                type="text" name="label"
-        >
-        <br>
+            <label
+                    for="suite_add_source_id"
+            >
+                Test source
+            </label>
+            <select name="source_id" id="suite_add_source_id">
+                {% for source in sources %}
+                    <option value="{{ source.id }}">({{ source.type }} source) {{ source.label }}</option>
+                {% endfor %}
+            </select>
+            <br>
 
-        <label
-                for="suite_add_tests"
-        >
-            Tests (filenames as present in source, one per line)
-        </label>
+            <label
+                    for="suite_add_label"
+            >
+                Label
+            </label>
+            <input
+                    id="suite_add_label"
+                    type="text" name="label"
+            >
+            <br>
 
-        <textarea
-                id="suite_add_tests"
-                rows="20"
-                cols="80"
-                name="tests"
-        ></textarea>
-        <br>
+            <label
+                    for="suite_add_tests"
+            >
+                Tests (filenames as present in source, one per line)
+            </label>
 
-        <input type="submit" value="Add suites">
-    </form>
+            <textarea
+                    id="suite_add_tests"
+                    rows="20"
+                    cols="80"
+                    name="tests"
+            ></textarea>
+            <br>
+
+            <input type="submit" value="Add suites">
+        </form>
+    {% endif %}
 </div>
 {% endblock %}
