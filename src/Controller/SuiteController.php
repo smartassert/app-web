@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Enum\ApiService;
-use App\Enum\Routes;
 use App\Exception\ApiException;
 use App\Security\ApiKey;
 use SmartAssert\ApiClient\Exception\ClientException;
-use SmartAssert\ApiClient\SourceClient;
 use SmartAssert\ApiClient\SuiteClient;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,11 +16,10 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-readonly class DashboardController
+readonly class SuiteController
 {
     public function __construct(
         private TwigEnvironment $twig,
-        private SourceClient $sourceClient,
         private SuiteClient $suiteClient,
     ) {
     }
@@ -33,20 +30,18 @@ readonly class DashboardController
      * @throws LoaderError
      * @throws ApiException
      */
-    #[Route('/', name: Routes::DASHBOARD_NAME->value, methods: ['GET'])]
+    #[Route('/suites', name: 'suites', methods: ['GET'])]
     public function index(ApiKey $apiKey): Response
     {
         try {
-            $sources = $this->sourceClient->list($apiKey->key);
             $suites = $this->suiteClient->list($apiKey->key);
-        } catch (ClientException $clientException) {
-            throw new ApiException(ApiService::SOURCES, $clientException);
+        } catch (ClientException $e) {
+            throw new ApiException(ApiService::SOURCES, $e);
         }
 
         return new Response($this->twig->render(
-            'dashboard/index.html.twig',
+            'suite/index.html.twig',
             [
-                'sources' => $sources,
                 'suites' => $suites,
             ]
         ));

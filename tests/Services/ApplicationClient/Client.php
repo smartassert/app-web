@@ -185,6 +185,21 @@ class Client
         );
     }
 
+    public function makeSuitesReadRequest(?string $credentials = null): ResponseInterface
+    {
+        $credentials = null === $credentials ? $this->getCredentials() : $credentials;
+
+        $response = $this->client->makeRequest(
+            'GET',
+            '/suites',
+            ['cookie' => $credentials]
+        );
+
+        $this->extractCredentialsFromResponse($response);
+
+        return $response;
+    }
+
     private function extractCredentialsFromResponse(ResponseInterface $response): void
     {
         $sessionId = $this->responseCookieExtractor->extract($response, $this->sessionIdentifier);
