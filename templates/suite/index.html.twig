@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Suites{% endblock %}
 
 {% block body %}
 <style>
@@ -9,18 +9,17 @@
 </style>
 
 <div class="example-wrapper">
-    <h1 style="display:inline;">Dashboard</h1>
+    <h1 style="display:inline;">Suites</h1>
+
+    <form method="get" action="{{ path('dashboard') }}" style="display:inline; margin-left: 6px; vertical-align: super;">
+        <input type="submit" value="Dashboard">
+    </form>
 
     <form method="post" action="{{ path('log_out_handle') }}" style="display:inline; margin-left: 6px; vertical-align: super;">
         <input type="submit" value="Log out">
     </form>
 
-    <h2>Sources</h2>
+    <h2>Suites</h2>
     {{ include ('partial/suite/list.html.twig') }}
-    <a href="{{ path('suites') }}">Manage suites</a>
-
-    <h2>Sources</h2>
-    {{ include ('partial/source/list.html.twig') }}
-    <a href="{{ path('sources') }}">Manage sources</a>
 </div>
 {% endblock %}

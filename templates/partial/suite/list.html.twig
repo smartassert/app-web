@@ -1,0 +1,11 @@
+{% if suites|length == 0 %}
+<p>You have no suites.</p>
+{% else %}
+<ul id="suites_list">
+    {% for suite in suites %}
+        <li>
+            {{ suite.label }}
+        </li>
+    {% endfor %}
+</ul>
+{% endif %}
