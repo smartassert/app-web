@@ -12,6 +12,7 @@ use App\Response\RedirectResponseFactory;
 use App\Security\RequestTokenExtractor;
 use App\Security\User;
 use SmartAssert\ApiClient\Exception\ClientException;
+use SmartAssert\ApiClient\Exception\ForbiddenException;
 use SmartAssert\ApiClient\Exception\UnauthorizedException;
 use SmartAssert\ApiClient\UsersClient;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
@@ -82,7 +83,10 @@ readonly class Authenticator implements AuthenticatorInterface
                 } catch (ClientException $clientException) {
                     $innerException = $clientException->getInnerException();
 
-                    if ($innerException instanceof UnauthorizedException) {
+                    if (
+                        $innerException instanceof UnauthorizedException
+                        || $innerException instanceof ForbiddenException
+                    ) {
                         throw new BadCredentialsException();
                     }
                 }

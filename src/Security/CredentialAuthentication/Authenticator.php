@@ -18,6 +18,7 @@ use App\Security\ApiKeyBadge;
 use App\Security\User;
 use App\SessionStore\ErrorStore;
 use SmartAssert\ApiClient\Exception\ClientException;
+use SmartAssert\ApiClient\Exception\ForbiddenException;
 use SmartAssert\ApiClient\Exception\UnauthorizedException;
 use SmartAssert\ApiClient\UsersClient;
 use Symfony\Component\HttpFoundation\Request;
@@ -81,7 +82,7 @@ readonly class Authenticator implements AuthenticatorInterface
         } catch (ClientException $clientException) {
             $innerException = $clientException->getInnerException();
 
-            if ($innerException instanceof UnauthorizedException) {
+            if ($innerException instanceof UnauthorizedException || $innerException instanceof ForbiddenException) {
                 throw throw new BadCredentialsException($userIdentifier);
             }
 
