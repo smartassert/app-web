@@ -15,4 +15,10 @@ class SourcesRepository extends DataRepository
     {
         $this->removeAllFor(['file_source', 'git_source', 'source']);
     }
+
+    public function removeAllSuites(): void
+    {
+        $this->removeAllSources();
+        $this->removeAllFor(['suite']);
+    }
 }
