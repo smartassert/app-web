@@ -6,8 +6,10 @@ namespace App\Controller;
 
 use App\Enum\ApiService;
 use App\Exception\ApiException;
+use App\Request\SuiteCreateRequest;
 use App\Response\RedirectResponse;
 use App\Security\ApiKey;
+use App\SessionStore\RequestPayloadStore;
 use SmartAssert\ApiClient\Exception\ClientException;
 use SmartAssert\ApiClient\SourceClient;
 use SmartAssert\ApiClient\SuiteClient;
@@ -26,6 +28,7 @@ readonly class SuiteController
         private SourceClient $sourceClient,
         private SuiteClient $suiteClient,
         private UrlGeneratorInterface $urlGenerator,
+        private RequestPayloadStore $requestPayloadStore,
     ) {
     }
 
@@ -54,9 +57,22 @@ readonly class SuiteController
         ));
     }
 
+    /**
+     * @throws ApiException
+     */
     #[Route('/suites', name: 'suite_create', methods: ['POST'])]
-    public function create(): Response
+    public function create(ApiKey $apiKey, SuiteCreateRequest $request): Response
     {
-        return new RedirectResponse($this->urlGenerator->generate('suites'));
+        $response = new RedirectResponse($this->urlGenerator->generate('suites'));
+
+        try {
+            $this->suiteClient->create($apiKey->key, $request->sourceId, $request->label, $request->tests);
+        } catch (\Throwable $e) {
+            $this->requestPayloadStore->set($request);
+
+            throw new ApiException(ApiService::SOURCES, $e, $response);
+        }
+
+        return $response;
     }
 }
