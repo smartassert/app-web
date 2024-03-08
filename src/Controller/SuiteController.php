@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Enum\ApiService;
 use App\Exception\ApiException;
+use App\FormError\Factory;
 use App\Request\SuiteCreateRequest;
 use App\Response\RedirectResponse;
 use App\Security\ApiKey;
@@ -39,7 +40,7 @@ readonly class SuiteController
      * @throws ApiException
      */
     #[Route('/suites', name: 'suites', methods: ['GET'])]
-    public function index(ApiKey $apiKey): Response
+    public function index(ApiKey $apiKey, Factory $formErrorFactory): Response
     {
         try {
             $sources = $this->sourceClient->list($apiKey->key);
@@ -51,6 +52,7 @@ readonly class SuiteController
         return new Response($this->twig->render(
             'suite/index.html.twig',
             [
+                'form_error' => $formErrorFactory->create(),
                 'sources' => $sources,
                 'suites' => $suites,
             ]

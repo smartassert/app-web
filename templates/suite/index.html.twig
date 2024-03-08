@@ -21,6 +21,7 @@
 
     <h2>Suites</h2>
     {{ include ('partial/suite/list.html.twig') }}
+    {% set has_suite_add_error = form_error and form_error.formName == 'suite_add' %}
 
     <h3>Add suite</h3>
 
@@ -31,13 +32,9 @@
                 id="suite_add"
                 method="post"
                 action="{{ path('suites') }}"
+                {% if has_suite_add_error %}class="error"{% endif %}
         >
-
-            <label
-                    for="suite_add_source_id"
-            >
-                Test source
-            </label>
+            <label for="suite_add_source_id">Test source</label>
             <select name="source_id" id="suite_add_source_id">
                 {% for source in sources %}
                     <option value="{{ source.id }}">({{ source.type }} source) {{ source.label }}</option>
@@ -45,14 +42,17 @@
             </select>
             <br>
 
+            {% if has_suite_add_error %}<span class="error">{{ form_error.message }}</span><br>{% endif %}
             <label
                     for="suite_add_label"
+                    {% if has_suite_add_error and form_error.fieldName == 'label' %}class="error"{% endif %}
             >
                 Label
             </label>
             <input
                     id="suite_add_label"
                     type="text" name="label"
+                    {% if has_suite_add_error and form_error.fieldName == 'label' %}class="error"{% endif %}
             >
             <br>
 
