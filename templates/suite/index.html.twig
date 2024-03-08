@@ -37,7 +37,10 @@
             <label for="suite_add_source_id">Test source</label>
             <select name="source_id" id="suite_add_source_id">
                 {% for source in sources %}
-                    <option value="{{ source.id }}">({{ source.type }} source) {{ source.label }}</option>
+                    <option
+                            value="{{ source.id }}"
+                            {% if suite_create_request and suite_create_request.sourceId == source.id %}selected{% endif %}
+                    >({{ source.type }} source) {{ source.label }}</option>
                 {% endfor %}
             </select>
             <br>
@@ -52,6 +55,7 @@
             <input
                     id="suite_add_label"
                     type="text" name="label"
+                    value="{{ suite_create_request ? suite_create_request.label : '' }}"
                     {% if has_suite_add_error and form_error.fieldName == 'label' %}class="error"{% endif %}
             >
             <br>
@@ -67,7 +71,7 @@
                     rows="20"
                     cols="80"
                     name="tests"
-            ></textarea>
+            >{{ suite_create_request ? suite_create_request.tests|join : '' }}</textarea>
             <br>
 
             <input type="submit" value="Add suite">
