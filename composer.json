@@ -6,6 +6,7 @@
     "require": {
         "php": ">=8.3",
         "ext-ctype": "*",
+        "ext-dom": "*",
         "ext-iconv": "*",
         "defuse/php-encryption": "^2.4",
         "doctrine/doctrine-bundle": "^2.10",

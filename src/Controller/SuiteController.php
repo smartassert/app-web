@@ -55,6 +55,7 @@ readonly class SuiteController
                 'form_error' => $formErrorFactory->create(),
                 'sources' => $sources,
                 'suites' => $suites,
+                'suite_create_request' => $this->requestPayloadStore->get(SuiteCreateRequest::class),
             ]
         ));
     }

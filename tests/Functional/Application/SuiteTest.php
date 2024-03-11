@@ -98,6 +98,7 @@ class SuiteTest extends AbstractApplicationTestCase
         self::assertSame(0, $suitesList->count());
 
         $suiteLabel = str_repeat('.', 256);
+        $suiteTests = 'test1.yaml';
 
         $formElement = $crawler->filter('#suite_add');
         self::assertNull($formElement->attr('class'));
@@ -105,16 +106,35 @@ class SuiteTest extends AbstractApplicationTestCase
         $errorContainer = $formElement->filter('span.error');
         self::assertSame(0, $errorContainer->count());
 
-        $formFieldLabel = $formElement->filter('[for=suite_add_label]');
-        self::assertNull($formFieldLabel->attr('class'));
+        $sourceIdLabel = $formElement->filter('[for=suite_add_source_id]');
+        self::assertNull($sourceIdLabel->attr('class'));
 
-        $formField = $formElement->filter('#suite_add_label');
-        self::assertNull($formField->attr('class'));
+        $sourceIdField = $formElement->filter('#suite_add_source_id');
+        self::assertNull($sourceIdField->attr('class'));
+
+        $sourceIdOptions = $sourceIdField->filter('option');
+        foreach ($sourceIdOptions as $sourceIdOption) {
+            self::assertInstanceOf(\DOMElement::class, $sourceIdOption);
+            self::assertFalse($sourceIdOption->hasAttribute('selected'));
+        }
+
+        $labelLabel = $formElement->filter('[for=suite_add_label]');
+        self::assertNull($labelLabel->attr('class'));
+
+        $labelField = $formElement->filter('#suite_add_label');
+        self::assertNull($labelField->attr('class'));
+        self::assertEmpty($labelField->attr('value'));
+
+        $testsLabel = $formElement->filter('[for=suite_add_tests]');
+        self::assertNull($testsLabel->attr('class'));
+
+        $testsField = $formElement->filter('#suite_add_tests');
+        self::assertEmpty($testsField->html());
 
         $addSuiteForm = $crawler->filter('#suite_add input[type=submit]')->form([
             'label' => $suiteLabel,
             'source_id' => $fileSourceId,
-            'tests' => '',
+            'tests' => $suiteTests,
         ]);
         $this->kernelBrowser->submit($addSuiteForm);
 
@@ -142,10 +162,32 @@ class SuiteTest extends AbstractApplicationTestCase
         self::assertSame(1, $errorContainer->count());
         self::assertSame('This value must be between 1 and 255 characters long.', $errorContainer->innerText());
 
-        $formFieldLabel = $formElement->filter('[for=suite_add_label]');
-        self::assertSame('error', $formFieldLabel->attr('class'));
+        $sourceIdLabel = $formElement->filter('[for=suite_add_source_id]');
+        self::assertNull($sourceIdLabel->attr('class'));
 
-        $formField = $formElement->filter('#suite_add_label');
-        self::assertSame('error', $formField->attr('class'));
+        $sourceIdField = $formElement->filter('#suite_add_source_id');
+        self::assertNull($sourceIdField->attr('class'));
+
+        $sourceIdOptions = $sourceIdField->filter('option');
+        foreach ($sourceIdOptions as $sourceIdOption) {
+            self::assertInstanceOf(\DOMElement::class, $sourceIdOption);
+            self::assertSame(
+                $sourceIdOption->getAttribute('value') === $fileSourceId,
+                $sourceIdOption->hasAttribute('selected')
+            );
+        }
+
+        $labelLabel = $formElement->filter('[for=suite_add_label]');
+        self::assertSame('error', $labelLabel->attr('class'));
+
+        $labelField = $formElement->filter('#suite_add_label');
+        self::assertSame('error', $labelField->attr('class'));
+        self::assertSame($suiteLabel, $labelField->attr('value'));
+
+        $testsLabel = $formElement->filter('[for=suite_add_tests]');
+        self::assertNull($testsLabel->attr('class'));
+
+        $testsField = $formElement->filter('#suite_add_tests');
+        self::assertSame($suiteTests, $testsField->text());
     }
 }
