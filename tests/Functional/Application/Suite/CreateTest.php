@@ -2,13 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Functional\Application;
+namespace App\Tests\Functional\Application\Suite;
 
 use App\Tests\Application\AbstractApplicationTestCase;
+use App\Tests\Functional\Application\GetClientAdapterTrait;
+use App\Tests\Functional\Application\GetSessionIdentifierTrait;
 use App\Tests\Services\DataRepository\SourcesRepository;
 use App\Tests\Services\EntityFactory\FileSourceFactory;
 
-class SuiteTest extends AbstractApplicationTestCase
+class CreateTest extends AbstractApplicationTestCase
 {
     use GetClientAdapterTrait;
     use GetSessionIdentifierTrait;

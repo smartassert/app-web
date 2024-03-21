@@ -4,7 +4,7 @@
 <ul id="suites_list">
     {% for suite in suites %}
         <li>
-            {{ suite.label }}
+            <a href="{{ path('suite_view', {'id': suite.id}) }}">{{ suite.label }}</a>
         </li>
     {% endfor %}
 </ul>
