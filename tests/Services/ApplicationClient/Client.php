@@ -200,6 +200,41 @@ class Client
         return $response;
     }
 
+    /**
+     * @param string[] $tests
+     */
+    public function makeCreateSuiteRequest(string $sourceId, string $label, array $tests): ResponseInterface
+    {
+        $response = $this->client->makeRequest(
+            'POST',
+            '/suites',
+            [
+                'cookie' => $this->getCredentials(),
+                'content-type' => 'application/x-www-form-urlencoded',
+            ],
+            http_build_query(['source_id' => $sourceId, 'label' => $label, 'tests' => $tests])
+        );
+
+        $this->extractCredentialsFromResponse($response);
+
+        return $response;
+    }
+
+    public function makeViewSuiteRequest(string $suiteId): ResponseInterface
+    {
+        $response = $this->client->makeRequest(
+            'GET',
+            '/suite/' . $suiteId,
+            [
+                'cookie' => $this->getCredentials(),
+            ]
+        );
+
+        $this->extractCredentialsFromResponse($response);
+
+        return $response;
+    }
+
     private function extractCredentialsFromResponse(ResponseInterface $response): void
     {
         $sessionId = $this->responseCookieExtractor->extract($response, $this->sessionIdentifier);

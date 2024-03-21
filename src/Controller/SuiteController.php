@@ -8,6 +8,7 @@ use App\Enum\ApiService;
 use App\Exception\ApiException;
 use App\FormError\Factory;
 use App\Request\SuiteCreateRequest;
+use App\Request\SuiteUpdateRequest;
 use App\Response\RedirectResponse;
 use App\Security\ApiKey;
 use App\SessionStore\RequestPayloadStore;
@@ -77,5 +78,40 @@ readonly class SuiteController
         }
 
         return $response;
+    }
+
+    /**
+     * @param non-empty-string $id
+     *
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws LoaderError
+     * @throws ApiException
+     */
+    #[Route('/suite/{id<[A-Z90-9]{26}>}', name: 'suite_view', methods: ['GET'])]
+    public function view(ApiKey $apiKey, Factory $formErrorFactory, string $id): Response
+    {
+        try {
+            $sources = $this->sourceClient->list($apiKey->key);
+            $suite = $this->suiteClient->get($apiKey->key, $id);
+        } catch (ClientException $e) {
+            throw new ApiException(ApiService::SOURCES, $e);
+        }
+
+        return new Response($this->twig->render(
+            'suite/view.html.twig',
+            [
+                'form_error' => $formErrorFactory->create(),
+                'sources' => $sources,
+                'suite_update_request' => $this->requestPayloadStore->get(SuiteUpdateRequest::class),
+                'suite' => $suite,
+            ]
+        ));
+    }
+
+    #[Route('/suite/{id<[A-Z90-9]{26}>}', name: 'suite_update', methods: ['POST'])]
+    public function update(string $id): Response
+    {
+        return new RedirectResponse($this->urlGenerator->generate('suite_view', ['id' => $id]));
     }
 }
