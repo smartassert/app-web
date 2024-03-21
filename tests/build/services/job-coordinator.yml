@@ -1,0 +1,30 @@
+services:
+  job-coordinator-service:
+    image: ghcr.io/smartassert/job-coordinator:2.0
+    container_name: job-coordinator-service
+    environment:
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/job-coordinator?serverVersion=12&charset=utf8
+      AUTHENTICATION_BASE_URL: http://users-http
+      RESULTS_BASE_URL: http://results-http
+      WORKER_MANAGER_BASE_URL: http://worker-manager-http
+      SOURCES_BASE_URL: http://sources-http
+      VERSION: 1.0
+      IS_READY: 1
+    depends_on:
+      - postgres
+      - users-http
+      - sources-http
+      - results-http
+      - worker-manager-http
+
+  job-coordinator-http:
+    image: caddy:2.4.5-alpine
+    container_name: job-coordinator-http
+    restart: unless-stopped
+    ports:
+      - "9085:80"
+    links:
+      - job-coordinator-service:app
+    volumes:
+      - .././http-config/caddy/index.php:/app/public/index.php
+      - .././http-config/caddy/Caddyfile:/etc/caddy/Caddyfile

@@ -101,7 +101,10 @@
             "sleep 2",
             "@db-setup",
             "@users-setup",
-            "@sources-setup"
+            "@sources-setup",
+            "@results-setup",
+            "@worker-manager-setup",
+            "@job-coordinator-setup"
         ],
         "users-db-setup": [
             "docker compose -f tests/build/docker-compose.yml exec -T users-service php bin/console doctrine:database:create --if-not-exists",
@@ -121,6 +124,20 @@
             "docker compose -f ./tests/build/docker-compose.yml exec -T sources-service php bin/console doctrine:database:create --if-not-exists",
             "docker compose -f ./tests/build/docker-compose.yml exec -T sources-service php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration"
         ],
+        "results-setup": [
+            "docker compose -f tests/build/docker-compose.yml exec -T results-service php bin/console doctrine:database:create --if-not-exists",
+            "docker compose -f tests/build/docker-compose.yml exec -T results-service php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --all-or-nothing"
+        ],
+        "worker-manager-setup": [
+            "docker compose -f tests/build/docker-compose.yml exec -T worker-manager-service php bin/console doctrine:database:create --if-not-exists",
+            "docker compose -f tests/build/docker-compose.yml exec -T worker-manager-service php bin/console messenger:setup-transports",
+            "docker compose -f tests/build/docker-compose.yml exec -T worker-manager-service php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --all-or-nothing"
+        ],
+        "job-coordinator-setup": [
+            "docker compose -f tests/build/docker-compose.yml exec -T job-coordinator-service php bin/console doctrine:database:create --if-not-exists",
+            "docker compose -f tests/build/docker-compose.yml exec -T job-coordinator-service php bin/console messenger:setup-transports",
+            "docker compose -f tests/build/docker-compose.yml exec -T job-coordinator-service php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --all-or-nothing"
+        ],
         "integration-build": "docker compose -f tests/build/docker-compose.yml build app",
         "integration-pull": "docker compose -f tests/build/docker-compose.yml pull",
         "integration-up": "docker compose -f ./tests/build/docker-compose.yml --profile functional --profile integration up -d",
@@ -130,7 +147,10 @@
             "sleep 2",
             "@db-setup",
             "@users-setup",
-            "@sources-setup"
+            "@sources-setup",
+            "@results-setup",
+            "@worker-manager-setup",
+            "@job-coordinator-setup"
         ],
         "integration-status": "docker compose -f ./tests/build/docker-compose.yml --profile functional --profile integration ps",
         "integration-logs": "docker compose -f tests/build/docker-compose.yml logs",

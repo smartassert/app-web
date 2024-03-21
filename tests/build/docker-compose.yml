@@ -2,6 +2,9 @@ include:
   - path: ./services/users.yml
   - path: ./services/api-gateway.yml
   - path: ./services/sources.yml
+  - path: ./services/results.yml
+  - path: ./services/worker-manager.yml
+  - path: ./services/job-coordinator.yml
 
 services:
   postgres:

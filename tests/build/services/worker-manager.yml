@@ -1,0 +1,27 @@
+services:
+  worker-manager-service:
+    image: ghcr.io/smartassert/worker-manager:1.0
+    container_name: worker-manager-service
+    environment:
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/worker_manager?serverVersion=12&charset=utf8
+      AUTHENTICATION_BASE_URL: http://users-http
+      MESSENGER_TRANSPORT_DSN: doctrine://default
+      PRIMARY_DIGITALOCEAN_API_TOKEN: ${PRIMARY_DIGITALOCEAN_API_TOKEN}
+      SECONDARY_DIGITALOCEAN_API_TOKEN: ${SECONDARY_DIGITALOCEAN_API_TOKEN}
+      VERSION: 1.0
+      IS_READY: 1
+    depends_on:
+      - postgres
+      - users-http
+
+  worker-manager-http:
+    image: caddy:2.4.5-alpine
+    container_name: worker-manager-http
+    restart: unless-stopped
+    ports:
+      - "9084:80"
+    links:
+      - worker-manager-service:app
+    volumes:
+      - .././http-config/caddy/index.php:/app/public/index.php
+      - .././http-config/caddy/Caddyfile:/etc/caddy/Caddyfile
