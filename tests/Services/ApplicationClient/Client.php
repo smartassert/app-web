@@ -21,8 +21,8 @@ class Client
     }
 
     public function makeSignInPageReadRequest(
-        string $userIdentifier = null,
-        string $credentials = null,
+        ?string $userIdentifier = null,
+        ?string $credentials = null,
         string $method = 'GET'
     ): ResponseInterface {
         $url = '/sign-in/';
