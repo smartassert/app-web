@@ -19,7 +19,7 @@ readonly class AuthenticationEntryPoint implements AuthenticationEntryPointInter
     ) {
     }
 
-    public function start(Request $request, AuthenticationException $authException = null): Response
+    public function start(Request $request, ?AuthenticationException $authException = null): Response
     {
         return $this->redirectResponseFactory->createForSignIn(
             userIdentifier: null,
