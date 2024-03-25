@@ -109,9 +109,28 @@ readonly class SuiteController
         ));
     }
 
+    /**
+     * @throws ApiException
+     */
     #[Route('/suite/{id<[A-Z90-9]{26}>}', name: 'suite_update', methods: ['POST'])]
-    public function update(string $id): Response
+    public function update(ApiKey $apiKey, SuiteUpdateRequest $request): Response
     {
-        return new RedirectResponse($this->urlGenerator->generate('suite_view', ['id' => $id]));
+        $response = new RedirectResponse($this->urlGenerator->generate('suite_view', ['id' => $request->id]));
+
+        try {
+            $this->suiteClient->update(
+                $apiKey->key,
+                $request->id,
+                $request->sourceId,
+                $request->label,
+                $request->tests
+            );
+        } catch (\Throwable $e) {
+            $this->requestPayloadStore->set($request);
+
+            throw new ApiException(ApiService::SOURCES, $e, $response);
+        }
+
+        return $response;
     }
 }

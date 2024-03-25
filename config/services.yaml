@@ -128,3 +128,4 @@ services:
                 "post_file-source-file": "file_source_file_add"
                 "put_file-source-file": "file_source_file_update"
                 "post_suite": "suite_add"
+                "put_suite": "suite_update"

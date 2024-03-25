@@ -48,7 +48,7 @@
             </select>
             <br>
 
-            {% if has_suite_update_error %}<span class="error">{{ form_error.message }}</span><br>{% endif %}
+            {% if has_suite_update_error and form_error.fieldName == 'label'%}<span class="error" data-for="suite_update_label">{{ form_error.message }}</span><br>{% endif %}
             <label
                     for="suite_update_label"
                     {% if has_suite_update_error and form_error.fieldName == 'label' %}class="error"{% endif %}
@@ -63,8 +63,10 @@
             >
             <br>
 
+            {% if has_suite_update_error and form_error.fieldName == 'tests'%}<span class="error" data-for="suite_update_tests">{{ form_error.message }}</span><br>{% endif %}
             <label
                     for="suite_update_tests"
+                    {% if has_suite_update_error and form_error.fieldName == 'tests' %}class="error"{% endif %}
             >
                 Tests (filenames as present in source, one per line)
             </label>
@@ -74,6 +76,7 @@
                     rows="20"
                     cols="80"
                     name="tests"
+                    {% if has_suite_update_error and form_error.fieldName == 'tests' %}class="error"{% endif %}
             >{{ suite_update_request ? suite_update_request.tests|join("\n") : suite.tests|join("\n") }}</textarea>
             <br>
 
