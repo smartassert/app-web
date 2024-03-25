@@ -11,7 +11,12 @@ use App\Tests\Services\EntityFactory\SuiteFactory;
 
 abstract class AbstractViewTest extends AbstractApplicationTestCase
 {
-    public function testViewSuccess(): void
+    /**
+     * @dataProvider viewSuccessDataProvider
+     *
+     * @param string[] $tests
+     */
+    public function testViewSuccess(string $label, array $tests): void
     {
         $sourcesDataRepository = new SourcesRepository();
         $sourcesDataRepository->removeAllSuites();
@@ -25,15 +30,51 @@ abstract class AbstractViewTest extends AbstractApplicationTestCase
         $suiteFactory = self::getContainer()->get(SuiteFactory::class);
         \assert($suiteFactory instanceof SuiteFactory);
 
-        $suiteLabel = md5((string) rand());
-        $suiteId = $suiteFactory->create($this->applicationClient, $fileSourceId, $suiteLabel, []);
+        $suiteId = $suiteFactory->create($this->applicationClient, $fileSourceId, $label, $tests);
 
         $suiteViewResponse = $this->applicationClient->makeViewSuiteRequest($suiteId);
+        $suiteViewContent = $suiteViewResponse->getBody()->getContents();
 
         self::assertSame(200, $suiteViewResponse->getStatusCode());
-        self::assertStringContainsString(
-            '<title>Suite "' . $suiteLabel . '"</title>',
-            $suiteViewResponse->getBody()->getContents()
+        self::assertStringContainsString('<title>Suite "' . $label . '"</title>', $suiteViewContent);
+
+        $expectedSourceIdPattern = '/<option\s+value="' . $fileSourceId . '"\s+selected/';
+        self::assertSame(
+            1,
+            preg_match($expectedSourceIdPattern, $suiteViewContent)
         );
+
+        $expectedLabelPattern = '/id="suite_update_label"[\s\S]+value="' . $label . '"/';
+        self::assertSame(
+            1,
+            preg_match($expectedLabelPattern, $suiteViewContent)
+        );
+
+        $expectedTestsPattern = '/id="suite_update_tests"[\s\S]+>' . implode('\s+', $tests) . '</';
+        self::assertSame(
+            1,
+            preg_match($expectedTestsPattern, $suiteViewContent)
+        );
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function viewSuccessDataProvider(): array
+    {
+        return [
+            'no tests' => [
+                'label' => md5((string) rand()),
+                'tests' => [],
+            ],
+            'single test' => [
+                'label' => md5((string) rand()),
+                'tests' => ['one.yaml'],
+            ],
+            'multiple tests' => [
+                'label' => md5((string) rand()),
+                'tests' => ['one.yaml'],
+            ],
+        ];
     }
 }
