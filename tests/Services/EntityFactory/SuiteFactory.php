@@ -16,7 +16,7 @@ readonly class SuiteFactory
         $createSuiteResponse = $client->makeCreateSuiteRequest($sourceId, $label, $tests);
         if (302 !== $createSuiteResponse->getStatusCode()) {
             throw new \RuntimeException(
-                'SuiteFactory::create() create file source failure',
+                'SuiteFactory::create() create suite failure',
                 $createSuiteResponse->getStatusCode()
             );
         }
@@ -24,7 +24,7 @@ readonly class SuiteFactory
         $suitesResponse = $client->makeSuitesReadRequest();
         if (200 !== $suitesResponse->getStatusCode()) {
             throw new \RuntimeException(
-                'FileSourceFactory::create() get sources failure',
+                'SuiteFactory::create() get suites failure',
                 $createSuiteResponse->getStatusCode()
             );
         }
