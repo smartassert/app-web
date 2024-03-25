@@ -18,7 +18,7 @@ abstract class AbstractFileSourceFileTest extends AbstractApplicationTestCase
         $fileSourceFactory = self::getContainer()->get(FileSourceFactory::class);
         \assert($fileSourceFactory instanceof FileSourceFactory);
 
-        $fileSourceId = $fileSourceFactory->create($this->applicationClient, md5((string) rand()));
+        $fileSourceId = $fileSourceFactory->createRandom($this->applicationClient);
 
         $filename = md5((string) rand()) . '.yaml';
         $content = md5((string) rand());
@@ -37,7 +37,7 @@ abstract class AbstractFileSourceFileTest extends AbstractApplicationTestCase
         $fileSourceFactory = self::getContainer()->get(FileSourceFactory::class);
         \assert($fileSourceFactory instanceof FileSourceFactory);
 
-        $fileSourceId = $fileSourceFactory->create($this->applicationClient, md5((string) rand()));
+        $fileSourceId = $fileSourceFactory->createRandom($this->applicationClient);
 
         $filename = md5((string) rand()) . '.yaml';
         $content = md5((string) rand());
@@ -73,7 +73,7 @@ abstract class AbstractFileSourceFileTest extends AbstractApplicationTestCase
         $fileSourceFactory = self::getContainer()->get(FileSourceFactory::class);
         \assert($fileSourceFactory instanceof FileSourceFactory);
 
-        $fileSourceId = $fileSourceFactory->create($this->applicationClient, md5((string) rand()));
+        $fileSourceId = $fileSourceFactory->createRandom($this->applicationClient);
         $filename = md5((string) rand()) . '.yaml';
         $content = md5((string) rand());
 
@@ -99,7 +99,7 @@ abstract class AbstractFileSourceFileTest extends AbstractApplicationTestCase
         $fileSourceFactory = self::getContainer()->get(FileSourceFactory::class);
         \assert($fileSourceFactory instanceof FileSourceFactory);
 
-        $fileSourceId = $fileSourceFactory->create($this->applicationClient, md5((string) rand()));
+        $fileSourceId = $fileSourceFactory->createRandom($this->applicationClient);
         $filename = md5((string) rand()) . '.yaml';
         $content = md5((string) rand());
 

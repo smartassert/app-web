@@ -32,7 +32,7 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
         $fileSourceFactory = self::getContainer()->get(FileSourceFactory::class);
         \assert($fileSourceFactory instanceof FileSourceFactory);
 
-        $fileSourceId = $fileSourceFactory->create($this->applicationClient, md5((string) rand()));
+        $fileSourceId = $fileSourceFactory->createRandom($this->applicationClient);
         $fileSourceUrl = '/sources/file/' . $fileSourceId;
 
         $crawler = $this->kernelBrowser->request(
@@ -122,7 +122,7 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
         $fileSourceFactory = self::getContainer()->get(FileSourceFactory::class);
         \assert($fileSourceFactory instanceof FileSourceFactory);
 
-        $fileSourceId = $fileSourceFactory->create($this->applicationClient, md5((string) rand()));
+        $fileSourceId = $fileSourceFactory->createRandom($this->applicationClient);
         $filename = md5((string) rand()) . '.yaml';
         $content = md5((string) rand());
 

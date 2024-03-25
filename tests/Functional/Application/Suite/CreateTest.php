@@ -25,8 +25,7 @@ class CreateTest extends AbstractApplicationTestCase
         $fileSourceFactory = self::getContainer()->get(FileSourceFactory::class);
         \assert($fileSourceFactory instanceof FileSourceFactory);
 
-        $fileSourceLabel = md5((string) rand());
-        $fileSourceId = $fileSourceFactory->create($this->applicationClient, $fileSourceLabel);
+        $fileSourceId = $fileSourceFactory->createRandom($this->applicationClient);
 
         $crawler = $this->kernelBrowser->request(
             method: 'GET',
@@ -84,8 +83,7 @@ class CreateTest extends AbstractApplicationTestCase
         $fileSourceFactory = self::getContainer()->get(FileSourceFactory::class);
         \assert($fileSourceFactory instanceof FileSourceFactory);
 
-        $fileSourceLabel = md5((string) rand());
-        $fileSourceId = $fileSourceFactory->create($this->applicationClient, $fileSourceLabel);
+        $fileSourceId = $fileSourceFactory->createRandom($this->applicationClient);
 
         $crawler = $this->kernelBrowser->request(
             method: 'GET',
