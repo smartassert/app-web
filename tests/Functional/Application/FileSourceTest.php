@@ -6,6 +6,7 @@ namespace App\Tests\Functional\Application;
 
 use App\Enum\Routes;
 use App\Tests\Application\AbstractFileSourceTest;
+use App\Tests\Assertions\SymfonyRedirectResponseAssertionTrait;
 use App\Tests\Services\DataRepository\SourcesRepository;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -13,6 +14,7 @@ class FileSourceTest extends AbstractFileSourceTest
 {
     use GetClientAdapterTrait;
     use GetSessionIdentifierTrait;
+    use SymfonyRedirectResponseAssertionTrait;
 
     public function testAddFileSourceSuccess(): void
     {
@@ -46,8 +48,7 @@ class FileSourceTest extends AbstractFileSourceTest
         $this->kernelBrowser->submit($addFileSourceForm);
 
         $response = $this->kernelBrowser->getResponse();
-        self::assertSame(302, $response->getStatusCode());
-        self::assertSame($sourcesUrl, $response->headers->get('location'));
+        $this->assertSymfonyRedirectResponse($response, $sourcesUrl);
 
         $crawler = $this->kernelBrowser->request(
             method: 'GET',
@@ -114,8 +115,7 @@ class FileSourceTest extends AbstractFileSourceTest
         $this->kernelBrowser->submit($addFileSourceForm);
 
         $response = $this->kernelBrowser->getResponse();
-        self::assertSame(302, $response->getStatusCode());
-        self::assertSame($sourcesUrl, $response->headers->get('location'));
+        $this->assertSymfonyRedirectResponse($response, $sourcesUrl);
 
         $crawler = $this->kernelBrowser->request(
             method: 'GET',

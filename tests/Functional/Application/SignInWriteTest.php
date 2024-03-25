@@ -7,11 +7,13 @@ namespace App\Tests\Functional\Application;
 use App\RedirectRoute\Factory;
 use App\RedirectRoute\Serializer;
 use App\Tests\Application\AbstractSignInWriteTest;
+use App\Tests\Assertions\SymfonyRedirectResponseAssertionTrait;
 
 class SignInWriteTest extends AbstractSignInWriteTest
 {
     use GetClientAdapterTrait;
     use GetSessionIdentifierTrait;
+    use SymfonyRedirectResponseAssertionTrait;
 
     /**
      * @dataProvider writeInvalidCredentialsDataProvider
@@ -38,25 +40,23 @@ class SignInWriteTest extends AbstractSignInWriteTest
 
         $this->kernelBrowser->submit($signInForm);
 
-        $response = $this->kernelBrowser->getResponse();
-        self::assertSame(302, $response->getStatusCode());
-
         $redirectRouteFactory = self::getContainer()->get(Factory::class);
         \assert($redirectRouteFactory instanceof Factory);
 
         $redirectRouteSerializer = self::getContainer()->get(Serializer::class);
         \assert($redirectRouteSerializer instanceof Serializer);
 
-        $redirectLocation = $response->headers->get('location');
+        $response = $this->kernelBrowser->getResponse();
 
-        self::assertSame(
-            $expectedLocationCreator($redirectRouteFactory, $redirectRouteSerializer),
-            $redirectLocation
+        self::assertSame(302, $response->getStatusCode());
+        $this->assertSymfonyRedirectResponse(
+            $response,
+            $expectedLocationCreator($redirectRouteFactory, $redirectRouteSerializer)
         );
 
         $crawler = $this->kernelBrowser->request(
             method: 'GET',
-            uri: $redirectLocation
+            uri: (string) $response->headers->get('location')
         );
 
         $response = $this->kernelBrowser->getResponse();
