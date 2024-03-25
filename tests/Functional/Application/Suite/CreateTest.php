@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Application\Suite;
 
 use App\Tests\Application\AbstractApplicationTestCase;
+use App\Tests\Assertions\SymfonyRedirectResponseAssertionTrait;
 use App\Tests\Functional\Application\GetClientAdapterTrait;
 use App\Tests\Functional\Application\GetSessionIdentifierTrait;
 use App\Tests\Services\DataRepository\SourcesRepository;
@@ -14,6 +15,7 @@ class CreateTest extends AbstractApplicationTestCase
 {
     use GetClientAdapterTrait;
     use GetSessionIdentifierTrait;
+    use SymfonyRedirectResponseAssertionTrait;
 
     public function testCreateSuccess(): void
     {
@@ -51,8 +53,7 @@ class CreateTest extends AbstractApplicationTestCase
         $this->kernelBrowser->submit($addSuiteForm);
 
         $response = $this->kernelBrowser->getResponse();
-        self::assertSame(302, $response->getStatusCode());
-        self::assertSame('/suites', $response->headers->get('location'));
+        $this->assertSymfonyRedirectResponse($response, '/suites');
 
         $crawler = $this->kernelBrowser->request(
             method: 'GET',
@@ -141,8 +142,7 @@ class CreateTest extends AbstractApplicationTestCase
         $this->kernelBrowser->submit($addSuiteForm);
 
         $response = $this->kernelBrowser->getResponse();
-        self::assertSame(302, $response->getStatusCode());
-        self::assertSame('/suites', $response->headers->get('location'));
+        $this->assertSymfonyRedirectResponse($response, '/suites');
 
         $crawler = $this->kernelBrowser->request(
             method: 'GET',

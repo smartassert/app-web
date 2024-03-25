@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Application;
 
 use App\Tests\Application\AbstractFileSourceFileTest;
+use App\Tests\Assertions\SymfonyRedirectResponseAssertionTrait;
 use App\Tests\Services\DataRepository\SourcesRepository;
 use App\Tests\Services\EntityFactory\FileSourceFactory;
 use App\Tests\Services\EntityFactory\FileSourceFileFactory;
@@ -13,6 +14,7 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
 {
     use GetClientAdapterTrait;
     use GetSessionIdentifierTrait;
+    use SymfonyRedirectResponseAssertionTrait;
 
     /**
      * @dataProvider createFileSourceFileBadRequestDataProvider
@@ -52,8 +54,7 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
         $this->kernelBrowser->submit($addFileSourceFileForm);
 
         $response = $this->kernelBrowser->getResponse();
-        self::assertSame(302, $response->getStatusCode());
-        self::assertSame($fileSourceUrl, $response->headers->get('location'));
+        $this->assertSymfonyRedirectResponse($response, $fileSourceUrl);
 
         $crawler = $this->kernelBrowser->request(
             method: 'GET',
