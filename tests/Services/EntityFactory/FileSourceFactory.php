@@ -35,4 +35,9 @@ readonly class FileSourceFactory
 
         return str_replace('/sources/file/', '', $fileSourceUrl);
     }
+
+    public function createRandom(Client $client): string
+    {
+        return $this->create($client, md5((string) rand()));
+    }
 }
