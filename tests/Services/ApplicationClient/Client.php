@@ -212,7 +212,7 @@ class Client
                 'cookie' => $this->getCredentials(),
                 'content-type' => 'application/x-www-form-urlencoded',
             ],
-            http_build_query(['source_id' => $sourceId, 'label' => $label, 'tests' => $tests])
+            http_build_query(['source_id' => $sourceId, 'label' => $label, 'tests' => implode("\n", $tests)])
         );
 
         $this->extractCredentialsFromResponse($response);
