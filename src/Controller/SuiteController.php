@@ -115,11 +115,6 @@ readonly class SuiteController
     #[Route('/suite/{id<[A-Z90-9]{26}>}', name: 'suite_update', methods: ['POST'])]
     public function update(ApiKey $apiKey, SuiteUpdateRequest $request): Response
     {
-        // tests:
-        // - label empty
-        // - label in use on different suite
-        // - test names not yaml filenames
-
         $response = new RedirectResponse($this->urlGenerator->generate('suite_view', ['id' => $request->id]));
 
         try {
