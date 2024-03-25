@@ -74,7 +74,7 @@
                     rows="20"
                     cols="80"
                     name="tests"
-            >{{ suite_update_request ? suite_update_request.tests|join : suite.tests|join }}</textarea>
+            >{{ suite_update_request ? suite_update_request.tests|join("\n") : suite.tests|join("\n") }}</textarea>
             <br>
 
             <input type="hidden" name="id" value="{{ suite.id }}">
