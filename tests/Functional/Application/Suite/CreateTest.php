@@ -15,7 +15,7 @@ class CreateTest extends AbstractApplicationTestCase
     use GetClientAdapterTrait;
     use GetSessionIdentifierTrait;
 
-    public function testAddSuiteSuccess(): void
+    public function testCreateSuccess(): void
     {
         $sourcesDataRepository = new SourcesRepository();
         $sourcesDataRepository->removeAllSuites();
@@ -75,7 +75,7 @@ class CreateTest extends AbstractApplicationTestCase
         self::assertSame($suiteLabel, $suite->text());
     }
 
-    public function testAddFileSourceBadRequest(): void
+    public function testCreateBadRequest(): void
     {
         $sourcesDataRepository = new SourcesRepository();
         $sourcesDataRepository->removeAllSuites();
