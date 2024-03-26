@@ -26,6 +26,11 @@
     <h2>Suite "{{ suite.label }}"</h2>
     {% set has_suite_update_error = form_error and form_error.formName == 'suite_update' %}
 
+    <h3>Run suite</h3>
+    <form id="suite_run" method="post" action="{{ path('suite_run', {id: suite.id}) }}">
+        <input type="submit" value="Run!">
+    </form>
+
     <h3>Update suite</h3>
 
     {% if sources|length == 0 %}
