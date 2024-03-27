@@ -1,6 +1,6 @@
 services:
   job-coordinator-service:
-    image: ghcr.io/smartassert/job-coordinator:2.0
+    image: ghcr.io/smartassert/job-coordinator:3.2
     container_name: job-coordinator-service
     environment:
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/job-coordinator?serverVersion=12&charset=utf8
