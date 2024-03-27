@@ -235,6 +235,36 @@ class Client
         return $response;
     }
 
+    public function makeCreateJobRequest(string $suiteId): ResponseInterface
+    {
+        $response = $this->client->makeRequest(
+            'POST',
+            '/job/' . $suiteId,
+            [
+                'cookie' => $this->getCredentials(),
+            ]
+        );
+
+        $this->extractCredentialsFromResponse($response);
+
+        return $response;
+    }
+
+    public function makeViewJobRequest(string $jobId): ResponseInterface
+    {
+        $response = $this->client->makeRequest(
+            'GET',
+            '/job/' . $jobId,
+            [
+                'cookie' => $this->getCredentials(),
+            ]
+        );
+
+        $this->extractCredentialsFromResponse($response);
+
+        return $response;
+    }
+
     private function extractCredentialsFromResponse(ResponseInterface $response): void
     {
         $sessionId = $this->responseCookieExtractor->extract($response, $this->sessionIdentifier);

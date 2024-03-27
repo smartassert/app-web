@@ -137,10 +137,4 @@ readonly class SuiteController
 
         return $response;
     }
-
-    #[Route('/suite/{id<[A-Z90-9]{26}>}/run', name: 'suite_run', methods: ['POST'])]
-    public function run(string $id): Response
-    {
-        return new RedirectResponse($this->urlGenerator->generate('suite_view', ['id' => $id]));
-    }
 }

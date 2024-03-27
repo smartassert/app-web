@@ -40,7 +40,7 @@
     {% endif %}
 
     <h3>Run suite</h3>
-    <form id="suite_run" method="post" action="{{ path('suite_run', {id: suite.id}) }}">
+    <form id="suite_run" method="post" action="{{ path('job_create', {suiteId: suite.id}) }}">
         <input type="submit" value="Run!">
     </form>
 
@@ -98,7 +98,7 @@
             >{{ suite_update_request ? suite_update_request.tests|join("\n") : suite.tests|join("\n") }}</textarea>
             <br>
 
-            <input type="hidden" name="id" value="{{ suite.id }}">
+            <input type="hidden" name="suite_id" value="{{ suite.id }}">
             <input type="submit" value="Update suite">
         </form>
     {% endif %}
