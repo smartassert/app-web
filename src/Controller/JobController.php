@@ -32,7 +32,7 @@ readonly class JobController
      * @throws LoaderError
      * @throws ApiException
      */
-    #[Route('/job/{id<[A-Z90-9]{26}>}', name: 'suite_view', methods: ['GET'])]
+    #[Route('/job/{id<[A-Z90-9]{26}>}', name: 'job_view', methods: ['GET'])]
     public function view(ApiKey $apiKey, string $id): Response
     {
         try {
