@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Job "{{ job.summary.id }}"{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1 style="display:inline;">Job "{{ job.summary.id }}"</h1>
+
+    <form method="get" action="{{ path('dashboard') }}" style="display:inline; margin-left: 6px; vertical-align: super;">
+        <input type="submit" value="Dashboard">
+    </form>
+
+    <form method="get" action="{{ path('suites') }}" style="display:inline; margin-left: 6px; vertical-align: super;">
+        <input type="submit" value="Suites">
+    </form>
+
+    <form method="get" action="{{ path('suite_view', {id: job.summary.suiteId}) }}" style="display:inline; margin-left: 6px; vertical-align: super;">
+        <input type="submit" value="Suite {{ job.summary.suiteId }}">
+    </form>
+
+    <form method="post" action="{{ path('log_out_handle') }}" style="display:inline; margin-left: 6px; vertical-align: super;">
+        <input type="submit" value="Log out">
+    </form>
+
+    <h2>Job "{{ job.summary.id }}"</h2>
+</div>
+{% endblock %}

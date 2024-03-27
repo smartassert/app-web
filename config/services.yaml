@@ -129,3 +129,9 @@ services:
                 "put_file-source-file": "file_source_file_update"
                 "post_suite": "suite_add"
                 "put_suite": "suite_update"
+
+    SmartAssert\ApiClient\Factory\JobCoordinator\SummaryFactory: ~
+
+    SmartAssert\ApiClient\Factory\JobCoordinator\JobFactory: ~
+
+    SmartAssert\ApiClient\JobCoordinatorClient: ~
