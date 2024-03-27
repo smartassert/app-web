@@ -307,6 +307,6 @@ class UpdateTest extends AbstractApplicationTestCase
             $updateSuiteForm->filter('#suite_update_tests')->html()
         );
 
-        self::assertSame($expectedSuiteId, $updateSuiteForm->filter('[name=id]')->attr('value'));
+        self::assertSame($expectedSuiteId, $updateSuiteForm->filter('[name=suite_id]')->attr('value'));
     }
 }
