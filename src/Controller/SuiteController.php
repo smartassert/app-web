@@ -13,6 +13,7 @@ use App\Response\RedirectResponse;
 use App\Security\ApiKey;
 use App\SessionStore\RequestPayloadStore;
 use SmartAssert\ApiClient\Exception\ClientException;
+use SmartAssert\ApiClient\JobCoordinatorClient;
 use SmartAssert\ApiClient\SourceClient;
 use SmartAssert\ApiClient\SuiteClient;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,6 +32,7 @@ readonly class SuiteController
         private SuiteClient $suiteClient,
         private UrlGeneratorInterface $urlGenerator,
         private RequestPayloadStore $requestPayloadStore,
+        private JobCoordinatorClient $jobCoordinatorClient,
     ) {
     }
 
@@ -94,6 +96,7 @@ readonly class SuiteController
         try {
             $sources = $this->sourceClient->list($apiKey->key);
             $suite = $this->suiteClient->get($apiKey->key, $id);
+            $jobs = $this->jobCoordinatorClient->list($apiKey->key, $id);
         } catch (ClientException $e) {
             throw new ApiException(ApiService::SOURCES, $e);
         }
@@ -105,6 +108,7 @@ readonly class SuiteController
                 'sources' => $sources,
                 'suite_update_request' => $this->requestPayloadStore->get(SuiteUpdateRequest::class),
                 'suite' => $suite,
+                'jobs' => $jobs,
             ]
         ));
     }

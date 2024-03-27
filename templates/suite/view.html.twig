@@ -26,6 +26,19 @@
     <h2>Suite "{{ suite.label }}"</h2>
     {% set has_suite_update_error = form_error and form_error.formName == 'suite_update' %}
 
+    <h3>Test runs for this suite</h3>
+    {% if jobs|length == 0 %}
+        There are no test runs for this suite.
+    {% else %}
+    <ul id="job_list">
+        {% for job in jobs %}
+            <li>
+                <a href="{{ path('job_view', {id: job.id}) }}">{{ job.id }} {{ job.createdAt.format('c') }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
     <h3>Run suite</h3>
     <form id="suite_run" method="post" action="{{ path('suite_run', {id: suite.id}) }}">
         <input type="submit" value="Run!">
