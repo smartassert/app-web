@@ -25,6 +25,7 @@ abstract class AbstractFileSourceTest extends AbstractApplicationTestCase
         $fileSourceUrls = [];
         preg_match('#/sources/file/[^"]+#', $sourcesBody, $fileSourceUrls);
 
+        \assert(count($fileSourceUrls) > 0);
         $fileSourceUrl = $fileSourceUrls[0];
         $fileSourceId = str_replace('/sources/file/', '', $fileSourceUrl);
 
