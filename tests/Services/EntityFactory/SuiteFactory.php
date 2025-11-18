@@ -34,6 +34,7 @@ readonly class SuiteFactory
         $suiteUrls = [];
         preg_match('#/suite/[^"]+#', $suitesBody, $suiteUrls);
 
+        \assert(count($suiteUrls) > 0);
         $suiteUrl = $suiteUrls[0];
 
         return str_replace('/suite/', '', $suiteUrl);

@@ -31,6 +31,7 @@ readonly class FileSourceFactory
         $fileSourceUrls = [];
         preg_match('#/sources/file/[^"]+#', $sourcesBody, $fileSourceUrls);
 
+        \assert(count($fileSourceUrls) > 0);
         $fileSourceUrl = $fileSourceUrls[0];
 
         return str_replace('/sources/file/', '', $fileSourceUrl);
