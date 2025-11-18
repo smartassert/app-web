@@ -1,6 +1,7 @@
 services:
   results-service:
     image: ghcr.io/smartassert/results:3.0
+    profiles: ["functional"]
     container_name: results-service
     environment:
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/results?serverVersion=12&charset=utf8
@@ -12,6 +13,7 @@ services:
 
   results-http:
     image: caddy:2.4.5-alpine
+    profiles: ["functional"]
     container_name: results-http
     restart: unless-stopped
     ports:
