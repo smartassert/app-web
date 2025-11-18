@@ -53,9 +53,9 @@ abstract class AbstractFileSourceFileTest extends AbstractApplicationTestCase
 
         self::assertStringContainsString(
             sprintf(
-                '<span class="error">' .
-                'File source "%s" already has a file named "<a href="/sources/file/%s/%s">%s</a>".' .
-                '</span>',
+                '<span class="error">'
+                . 'File source "%s" already has a file named "<a href="/sources/file/%s/%s">%s</a>".'
+                . '</span>',
                 $fileSourceId,
                 $fileSourceId,
                 $filename,

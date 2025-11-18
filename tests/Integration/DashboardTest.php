@@ -29,8 +29,8 @@ class DashboardTest extends AbstractDashboardTest
     {
         $jwtTokenEnvVarName = 'JWT_TOKEN_TTL';
 
-        $usersServicePrintEnvOutput =
-            (string) shell_exec(sprintf(
+        $usersServicePrintEnvOutput
+            = (string) shell_exec(sprintf(
                 'docker compose -f tests/build/docker-compose.yml exec users-service printenv | grep %s',
                 $jwtTokenEnvVarName
             ));
