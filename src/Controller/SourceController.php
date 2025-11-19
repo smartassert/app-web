@@ -26,8 +26,7 @@ readonly class SourceController
         private TwigEnvironment $twig,
         private SourceClient $sourceClient,
         private RequestPayloadStore $payloadStore,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws RuntimeError

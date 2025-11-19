@@ -19,8 +19,7 @@ readonly class Factory
         private array $actionToFormMap,
         private MessageFactory $messageFactory,
         private ErrorStore $errorStore,
-    ) {
-    }
+    ) {}
 
     public function create(): ?FormError
     {

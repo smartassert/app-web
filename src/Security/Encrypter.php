@@ -15,8 +15,7 @@ readonly class Encrypter
      */
     public function __construct(
         private array $keys,
-    ) {
-    }
+    ) {}
 
     public function encrypt(string $data): string
     {

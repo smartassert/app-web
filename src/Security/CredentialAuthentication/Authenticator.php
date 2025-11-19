@@ -40,8 +40,7 @@ readonly class Authenticator implements AuthenticatorInterface
         private UrlGeneratorInterface $urlGenerator,
         private Serializer $serializer,
         private ErrorStore $errorStore,
-    ) {
-    }
+    ) {}
 
     public function supports(Request $request): bool
     {

@@ -30,8 +30,7 @@ readonly class FileSourceFileController
         private FileClient $fileClient,
         private RequestPayloadStore $requestPayloadStore,
         private RedirectResponseFactory $redirectResponseFactory,
-    ) {
-    }
+    ) {}
 
     /**
      * @param non-empty-string $id

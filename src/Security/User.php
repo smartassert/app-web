@@ -15,8 +15,7 @@ readonly class User implements UserInterface
     public function __construct(
         private string $identifier,
         private Token $securityToken,
-    ) {
-    }
+    ) {}
 
     public function getIdentifier(): ?string
     {
@@ -47,7 +46,5 @@ readonly class User implements UserInterface
     }
 
     #[\Deprecated]
-    public function eraseCredentials(): void
-    {
-    }
+    public function eraseCredentials(): void {}
 }

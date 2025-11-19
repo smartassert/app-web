@@ -16,8 +16,7 @@ readonly class AuthenticationEntryPoint implements AuthenticationEntryPointInter
     public function __construct(
         private RedirectRouteFactory $redirectRouteFactory,
         private RedirectResponseFactory $redirectResponseFactory,
-    ) {
-    }
+    ) {}
 
     public function start(Request $request, ?AuthenticationException $authException = null): Response
     {

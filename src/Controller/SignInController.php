@@ -22,8 +22,7 @@ readonly class SignInController
     public function __construct(
         private RedirectResponseFactory $redirectResponseFactory,
         private ErrorStore $errorStore,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws RuntimeError

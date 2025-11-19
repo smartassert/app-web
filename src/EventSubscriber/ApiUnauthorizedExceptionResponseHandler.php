@@ -26,8 +26,7 @@ readonly class ApiUnauthorizedExceptionResponseHandler implements EventSubscribe
         private RedirectResponseFactory $redirectResponseFactory,
         private Factory $redirectRouteFactory,
         private ErrorStore $errorStore,
-    ) {
-    }
+    ) {}
 
     /**
      * @return array<mixed>

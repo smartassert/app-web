@@ -24,8 +24,7 @@ readonly class JobController
         private TwigEnvironment $twig,
         private UrlGeneratorInterface $urlGenerator,
         private JobCoordinatorClient $jobCoordinatorClient,
-    ) {
-    }
+    ) {}
 
     /**
      * @param non-empty-string $suiteId

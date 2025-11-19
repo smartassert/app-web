@@ -31,8 +31,7 @@ readonly class FileSourceController
         private FileSourceClient $fileSourceClient,
         private UrlGeneratorInterface $urlGenerator,
         private RequestPayloadStore $requestPayloadStore,
-    ) {
-    }
+    ) {}
 
     /**
      * @param non-empty-string $id

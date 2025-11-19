@@ -11,8 +11,7 @@ readonly class ErrorStore
 {
     public function __construct(
         private RequestStack $requestStack,
-    ) {
-    }
+    ) {}
 
     public function set(NamedError $error): void
     {

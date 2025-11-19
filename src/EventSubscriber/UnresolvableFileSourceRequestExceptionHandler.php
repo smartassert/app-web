@@ -19,8 +19,7 @@ readonly class UnresolvableFileSourceRequestExceptionHandler implements EventSub
         private Security $security,
         private RedirectResponseFactory $redirectResponseFactory,
         private Factory $redirectRouteFactory,
-    ) {
-    }
+    ) {}
 
     /**
      * @return array<mixed>

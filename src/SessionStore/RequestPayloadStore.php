@@ -10,8 +10,7 @@ readonly class RequestPayloadStore
 {
     public function __construct(
         private RequestStack $requestStack,
-    ) {
-    }
+    ) {}
 
     public function set(object $payload): void
     {

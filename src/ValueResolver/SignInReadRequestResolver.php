@@ -14,8 +14,7 @@ readonly class SignInReadRequestResolver implements ValueResolverInterface
 {
     public function __construct(
         private Serializer $serializer,
-    ) {
-    }
+    ) {}
 
     /**
      * @return SignInReadRequest[]

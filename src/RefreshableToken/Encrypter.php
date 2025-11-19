@@ -12,8 +12,7 @@ readonly class Encrypter
     public function __construct(
         private SecurityEncrypter $encrypter,
         private Serializer $serializer,
-    ) {
-    }
+    ) {}
 
     public function encrypt(Token $token): string
     {

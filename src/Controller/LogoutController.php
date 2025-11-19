@@ -16,8 +16,7 @@ readonly class LogoutController
     public function __construct(
         private Security $security,
         private UrlGeneratorInterface $urlGenerator,
-    ) {
-    }
+    ) {}
 
     #[Route('/logout/', name: Routes::LOG_OUT_NAME->value, methods: ['POST'])]
     public function handle(): Response

@@ -20,8 +20,7 @@ readonly class ResponseUserTokenSetter implements EventSubscriberInterface
         private Security $security,
         private Encrypter $tokenEncrypter,
         private RedirectResponseFactory $redirectResponseFactory,
-    ) {
-    }
+    ) {}
 
     /**
      * @return array<mixed>

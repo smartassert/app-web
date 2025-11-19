@@ -17,8 +17,7 @@ class Client
         private readonly ClientInterface $client,
         private readonly string $sessionIdentifier,
         private readonly CookieExtractor $responseCookieExtractor,
-    ) {
-    }
+    ) {}
 
     public function makeSignInPageReadRequest(
         ?string $userIdentifier = null,

@@ -8,8 +8,7 @@ readonly class Serializer
 {
     public function __construct(
         private Factory $factory,
-    ) {
-    }
+    ) {}
 
     public function serialize(RedirectRoute $redirectRoute): string
     {

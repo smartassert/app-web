@@ -14,8 +14,7 @@ readonly class FileSourceFileAddDuplicateFilenameHandler implements TypeHandlerI
     public function __construct(
         private RequestPayloadStore $requestPayloadStore,
         private UrlGeneratorInterface $urlGenerator,
-    ) {
-    }
+    ) {}
 
     public function create(string $formName, DuplicateObjectErrorInterface $error): ?string
     {
