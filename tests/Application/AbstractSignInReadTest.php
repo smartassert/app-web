@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Tests\Application;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 abstract class AbstractSignInReadTest extends AbstractApplicationTestCase
 {
-    /**
-     * @dataProvider createBadMethodDataProvider
-     */
+    #[DataProvider('createBadMethodDataProvider')]
     public function testReadBadMethod(string $method): void
     {
         $response = $this->applicationClient->makeSignInPageReadRequest(method: $method);
@@ -19,7 +19,7 @@ abstract class AbstractSignInReadTest extends AbstractApplicationTestCase
     /**
      * @return array<mixed>
      */
-    public function createBadMethodDataProvider(): array
+    public static function createBadMethodDataProvider(): array
     {
         return [
             'PUT' => [

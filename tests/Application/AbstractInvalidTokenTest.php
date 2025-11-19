@@ -8,6 +8,7 @@ use App\Enum\Routes;
 use App\RedirectRoute\RedirectRoute;
 use App\RedirectRoute\Serializer;
 use App\Tests\Services\ApplicationClient\Client;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Uid\Ulid;
@@ -15,10 +16,9 @@ use Symfony\Component\Uid\Ulid;
 abstract class AbstractInvalidTokenTest extends AbstractApplicationTestCase
 {
     /**
-     * @dataProvider handleApiUnauthorizedExceptionDataProvider
-     *
      * @param callable(Client, string): ResponseInterface $action
      */
+    #[DataProvider('handleApiUnauthorizedExceptionDataProvider')]
     public function testMakeActionWithInvalidToken(callable $action, RedirectRoute $expectedRedirectRoute): void
     {
         $this->kernelBrowser->getCookieJar()->clear();
@@ -43,7 +43,7 @@ abstract class AbstractInvalidTokenTest extends AbstractApplicationTestCase
     /**
      * @return array<mixed>
      */
-    public function handleApiUnauthorizedExceptionDataProvider(): array
+    public static function handleApiUnauthorizedExceptionDataProvider(): array
     {
         $sourceId = (string) new Ulid();
 

@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Tests\Application;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Cookie;
 
 abstract class AbstractSignInWriteTest extends AbstractApplicationTestCase
 {
-    /**
-     * @dataProvider createBadMethodDataProvider
-     */
+    #[DataProvider('createBadMethodDataProvider')]
     public function testWriteBadMethod(string $method): void
     {
         $response = $this->applicationClient->makeSignInPageWriteRequest(null, null, $method);
@@ -21,7 +20,7 @@ abstract class AbstractSignInWriteTest extends AbstractApplicationTestCase
     /**
      * @return array<mixed>
      */
-    public function createBadMethodDataProvider(): array
+    public static function createBadMethodDataProvider(): array
     {
         return [
             'PUT' => [

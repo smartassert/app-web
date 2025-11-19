@@ -8,14 +8,14 @@ use App\Tests\Application\AbstractApplicationTestCase;
 use App\Tests\Services\DataRepository\SourcesRepository;
 use App\Tests\Services\EntityFactory\FileSourceFactory;
 use App\Tests\Services\EntityFactory\SuiteFactory;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 abstract class AbstractViewTest extends AbstractApplicationTestCase
 {
     /**
-     * @dataProvider viewSuccessDataProvider
-     *
      * @param string[] $tests
      */
+    #[DataProvider('viewSuccessDataProvider')]
     public function testViewSuccess(string $label, array $tests): void
     {
         $sourcesDataRepository = new SourcesRepository();
@@ -59,7 +59,7 @@ abstract class AbstractViewTest extends AbstractApplicationTestCase
     /**
      * @return array<mixed>
      */
-    public function viewSuccessDataProvider(): array
+    public static function viewSuccessDataProvider(): array
     {
         return [
             'no tests' => [

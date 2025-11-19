@@ -13,6 +13,7 @@ use App\Tests\Services\ApplicationClient\Client as ApplicationClient;
 use App\Tests\Services\DataRepository\SourcesRepository;
 use App\Tests\Services\EntityFactory\FileSourceFactory;
 use App\Tests\Services\EntityFactory\SuiteFactory;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\DomCrawler\Crawler;
 
 class UpdateTest extends AbstractApplicationTestCase
@@ -23,13 +24,12 @@ class UpdateTest extends AbstractApplicationTestCase
     use FormFieldValueAssertionTrait;
 
     /**
-     * @dataProvider updateSuccessDataProvider
-     *
      * @param callable(ApplicationClient, FileSourceFactory): string         $sourceIdCreator
      * @param string[]                                                       $tests
      * @param callable(ApplicationClient, FileSourceFactory, string): string $updatedSourceIdCreator
      * @param string[]                                                       $updatedTests
      */
+    #[DataProvider('updateSuccessDataProvider')]
     public function testUpdateSuccess(
         callable $sourceIdCreator,
         string $label,
@@ -93,7 +93,7 @@ class UpdateTest extends AbstractApplicationTestCase
     /**
      * @return array<mixed>
      */
-    public function updateSuccessDataProvider(): array
+    public static function updateSuccessDataProvider(): array
     {
         $label = md5((string) rand());
 
@@ -142,13 +142,12 @@ class UpdateTest extends AbstractApplicationTestCase
     }
 
     /**
-     * @dataProvider updateBadRequestDataProvider
-     *
      * @param callable(string, ApplicationClient, FileSourceFactory): string $updatedSourceIdCreator
      * @param callable(string): string                                       $updatedLabelCreator
      * @param callable(string[]): string[]                                   $updatedTestsCreator
      * @param callable(string, string, string[]): array<string, string>      $expectedNonErrorFieldsCreator
      */
+    #[DataProvider('updateBadRequestDataProvider')]
     public function testUpdateBadRequest(
         ?callable $setup,
         callable $updatedSourceIdCreator,
@@ -234,7 +233,7 @@ class UpdateTest extends AbstractApplicationTestCase
     /**
      * @return array<mixed>
      */
-    public function updateBadRequestDataProvider(): array
+    public static function updateBadRequestDataProvider(): array
     {
         return [
             'label empty' => [
