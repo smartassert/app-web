@@ -19,8 +19,7 @@ readonly class SignInPageRedirector implements EventSubscriberInterface
         private RequestTokenExtractor $requestTokenExtractor,
         private HttpMessageFactoryInterface $httpMessageFactory,
         private UrlGeneratorInterface $urlGenerator,
-    ) {
-    }
+    ) {}
 
     /**
      * @return array<mixed>

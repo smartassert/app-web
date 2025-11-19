@@ -19,8 +19,7 @@ readonly class UserProvider implements UserProviderInterface
         private RequestStack $requestStack,
         private RequestTokenExtractor $tokenExtractor,
         private HttpMessageFactoryInterface $psrHttpFactory,
-    ) {
-    }
+    ) {}
 
     public function loadUserByIdentifier(string $identifier): UserInterface
     {

@@ -33,8 +33,7 @@ readonly class SuiteController
         private UrlGeneratorInterface $urlGenerator,
         private RequestPayloadStore $requestPayloadStore,
         private JobCoordinatorClient $jobCoordinatorClient,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws RuntimeError

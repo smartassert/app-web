@@ -13,6 +13,5 @@ readonly class FileSourceFileRequest
         public string $sourceId,
         public string $filename,
         public string $content,
-    ) {
-    }
+    ) {}
 }

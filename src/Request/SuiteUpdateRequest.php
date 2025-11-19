@@ -14,6 +14,5 @@ readonly class SuiteUpdateRequest
         public string $label,
         public string $sourceId,
         public array $tests,
-    ) {
-    }
+    ) {}
 }

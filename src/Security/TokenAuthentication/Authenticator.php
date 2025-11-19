@@ -40,8 +40,7 @@ readonly class Authenticator implements AuthenticatorInterface
         private FirewallMap $firewallMap,
         private Encrypter $tokenEncrypter,
         private HttpMessageFactoryInterface $psrHttpFactory,
-    ) {
-    }
+    ) {}
 
     public function supports(Request $request): bool
     {

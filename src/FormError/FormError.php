@@ -10,6 +10,5 @@ readonly class FormError
         public string $formName,
         public ?string $fieldName,
         public string $message,
-    ) {
-    }
+    ) {}
 }

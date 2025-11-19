@@ -19,8 +19,7 @@ readonly class ApiKeyMissingExceptionHandler implements EventSubscriberInterface
         private Security $security,
         private RedirectResponseFactory $redirectResponseFactory,
         private Factory $redirectRouteFactory,
-    ) {
-    }
+    ) {}
 
     /**
      * @return array<mixed>

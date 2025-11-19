@@ -17,8 +17,7 @@ readonly class ApiExceptionSessionHandler implements EventSubscriberInterface
 {
     public function __construct(
         private ErrorStore $errorStore,
-    ) {
-    }
+    ) {}
 
     /**
      * @return array<mixed>

@@ -10,8 +10,7 @@ readonly class ApiKeyBadge implements BadgeInterface
 {
     public function __construct(
         public readonly string $apiKey
-    ) {
-    }
+    ) {}
 
     public function isResolved(): bool
     {

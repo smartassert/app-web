@@ -16,8 +16,7 @@ readonly class ApiExceptionResponseHandler implements EventSubscriberInterface
 {
     public function __construct(
         private UrlGeneratorInterface $urlGenerator,
-    ) {
-    }
+    ) {}
 
     /**
      * @return array<mixed>

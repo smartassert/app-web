@@ -14,8 +14,7 @@ readonly class SessionHandler
 {
     public function __construct(
         private SymfonySessionFactory $sessionFactory,
-    ) {
-    }
+    ) {}
 
     public function create(): FlashBagAwareSessionInterface
     {

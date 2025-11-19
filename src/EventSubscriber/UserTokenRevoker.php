@@ -15,8 +15,7 @@ readonly class UserTokenRevoker implements EventSubscriberInterface
     public function __construct(
         private Security $security,
         private UsersClient $usersClient,
-    ) {
-    }
+    ) {}
 
     /**
      * @return array<mixed>

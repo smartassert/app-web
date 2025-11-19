@@ -18,8 +18,7 @@ readonly class RedirectResponseFactory
         private UrlGeneratorInterface $urlGenerator,
         private Serializer $redirectRouteSerializer,
         private RequestStack $requestStack,
-    ) {
-    }
+    ) {}
 
     public function createForSignIn(?string $userIdentifier, ?RedirectRoute $route): RedirectResponse
     {

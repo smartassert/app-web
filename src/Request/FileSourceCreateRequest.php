@@ -8,6 +8,5 @@ readonly class FileSourceCreateRequest
 {
     public function __construct(
         public string $label,
-    ) {
-    }
+    ) {}
 }

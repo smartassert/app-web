@@ -12,8 +12,7 @@ readonly class RequestTokenExtractor
 {
     public function __construct(
         private Encrypter $tokenEncrypter,
-    ) {
-    }
+    ) {}
 
     public function extract(ServerRequestInterface $request): ?Token
     {

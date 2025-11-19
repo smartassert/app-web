@@ -24,8 +24,7 @@ readonly class DashboardController
         private TwigEnvironment $twig,
         private SourceClient $sourceClient,
         private SuiteClient $suiteClient,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws RuntimeError

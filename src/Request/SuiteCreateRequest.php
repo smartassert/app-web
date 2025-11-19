@@ -13,6 +13,5 @@ readonly class SuiteCreateRequest
         public string $label,
         public string $sourceId,
         public array $tests,
-    ) {
-    }
+    ) {}
 }
