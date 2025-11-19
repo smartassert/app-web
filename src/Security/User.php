@@ -46,6 +46,7 @@ readonly class User implements UserInterface
         ];
     }
 
+    #[\Deprecated]
     public function eraseCredentials(): void
     {
     }

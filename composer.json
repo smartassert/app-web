@@ -15,16 +15,16 @@
         "guzzlehttp/guzzle": "^7.8",
         "guzzlehttp/psr7": "*",
         "smartassert/api-client": "^20.0",
-        "symfony/console": "7.0.*",
-        "symfony/dotenv": "7.0.*",
+        "symfony/console": "7.3.*",
+        "symfony/dotenv": "7.3.*",
         "symfony/flex": "^2",
-        "symfony/framework-bundle": "7.0.*",
+        "symfony/framework-bundle": "7.3.*",
         "symfony/monolog-bundle": "^3.8",
-        "symfony/psr-http-message-bridge": "7.0.*",
-        "symfony/runtime": "7.0.*",
-        "symfony/security-bundle": "7.0.*",
-        "symfony/twig-bundle": "7.0.*",
-        "symfony/yaml": "7.0.*"
+        "symfony/psr-http-message-bridge": "7.3.*",
+        "symfony/runtime": "7.3.*",
+        "symfony/security-bundle": "7.3.*",
+        "symfony/twig-bundle": "7.3.*",
+        "symfony/yaml": "7.3.*"
     },
     "require-dev": {
         "ext-pdo": "*",
@@ -36,10 +36,10 @@
         "phpunit/phpunit": "^9.6",
         "smartassert/symfony-test-client": "^2.0",
         "squizlabs/php_codesniffer": "^4.0",
-        "symfony/css-selector": "7.0.*",
+        "symfony/css-selector": "7.3.*",
         "symfony/maker-bundle": "^1.51",
-        "symfony/phpunit-bridge": "7.0.*",
-        "symfony/uid": "7.0.*"
+        "symfony/phpunit-bridge": "7.3.*",
+        "symfony/uid": "7.3.*"
     },
     "config": {
         "audit": {
@@ -165,7 +165,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "7.0.*"
+            "require": "7.3.*"
         }
     }
 }
