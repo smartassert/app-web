@@ -31,7 +31,7 @@ class WrongSizeHandler implements TypeHandlerInterface
             return 'This value is too small or too large.';
         }
 
-        if (0 === $minimum && is_int($maximum)) {
+        if (0 === $minimum) {
             return 'This value can be no longer than ' . $maximum . ' characters long.';
         }
 
