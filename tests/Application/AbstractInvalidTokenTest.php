@@ -43,7 +43,7 @@ abstract class AbstractInvalidTokenTest extends AbstractApplicationTestCase
     /**
      * @return array<mixed>
      */
-    public function handleApiUnauthorizedExceptionDataProvider(): array
+    public static function handleApiUnauthorizedExceptionDataProvider(): array
     {
         $sourceId = (string) new Ulid();
 

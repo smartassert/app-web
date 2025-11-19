@@ -59,7 +59,7 @@ abstract class AbstractViewTest extends AbstractApplicationTestCase
     /**
      * @return array<mixed>
      */
-    public function viewSuccessDataProvider(): array
+    public static function viewSuccessDataProvider(): array
     {
         return [
             'no tests' => [

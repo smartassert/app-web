@@ -94,7 +94,7 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
     /**
      * @return array<mixed>
      */
-    public function createFileSourceFileBadRequestDataProvider(): array
+    public static function createFileSourceFileBadRequestDataProvider(): array
     {
         return [
             'filename empty' => [

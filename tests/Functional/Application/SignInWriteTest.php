@@ -70,7 +70,7 @@ class SignInWriteTest extends AbstractSignInWriteTest
     /**
      * @return array<mixed>
      */
-    public function writeInvalidCredentialsDataProvider(): array
+    public static function writeInvalidCredentialsDataProvider(): array
     {
         return [
             'empty user-identifier, empty password' => [

@@ -41,7 +41,7 @@ abstract class AbstractApiUnauthorizedHandlingTest extends AbstractApplicationTe
     /**
      * @return array<mixed>
      */
-    public function handleApiUnauthorizedExceptionDataProvider(): array
+    public static function handleApiUnauthorizedExceptionDataProvider(): array
     {
         return [
             'dashboard' => [

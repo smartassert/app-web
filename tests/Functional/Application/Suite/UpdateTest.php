@@ -93,7 +93,7 @@ class UpdateTest extends AbstractApplicationTestCase
     /**
      * @return array<mixed>
      */
-    public function updateSuccessDataProvider(): array
+    public static function updateSuccessDataProvider(): array
     {
         $label = md5((string) rand());
 
@@ -234,7 +234,7 @@ class UpdateTest extends AbstractApplicationTestCase
     /**
      * @return array<mixed>
      */
-    public function updateBadRequestDataProvider(): array
+    public static function updateBadRequestDataProvider(): array
     {
         return [
             'label empty' => [
