@@ -14,7 +14,7 @@ readonly class MessageFactory
     private iterable $handlers;
 
     /**
-     * @param iterable<ErrorHandlerInterface> $handlers
+     * @param iterable<mixed> $handlers
      */
     public function __construct(iterable $handlers)
     {

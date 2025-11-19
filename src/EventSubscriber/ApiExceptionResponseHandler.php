@@ -44,8 +44,6 @@ readonly class ApiExceptionResponseHandler implements EventSubscriberInterface
             $response = new RedirectResponse($this->urlGenerator->generate(Routes::DASHBOARD_NAME->value));
         }
 
-        if ($response instanceof Response) {
-            $event->setResponse($response);
-        }
+        $event->setResponse($response);
     }
 }
