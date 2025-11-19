@@ -8,6 +8,7 @@ use App\RedirectRoute\Factory;
 use App\RedirectRoute\Serializer;
 use App\Tests\Application\AbstractSignInWriteTest;
 use App\Tests\Assertions\SymfonyRedirectResponseAssertionTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class SignInWriteTest extends AbstractSignInWriteTest
 {
@@ -16,10 +17,9 @@ class SignInWriteTest extends AbstractSignInWriteTest
     use SymfonyRedirectResponseAssertionTrait;
 
     /**
-     * @dataProvider writeInvalidCredentialsDataProvider
-     *
      * @param callable(Factory, Serializer): string $expectedLocationCreator
      */
+    #[DataProvider('writeInvalidCredentialsDataProvider')]
     public function testWriteInvalidCredentials(
         ?string $userIdentifier,
         ?string $password,

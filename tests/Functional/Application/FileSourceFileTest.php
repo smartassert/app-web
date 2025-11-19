@@ -9,6 +9,7 @@ use App\Tests\Assertions\SymfonyRedirectResponseAssertionTrait;
 use App\Tests\Services\DataRepository\SourcesRepository;
 use App\Tests\Services\EntityFactory\FileSourceFactory;
 use App\Tests\Services\EntityFactory\FileSourceFileFactory;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class FileSourceFileTest extends AbstractFileSourceFileTest
 {
@@ -16,9 +17,7 @@ class FileSourceFileTest extends AbstractFileSourceFileTest
     use GetSessionIdentifierTrait;
     use SymfonyRedirectResponseAssertionTrait;
 
-    /**
-     * @dataProvider createFileSourceFileBadRequestDataProvider
-     */
+    #[DataProvider('createFileSourceFileBadRequestDataProvider')]
     public function testCreateFileSourceFileBadRequest(
         string $filename,
         string $content,

@@ -6,17 +6,17 @@ namespace App\Tests\Application;
 
 use App\Tests\Services\ApplicationClient\Client;
 use App\Tests\Services\DataRepository\DataRepository;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 abstract class AbstractApiUnauthorizedHandlingTest extends AbstractApplicationTestCase
 {
     /**
-     * @dataProvider handleApiUnauthorizedExceptionDataProvider
-     *
      * @param callable(Client): ResponseInterface $successfulAction
      * @param callable(Client): ResponseInterface $failureAction
      */
+    #[DataProvider('handleApiUnauthorizedExceptionDataProvider')]
     public function testHandleApiUnauthorizedException(callable $successfulAction, callable $failureAction): void
     {
         $urlGenerator = self::getContainer()->get(UrlGeneratorInterface::class);

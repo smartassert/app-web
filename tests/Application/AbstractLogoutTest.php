@@ -7,14 +7,13 @@ namespace App\Tests\Application;
 use App\Enum\Routes;
 use App\RedirectRoute\RedirectRoute;
 use App\RedirectRoute\Serializer;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 
 abstract class AbstractLogoutTest extends AbstractApplicationTestCase
 {
-    /**
-     * @dataProvider badMethodDataProvider
-     */
+    #[DataProvider('badMethodDataProvider')]
     public function testReadBadMethod(string $method): void
     {
         $response = $this->applicationClient->makeLogoutRequest($method);
