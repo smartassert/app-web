@@ -54,6 +54,10 @@ jobs:
         run: |
           composer functional-setup
           sleep 10
+        env:
+          DATABASE_URL: postgresql://postgres:password!@0.0.0.0:5432/app-web?serverVersion=12&charset=utf8
 
       - name: Run tests
         run: composer test-functional
+        env:
+          DATABASE_URL: postgresql://postgres:password!@0.0.0.0:5432/app-web?serverVersion=12&charset=utf8
