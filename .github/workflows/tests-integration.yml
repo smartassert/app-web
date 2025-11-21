@@ -35,6 +35,8 @@ jobs:
           rm tests/build/services/users.env
           echo "JWT_TOKEN_TTL=10" >> tests/build/services/users.env
           composer integration-setup
+        env:
+          DATABASE_URL: postgresql://postgres:password!@0.0.0.0:5432/app-web?serverVersion=12&charset=utf8
 
       - name: Verify integration environment state
         run: |
@@ -43,6 +45,8 @@ jobs:
 
       - name: Run tests
         run: composer test-integration
+        env:
+          DATABASE_URL: postgresql://postgres:password!@0.0.0.0:5432/app-web?serverVersion=12&charset=utf8
 
       - name: Dump docker-compose logs
         if: always()
