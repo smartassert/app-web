@@ -11,7 +11,7 @@ use App\Request\SignInReadRequest;
 use App\Response\RedirectResponseFactory;
 use App\SessionStore\ErrorStore;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Twig\Environment as TwigEnvironment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;

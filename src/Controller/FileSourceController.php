@@ -16,7 +16,7 @@ use SmartAssert\ApiClient\Exception\ClientException;
 use SmartAssert\ApiClient\FileSourceClient;
 use SmartAssert\ApiClient\SourceClient;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment as TwigEnvironment;
 use Twig\Error\LoaderError;

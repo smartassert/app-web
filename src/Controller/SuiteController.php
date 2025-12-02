@@ -17,7 +17,7 @@ use SmartAssert\ApiClient\JobCoordinatorClient;
 use SmartAssert\ApiClient\SourceClient;
 use SmartAssert\ApiClient\SuiteClient;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment as TwigEnvironment;
 use Twig\Error\LoaderError;
