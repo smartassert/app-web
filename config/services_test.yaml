@@ -7,9 +7,6 @@ services:
     autowire: true
     autoconfigure: true
 
-  App\Tests\Services\ApplicationClient\ClientFactory:
-    public: true
-
   SmartAssert\SymfonyTestClient\SymfonyClient:
     public: true
 
