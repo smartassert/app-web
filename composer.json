@@ -100,7 +100,7 @@
             "php bin/console doctrine:database:create --if-not-exists",
             "php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration"
         ],
-        "functional-start": "docker compose -f ./tests/build/docker-compose.yml --profile functional up -d",
+        "functional-start": "docker compose -f ./tests/build/docker-compose.yml up -d",
         "functional-setup": [
             "@functional-start",
             "sleep 2",
@@ -143,9 +143,9 @@
             "docker compose -f tests/build/docker-compose.yml exec -T job-coordinator-service php bin/console messenger:setup-transports",
             "docker compose -f tests/build/docker-compose.yml exec -T job-coordinator-service php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --all-or-nothing"
         ],
-        "integration-build": "docker compose -f tests/build/docker-compose.yml build app",
-        "integration-pull": "docker compose -f tests/build/docker-compose.yml pull",
-        "integration-up": "docker compose -f ./tests/build/docker-compose.yml --profile functional --profile integration up -d",
+        "integration-build": "docker compose -f tests/build/docker-compose.integration.yml build app",
+        "integration-pull": "docker compose -f tests/build/docker-compose.integration.yml pull",
+        "integration-up": "docker compose -f ./tests/build/docker-compose.integration.yml up -d",
         "integration-setup": [
             "@integration-build",
             "@integration-up",
@@ -157,9 +157,9 @@
             "@worker-manager-setup",
             "@job-coordinator-setup"
         ],
-        "integration-status": "docker compose -f ./tests/build/docker-compose.yml --profile functional --profile integration ps",
-        "integration-logs": "docker compose -f tests/build/docker-compose.yml logs",
-        "integration-teardown": "docker compose -f ./tests/build/docker-compose.yml --profile functional --profile integration down"
+        "integration-status": "docker compose -f ./tests/build/docker-compose.integration.yml ps",
+        "integration-logs": "docker compose -f tests/build/docker-compose.integration.yml logs",
+        "integration-teardown": "docker compose -f ./tests/build/docker-compose.integration.yml down"
     },
     "conflict": {
         "symfony/symfony": "*"
