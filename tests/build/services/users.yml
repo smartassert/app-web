@@ -10,6 +10,7 @@ services:
       PRIMARY_ADMIN_TOKEN: primary_admin_token
       SECONDARY_ADMIN_TOKEN: secondary_admin_token
       IS_READY: 1
+      JWT_TOKEN_TTL: 10
     depends_on:
       - postgres
 
