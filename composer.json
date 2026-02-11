@@ -24,6 +24,7 @@
         "symfony/runtime": "8.0.*",
         "symfony/security-bundle": "8.0.*",
         "symfony/twig-bundle": "8.0.*",
+        "symfony/uid": "8.0.*",
         "symfony/yaml": "8.0.*"
     },
     "require-dev": {
@@ -39,8 +40,7 @@
         "squizlabs/php_codesniffer": "^4.0",
         "symfony/css-selector": "8.0.*",
         "symfony/maker-bundle": "^1.51",
-        "symfony/phpunit-bridge": "8.0.*",
-        "symfony/uid": "8.0.*"
+        "symfony/phpunit-bridge": "8.0.*"
     },
     "config": {
         "allow-plugins": {

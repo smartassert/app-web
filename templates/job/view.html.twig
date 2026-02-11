@@ -28,5 +28,11 @@
     </form>
 
     <h2>Job "{{ job.summary.id }}"</h2>
+
+    <h3>Summary</h3>
+
+    <p id="summary_created_at">Created: {{ job.summary.createdAt.format('c') }}</p>
+    <p id="summary_suite_id">Suite: <a href="{{ path('suite_view', {id: job.summary.suiteId}) }}">{{ job.summary.suiteId }}</a></p>
+    <p id="summary_maximum_duration">Maximum duration (in seconds): {{ job.summary.maximumDurationInSeconds }}</p>
 </div>
 {% endblock %}
