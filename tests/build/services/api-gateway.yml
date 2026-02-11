@@ -1,7 +1,6 @@
 services:
   api-gateway-service:
     image: ghcr.io/smartassert/api-gateway:10.1
-    profiles: ["functional"]
     container_name: api-gateway-service
     environment:
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/api?serverVersion=12&charset=utf8
@@ -13,7 +12,6 @@ services:
 
   api-gateway-http:
     image: caddy:2.4.5-alpine
-    profiles: ["functional"]
     container_name: api-gateway-http
     restart: unless-stopped
     ports:
