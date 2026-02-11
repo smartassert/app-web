@@ -20,23 +20,22 @@ class Factory
             return $this->getSignIn();
         }
 
-        $queryParameters = [];
+        $redirectRouteParameters = [];
         if ('GET' === $request->getMethod()) {
             foreach ($request->query as $key => $value) {
                 if (is_string($key) && (is_string($value) || is_int($value))) {
-                    $queryParameters[$key] = $value;
+                    $redirectRouteParameters[$key] = $value;
                 }
             }
         }
 
-        $requestParameters = [];
         foreach ($request->attributes as $key => $value) {
-            if (!str_starts_with($key, '_')) {
-                $requestParameters[$key] = $value;
+            if (is_string($key) && !str_starts_with($key, '_') && (is_string($value) || is_int($value))) {
+                $redirectRouteParameters[$key] = $value;
             }
         }
 
-        return new RedirectRoute($name, array_merge($queryParameters, $requestParameters));
+        return new RedirectRoute($name, $redirectRouteParameters);
     }
 
     public function getDefault(): RedirectRoute
