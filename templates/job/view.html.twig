@@ -34,5 +34,15 @@
     <p id="summary_created_at">Created: {{ job.summary.createdAt.format('c') }}</p>
     <p id="summary_suite_id">Suite: <a href="{{ path('suite_view', {id: job.summary.suiteId}) }}">{{ job.summary.suiteId }}</a></p>
     <p id="summary_maximum_duration">Maximum duration (in seconds): {{ job.summary.maximumDurationInSeconds }}</p>
+
+    <h3>Preparation: {{ job.preparation.state }}</h3>
+    <p>Service requests:</p>
+    <ul>
+        {% for name, state in job.preparation.requestStates %}
+        <li>
+            {{ name }}: {{ state }}
+        </li>
+        {% endfor %}
+    </ul>
 </div>
 {% endblock %}
