@@ -29,6 +29,12 @@
 
     <h2>Job "{{ job.summary.id }}"</h2>
 
+    <h3>Meta state</h3>
+    <ul>
+        <li>Ended: {{ job.metaState.ended ? 'true' : 'false' }}</li>
+        <li>Succeeded: {{ job.metaState.succeeded ? 'true' : 'false' }}</li>
+    </ul>
+
     <h3>Summary</h3>
 
     <p id="summary_created_at">Created: {{ job.summary.createdAt.format('c') }}</p>
