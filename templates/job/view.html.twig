@@ -105,5 +105,20 @@
             <li>IP address: {{ machine.ipAddress ?? 'none' }}</li>
         </ul>
     {% endif %}
+
+    <h3>Worker Job</h3>
+
+    {% if null == worker_job %}
+        <p>Awaiting ...</p>
+    {% else %}
+        <ul>
+            <li>Ended: {{ worker_job.metaState.ended ? 'true' : 'false' }}</li>
+            <li>Succeeded: {{ worker_job.metaState.succeeded ? 'true' : 'false' }}</li>
+            <li>State: {{ worker_job.state }}</li>
+            <li>Component states:
+                <pre style="font-size: 0.8rem">{{ worker_job.componentStates |json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+            </li>
+        </ul>
+    {% endif %}
 </div>
 {% endblock %}

@@ -69,6 +69,7 @@ readonly class JobController
                 'results_job' => $job->getResultsJob(),
                 'serialized_suite' => $job->getSerializedSuite(),
                 'machine' => $job->getMachine(),
+                'worker_job' => $job->getWorkerJob(),
             ]
         ));
     }
