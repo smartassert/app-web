@@ -62,15 +62,12 @@ readonly class JobController
             throw new ApiException(ApiService::SOURCES, $e);
         }
 
-//        $machine = $job->components->get('machine');
-//        var_dump($machine);
-
         return new Response($this->twig->render(
             'job/view.html.twig',
             [
                 'job' => $job,
                 'ended_failed_metastate' => new MetaState(ended: true, succeeded: false),
-//                'machine' => $machine,
+                'machine' => $job->getMachine(),
             ]
         ));
     }

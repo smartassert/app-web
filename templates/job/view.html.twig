@@ -69,5 +69,16 @@
     </ul>
 
     <h3>Machine</h3>
+
+    {% if null == machine %}
+        <p>Awaiting ...</p>
+    {% else %}
+        <ul>
+            <li>Ended: {{ machine.metaState.ended ? 'true' : 'false' }}</li>
+            <li>Succeeded: {{ machine.metaState.succeeded ? 'true' : 'false' }}</li>
+            <li>State: {{ machine.stateCategory }}</li>
+            <li>IP address: {{ machine.ipAddress ?? 'none' }}</li>
+        </ul>
+    {% endif %}
 </div>
 {% endblock %}
