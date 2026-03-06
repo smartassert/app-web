@@ -8,6 +8,7 @@ use App\Enum\ApiService;
 use App\Exception\ApiException;
 use App\Response\RedirectResponse;
 use App\Security\ApiKey;
+use SmartAssert\ApiClient\Data\JobCoordinator\Job\MetaState;
 use SmartAssert\ApiClient\Exception\ClientException;
 use SmartAssert\ApiClient\JobCoordinatorClient;
 use Symfony\Component\HttpFoundation\Response;
@@ -64,6 +65,7 @@ readonly class JobController
             'job/view.html.twig',
             [
                 'job' => $job,
+                'ended_failed_metastate' => new MetaState(ended: true, succeeded: false),
             ]
         ));
     }
