@@ -8,7 +8,6 @@ use App\Enum\ApiService;
 use App\Exception\ApiException;
 use App\Response\RedirectResponse;
 use App\Security\ApiKey;
-use SmartAssert\ApiClient\Data\JobCoordinator\Job\Job;
 use SmartAssert\ApiClient\Data\JobCoordinator\Job\MetaState;
 use SmartAssert\ApiClient\Exception\ClientException;
 use SmartAssert\ApiClient\JobCoordinatorClient;
