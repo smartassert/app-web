@@ -35,6 +35,23 @@
         <li>Succeeded: {{ job.metaState.succeeded ? 'true' : 'false' }}</li>
     </ul>
 
+    {% if job.metaState == ended_failed_metastate %}
+        <h3>Component Failures</h3>
+
+        {% for name, component in job.components.filterByMetaState(ended_failed_metastate) %}
+            <p><strong>{{ name }}</strong></p>
+
+            {% if 'machine' == name %}
+                {% if null !== component.actionFailure %}
+                    <ul>
+                        <li>action: {{ component.actionFailure.action }}</li>
+                        <li>type: {{ component.actionFailure.type }}</li>
+                    </ul>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
     <h3>Summary</h3>
 
     <p id="summary_created_at">Created: {{ job.summary.createdAt.format('c') }}</p>
