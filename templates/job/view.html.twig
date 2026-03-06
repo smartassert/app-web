@@ -46,6 +46,9 @@
                     <ul>
                         <li>action: {{ component.actionFailure.action }}</li>
                         <li>type: {{ component.actionFailure.type }}</li>
+                        <li>Context:
+                            <pre style="font-size: 0.8rem">{{ component.actionFailure.context|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+                        </li>
                     </ul>
                 {% endif %}
             {% endif %}
