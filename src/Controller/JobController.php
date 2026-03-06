@@ -66,8 +66,9 @@ readonly class JobController
             [
                 'job' => $job,
                 'ended_failed_metastate' => new MetaState(ended: true, succeeded: false),
-                'machine' => $job->getMachine(),
+                'results_job' => $job->getResultsJob(),
                 'serialized_suite' => $job->getSerializedSuite(),
+                'machine' => $job->getMachine(),
             ]
         ));
     }

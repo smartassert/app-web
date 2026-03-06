@@ -68,6 +68,19 @@
         {% endfor %}
     </ul>
 
+    <h3>Results Job</h3>
+
+    {% if null == results_job %}
+        <p>Awaiting ...</p>
+    {% else %}
+        <ul>
+            <li>Ended: {{ results_job.metaState.ended ? 'true' : 'false' }}</li>
+            <li>Succeeded: {{ results_job.metaState.succeeded ? 'true' : 'false' }}</li>
+            <li>State: {{ results_job.state }}</li>
+            <li>End state: {{ results_job.endState ?? 'none' }}</li>
+        </ul>
+    {% endif %}
+
     <h3>Serialized Suite</h3>
 
     {% if null == serialized_suite %}
