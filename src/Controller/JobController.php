@@ -8,6 +8,7 @@ use App\Enum\ApiService;
 use App\Exception\ApiException;
 use App\Response\RedirectResponse;
 use App\Security\ApiKey;
+use SmartAssert\ApiClient\Data\JobCoordinator\Job\Job;
 use SmartAssert\ApiClient\Data\JobCoordinator\Job\MetaState;
 use SmartAssert\ApiClient\Exception\ClientException;
 use SmartAssert\ApiClient\JobCoordinatorClient;
@@ -61,11 +62,15 @@ readonly class JobController
             throw new ApiException(ApiService::SOURCES, $e);
         }
 
+//        $machine = $job->components->get('machine');
+//        var_dump($machine);
+
         return new Response($this->twig->render(
             'job/view.html.twig',
             [
                 'job' => $job,
                 'ended_failed_metastate' => new MetaState(ended: true, succeeded: false),
+//                'machine' => $machine,
             ]
         ));
     }
