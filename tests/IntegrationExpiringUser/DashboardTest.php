@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Integration;
+namespace App\Tests\IntegrationExpiringUser;
 
 use App\Tests\Application\AbstractDashboardTest;
+use App\Tests\Integration\GetClientAdapterTrait;
+use App\Tests\Integration\GetSessionIdentifierTrait;
 
 class DashboardTest extends AbstractDashboardTest
 {
