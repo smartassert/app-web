@@ -1,4 +1,4 @@
-name: Integration tests
+name: Integration tests for expiring user
 
 on:
   push:
@@ -31,7 +31,10 @@ jobs:
         run: composer integration-pull
 
       - name: Setup integration environment
-        run: composer integration-setup
+        run: |
+          rm tests/build/services/users.env
+          echo "JWT_TOKEN_TTL=10" >> tests/build/services/users.env
+          composer integration-setup
         env:
           DATABASE_URL: postgresql://postgres:password!@0.0.0.0:5432/app-web?serverVersion=12&charset=utf8
 
@@ -41,7 +44,7 @@ jobs:
           sleep 10
 
       - name: Run tests
-        run: composer test-integration
+        run: composer test-integration-expiring-user
         env:
           DATABASE_URL: postgresql://postgres:password!@0.0.0.0:5432/app-web?serverVersion=12&charset=utf8
 

@@ -92,6 +92,7 @@
         "test-unit": "XDEBUG_MODE=off ./vendor/bin/phpunit --colors=always tests/Unit",
         "test-functional": "XDEBUG_MODE=off ./vendor/bin/phpunit --colors=always tests/Functional",
         "test-integration": "XDEBUG_MODE=off ./vendor/bin/phpunit --colors=always tests/Integration",
+        "test-integration-expiring-user": "XDEBUG_MODE=off ./vendor/bin/phpunit --colors=always tests/IntegrationExpiringUser",
         "test": [
             "@test-unit",
             "@test-functional"
