@@ -71,6 +71,23 @@
         {% endfor %}
     </ul>
 
+    {% if job.preparation.metaState == ended_failed_metastate %}
+        <p>Preparation failures:</p>
+
+        <ul>
+            {% for name, preparation_failure in job.preparation.componentFailures %}
+                <li>
+                    {{ name }}:
+                    <ul>
+                        <li>type: {{ preparation_failure.type }}</li>
+                        <li>type: {{ preparation_failure.code }}</li>
+                        <li>type: {{ preparation_failure.message }}</li>
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
     <h3>Results Job</h3>
 
     {% if null == results_job %}
