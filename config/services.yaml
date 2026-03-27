@@ -131,7 +131,13 @@ services:
                 "put_suite": "suite_update"
 
     SmartAssert\ApiClient\Factory\JobCoordinator\SummaryFactory: ~
-
     SmartAssert\ApiClient\Factory\JobCoordinator\JobFactory: ~
+    SmartAssert\ApiClient\Factory\JobCoordinator\MetaStateFactory: ~
+    SmartAssert\ApiClient\Factory\JobCoordinator\ResultsJobFactory: ~
+    SmartAssert\ApiClient\Factory\JobCoordinator\PreparationFactory: ~
+    SmartAssert\ApiClient\Factory\JobCoordinator\SerializedSuiteFactory: ~
+    SmartAssert\ApiClient\Factory\JobCoordinator\MachineFactory: ~
+    SmartAssert\ApiClient\Factory\JobCoordinator\WorkerJobFactory: ~
+    SmartAssert\ApiClient\Factory\JobCoordinator\ServiceRequestFactory: ~
 
     SmartAssert\ApiClient\JobCoordinatorClient: ~
