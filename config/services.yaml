@@ -131,7 +131,9 @@ services:
                 "put_suite": "suite_update"
 
     SmartAssert\ApiClient\Factory\JobCoordinator\SummaryFactory: ~
+    SmartAssert\ApiClient\Factory\JobCoordinator\JobFactoryFactory: ~
 
-    SmartAssert\ApiClient\Factory\JobCoordinator\JobFactory: ~
+    SmartAssert\ApiClient\Factory\JobCoordinator\JobFactory:
+        factory: ['@SmartAssert\ApiClient\Factory\JobCoordinator\JobFactoryFactory', 'create']
 
     SmartAssert\ApiClient\JobCoordinatorClient: ~
