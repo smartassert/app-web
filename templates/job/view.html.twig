@@ -62,83 +62,130 @@
     <p id="summary_maximum_duration">Maximum duration (in seconds): {{ job.summary.maximumDurationInSeconds }}</p>
 
     <h3>Preparation: {{ job.preparation.state }}</h3>
-    <p>Service requests:</p>
+
+    <h3>Results Job</h3>
     <ul>
-        {% for name, state in job.preparation.requestStates %}
-        <li>
-            {{ name }}: {{ state }}
-        </li>
+        <li>Ended: {{ results_job.metaState.ended ? 'true' : 'false' }}</li>
+        <li>Succeeded: {{ results_job.metaState.succeeded ? 'true' : 'false' }}</li>
+        <li>State: {{ results_job.state }}</li>
+        <li>End state: {{ results_job.endState ?? 'none' }}</li>
+    </ul>
+
+    <h4>Preparation: {{ results_job.preparation.state }}</h4>
+    {% if null !== results_job.preparation.failure %}
+        <ul>
+            <li>type: {{ results_job.preparation.failure.type }}</li>
+            <li>type: {{ results_job.preparation.failure.code }}</li>
+            <li>type: {{ results_job.preparation.failure.message }}</li>
+        </ul>
+    {% endif %}
+
+    <h4>Service requests:</h4>
+    <ul>
+        {% for request in results_job.serviceRequests %}
+            <li>
+                <p>type: {{ request.type }}</p>
+                <ul>
+                    {% for attempt in request.attempts %}
+                        <li>{{ attempt.state }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
         {% endfor %}
     </ul>
 
-    {% if job.preparation.metaState == ended_failed_metastate %}
-        <p>Preparation failures:</p>
-
-        <ul>
-            {% for name, preparation_failure in job.preparation.componentFailures %}
-                <li>
-                    {{ name }}:
-                    <ul>
-                        <li>type: {{ preparation_failure.type }}</li>
-                        <li>type: {{ preparation_failure.code }}</li>
-                        <li>type: {{ preparation_failure.message }}</li>
-                    </ul>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    <h3>Results Job</h3>
-
-    {% if null == results_job %}
-        <p>Awaiting ...</p>
-    {% else %}
-        <ul>
-            <li>Ended: {{ results_job.metaState.ended ? 'true' : 'false' }}</li>
-            <li>Succeeded: {{ results_job.metaState.succeeded ? 'true' : 'false' }}</li>
-            <li>State: {{ results_job.state }}</li>
-            <li>End state: {{ results_job.endState ?? 'none' }}</li>
-        </ul>
-    {% endif %}
-
     <h3>Serialized Suite</h3>
+    <ul>
+        <li>Ended: {{ serialized_suite.metaState.ended ? 'true' : 'false' }}</li>
+        <li>Succeeded: {{ serialized_suite.metaState.succeeded ? 'true' : 'false' }}</li>
+        <li>State: {{ serialized_suite.state }}</li>
+    </ul>
 
-    {% if null == serialized_suite %}
-        <p>Awaiting ...</p>
-    {% else %}
+    <h4>Preparation: {{ serialized_suite.preparation.state }}</h4>
+    {% if null !== serialized_suite.preparation.failure %}
         <ul>
-            <li>Ended: {{ serialized_suite.metaState.ended ? 'true' : 'false' }}</li>
-            <li>Succeeded: {{ serialized_suite.metaState.succeeded ? 'true' : 'false' }}</li>
-            <li>State: {{ serialized_suite.state }}</li>
+            <li>type: {{ serialized_suite.preparation.failure.type }}</li>
+            <li>type: {{ serialized_suite.preparation.failure.code }}</li>
+            <li>type: {{ serialized_suite.preparation.failure.message }}</li>
         </ul>
     {% endif %}
+
+    <h4>Service requests:</h4>
+    <ul>
+        {% for request in serialized_suite.serviceRequests %}
+            <li>
+                <p>type: {{ request.type }}</p>
+                <ul>
+                    {% for attempt in request.attempts %}
+                        <li>{{ attempt.state }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
 
     <h3>Machine</h3>
+    <ul>
+        <li>Ended: {{ machine.metaState.ended ? 'true' : 'false' }}</li>
+        <li>Succeeded: {{ machine.metaState.succeeded ? 'true' : 'false' }}</li>
+        <li>State: {{ machine.stateCategory }}</li>
+        <li>IP address: {{ machine.ipAddress ?? 'none' }}</li>
+    </ul>
 
-    {% if null == machine %}
-        <p>Awaiting ...</p>
-    {% else %}
+    <h4>Preparation: {{ machine.preparation.state }}</h4>
+    {% if null !== machine.preparation.failure %}
         <ul>
-            <li>Ended: {{ machine.metaState.ended ? 'true' : 'false' }}</li>
-            <li>Succeeded: {{ machine.metaState.succeeded ? 'true' : 'false' }}</li>
-            <li>State: {{ machine.stateCategory }}</li>
-            <li>IP address: {{ machine.ipAddress ?? 'none' }}</li>
+            <li>type: {{ machine.preparation.failure.type }}</li>
+            <li>type: {{ machine.preparation.failure.code }}</li>
+            <li>type: {{ machine.preparation.failure.message }}</li>
         </ul>
     {% endif %}
+
+    <h4>Service requests:</h4>
+    <ul>
+        {% for request in machine.serviceRequests %}
+            <li>
+                <p>type: {{ request.type }}</p>
+                <ul>
+                    {% for attempt in request.attempts %}
+                        <li>{{ attempt.state }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
 
     <h3>Worker Job</h3>
+    <ul>
+        <li>Ended: {{ worker_job.metaState.ended ? 'true' : 'false' }}</li>
+        <li>Succeeded: {{ worker_job.metaState.succeeded ? 'true' : 'false' }}</li>
+        <li>State: {{ worker_job.state }}</li>
+        <li>Component states:
+            <pre style="font-size: 0.8rem">{{ worker_job.componentStates |json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+        </li>
+    </ul>
 
-    {% if null == worker_job %}
-        <p>Awaiting ...</p>
-    {% else %}
+    <h4>Preparation: {{ worker_job.preparation.state }}</h4>
+    {% if null !== worker_job.preparation.failure %}
         <ul>
-            <li>Ended: {{ worker_job.metaState.ended ? 'true' : 'false' }}</li>
-            <li>Succeeded: {{ worker_job.metaState.succeeded ? 'true' : 'false' }}</li>
-            <li>State: {{ worker_job.state }}</li>
-            <li>Component states:
-                <pre style="font-size: 0.8rem">{{ worker_job.componentStates |json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
-            </li>
+            <li>type: {{ worker_job.preparation.failure.type }}</li>
+            <li>type: {{ worker_job.preparation.failure.code }}</li>
+            <li>type: {{ worker_job.preparation.failure.message }}</li>
         </ul>
     {% endif %}
+
+    <h4>Service requests:</h4>
+    <ul>
+        {% for request in worker_job.serviceRequests %}
+            <li>
+                <p>type: {{ request.type }}</p>
+                <ul>
+                    {% for attempt in request.attempts %}
+                        <li>{{ attempt.state }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
 </div>
 {% endblock %}
