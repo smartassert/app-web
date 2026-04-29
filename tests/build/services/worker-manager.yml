@@ -1,6 +1,6 @@
 services:
   worker-manager-service:
-    image: ghcr.io/smartassert/worker-manager:4.8
+    image: ghcr.io/smartassert/worker-manager:4.11
     container_name: worker-manager-service
     environment:
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/worker_manager?serverVersion=12&charset=utf8
