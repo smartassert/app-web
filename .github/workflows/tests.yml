@@ -52,6 +52,7 @@ jobs:
 
       - name: Setup functional test environment
         run: |
+          cp tests/build/.env.dist tests/build/.env
           composer functional-setup
           sleep 10
         env:
