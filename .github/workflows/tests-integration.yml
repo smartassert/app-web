@@ -36,7 +36,7 @@ jobs:
           WORKER_SSH_KEY_ID: ${{ secrets.WORKER_SSH_KEY_ID }}
         run: |
           cp tests/build/.env.dist tests/build/.env
-          sed -i -e 's/worker_ssh_key_id/"$WORKER_SSH_KEY_ID"/g' tests/build/.env
+          sed -i -e "s/worker_ssh_key_id/$WORKER_SSH_KEY_ID/g" tests/build/.env
           echo "pre 001"
           cat tests/build/.env
           echo "post 001"
