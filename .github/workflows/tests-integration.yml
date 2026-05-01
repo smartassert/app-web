@@ -37,14 +37,7 @@ jobs:
         run: |
           cp tests/build/.env.dist tests/build/.env
           sed -i -e "s/worker_ssh_key_id/$WORKER_SSH_KEY_ID/g" tests/build/.env
-          echo "pre 001"
-          cat tests/build/.env
-          echo "post 001"
           composer integration-setup
-          sleep 10
-          echo "pre 002"
-          docker compose -f tests/build/docker-compose.yml exec worker-manager-service printenv
-          echo "post 002"
 
       - name: Verify integration environment state
         run: |
