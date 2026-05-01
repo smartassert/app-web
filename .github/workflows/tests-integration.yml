@@ -31,7 +31,9 @@ jobs:
         run: composer integration-pull
 
       - name: Setup integration environment
-        run: composer integration-setup
+        run: |
+          cp tests/build/.env.dist tests/build/.env
+          composer integration-setup
         env:
           DATABASE_URL: postgresql://postgres:password!@0.0.0.0:5432/app-web?serverVersion=12&charset=utf8
 
