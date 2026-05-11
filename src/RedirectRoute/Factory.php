@@ -23,14 +23,14 @@ class Factory
         $redirectRouteParameters = [];
         if ('GET' === $request->getMethod()) {
             foreach ($request->query as $key => $value) {
-                if (is_string($key) && (is_string($value) || is_int($value))) {
+                if (is_string($value) || is_int($value)) {
                     $redirectRouteParameters[$key] = $value;
                 }
             }
         }
 
         foreach ($request->attributes as $key => $value) {
-            if (is_string($key) && !str_starts_with($key, '_') && (is_string($value) || is_int($value))) {
+            if (!str_starts_with($key, '_') && (is_string($value) || is_int($value))) {
                 $redirectRouteParameters[$key] = $value;
             }
         }
