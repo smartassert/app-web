@@ -1,0 +1,189 @@
+{
+  "id": "01KRBARQS3SPR0KCYHPKFVESX7",
+  "suite_id": "01KRBAPY5A7M0QQCFK1988KF6R",
+  "maximum_duration_in_seconds": 600,
+  "created_at": 1778496855,
+  "meta_state": {
+    "ended": true,
+    "succeeded": false
+  },
+  "preparation": {
+    "state": "failed",
+    "meta_state": {
+      "ended": true,
+      "succeeded": false
+    }
+  },
+  "components": {
+    "results-job": {
+      "state": "awaiting-events",
+      "end_state": null,
+      "meta_state": {
+        "ended": false,
+        "succeeded": false
+      },
+      "requests": [
+        {
+          "type": "results-job\/create",
+          "attempts": [
+            {
+              "state": "succeeded"
+            }
+          ]
+        },
+        {
+          "type": "results-job\/retrieve",
+          "attempts": [
+            {
+              "state": "succeeded"
+            },
+            {
+              "state": "failed"
+            }
+          ]
+        }
+      ],
+      "preparation": {
+        "state": "succeeded",
+        "request_state": "succeeded"
+      }
+    },
+    "serialized-suite": {
+      "state": "prepared",
+      "is_prepared": true,
+      "meta_state": {
+        "ended": true,
+        "succeeded": true
+      },
+      "requests": [
+        {
+          "type": "serialized-suite\/create",
+          "attempts": [
+            {
+              "state": "succeeded"
+            }
+          ]
+        },
+        {
+          "type": "serialized-suite\/retrieve",
+          "attempts": [
+            {
+              "state": "succeeded"
+            }
+          ]
+        }
+      ],
+      "preparation": {
+        "state": "succeeded",
+        "request_state": "succeeded"
+      }
+    },
+    "machine": {
+      "state_category": "active",
+      "ip_address": "165.227.235.218",
+      "action_failure": null,
+      "meta_state": {
+        "ended": false,
+        "succeeded": false
+      },
+      "requests": [
+        {
+          "type": "machine\/terminate",
+          "attempts": [
+            {
+              "state": "halted"
+            },
+            {
+              "state": "halted"
+            },
+            {
+              "state": "halted"
+            }
+          ]
+        },
+        {
+          "type": "machine\/retrieve",
+          "attempts": [
+            {
+              "state": "succeeded"
+            },
+            {
+              "state": "failed",
+              "failure": {
+                "type": "unknown",
+                "code": 0,
+                "message": ""
+              }
+            }
+          ]
+        }
+      ],
+      "preparation": {
+        "state": "succeeded",
+        "request_state": "succeeded"
+      }
+    },
+    "worker-job": {
+      "state": "failed",
+      "meta_state": {
+        "ended": true,
+        "succeeded": false
+      },
+      "components": {
+        "compilation": {
+          "state": "pending",
+          "meta_state": {
+            "ended": false,
+            "succeeded": false
+          }
+        },
+        "execution": {
+          "state": "pending",
+          "meta_state": {
+            "ended": false,
+            "succeeded": false
+          }
+        },
+        "event_delivery": {
+          "state": "pending",
+          "meta_state": {
+            "ended": false,
+            "succeeded": false
+          }
+        }
+      },
+      "preparation": {
+        "state": "failed",
+        "request_state": "failed",
+        "failure": {
+          "type": "unknown",
+          "code": 0,
+          "message": "source\/manifest\/empty_test_path_collection"
+        }
+      },
+      "requests": [
+        {
+          "type": "worker-job\/create",
+          "attempts": [
+            {
+              "state": "failed",
+              "failure": {
+                "type": "unknown",
+                "code": 0,
+                "message": "source\/manifest\/empty_test_path_collection"
+              }
+            }
+          ]
+        }
+      ],
+      "creation_failure": {
+        "stage": "worker-job-create",
+        "exception": {
+          "class": "SmartAssert\\WorkerClient\\Model\\JobCreationException",
+          "code": 0,
+          "message": "source\/manifest\/empty_test_path_collection"
+        }
+      }
+    }
+  }
+}
