@@ -169,9 +169,34 @@
     {% if null !== worker_job.preparation.failure %}
         <ul>
             <li>type: {{ worker_job.preparation.failure.type }}</li>
-            <li>type: {{ worker_job.preparation.failure.code }}</li>
-            <li>type: {{ worker_job.preparation.failure.message }}</li>
+
+            {% if 'application' != worker_job.preparation.failure.type %}
+                <li>code: {{ worker_job.preparation.failure.code }}</li>
+            {% endif %}
+
+            <li>message: {{ worker_job.preparation.failure.message }}</li>
         </ul>
+
+        {% if 'application' == worker_job.preparation.failure.type %}
+
+            {% if 'worker-job:source/manifest/empty' == worker_job.preparation.failure.message %}
+                <p>Unable to create worker job; suite manifest was empty.</p>
+            {% endif %}
+
+            {% if 'worker-job:source/manifest/invalid' == worker_job.preparation.failure.message %}
+                <p>Unable to create worker job; suite manifest contained invalid YAML.</p>
+            {% endif %}
+
+            {% if 'worker-job:source/manifest/empty_test_path_collection' == worker_job.preparation.failure.message %}
+                <p>Unable to create worker job; suite manifest provides no tests to run.</p>
+            {% endif %}
+
+            {% if 'worker-job:source/manifest/unknown' == worker_job.preparation.failure.message %}
+                <p>Unable to create worker job; suite manifest was not accepted for an unknown reason.</p>
+            {% endif %}
+
+        {% endif %}
+
     {% endif %}
 
     <h4>Service requests:</h4>
