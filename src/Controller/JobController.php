@@ -65,7 +65,7 @@ readonly class JobController
             'job/view.html.twig',
             [
                 'job' => $job,
-                'ended_failed_metastate' => new MetaState(ended: true, succeeded: false),
+                'ended_failed_metastate' => new MetaState(ended: true, succeeded: false, pending: false),
                 'results_job' => $job->getResultsJob(),
                 'serialized_suite' => $job->getSerializedSuite(),
                 'machine' => $job->getMachine(),
