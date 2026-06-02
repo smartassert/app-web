@@ -38,7 +38,7 @@
         "phpunit/phpunit": "^13",
         "smartassert/symfony-test-client": "^3.0",
         "squizlabs/php_codesniffer": "^4.0",
-        "symfony/css-selector": "8.0.*",
+        "symfony/css-selector": "8.1.*",
         "symfony/maker-bundle": "^1.51",
         "symfony/phpunit-bridge": "8.0.*"
     },
