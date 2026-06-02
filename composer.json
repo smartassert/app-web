@@ -15,14 +15,14 @@
         "guzzlehttp/guzzle": "^7.8",
         "guzzlehttp/psr7": "*",
         "smartassert/api-client": "^30.0",
-        "symfony/console": "8.0.*",
+        "symfony/console": "8.1.*",
         "symfony/dotenv": "8.1.*",
         "symfony/flex": "^2",
-        "symfony/framework-bundle": "8.0.*",
+        "symfony/framework-bundle": "8.1.*",
         "symfony/monolog-bundle": "^4.0",
-        "symfony/psr-http-message-bridge": "8.0.*",
+        "symfony/psr-http-message-bridge": "8.1.*",
         "symfony/runtime": "8.1.*",
-        "symfony/security-bundle": "8.0.*",
+        "symfony/security-bundle": "8.1.*",
         "symfony/twig-bundle": "8.1.*",
         "symfony/uid": "8.1.*",
         "symfony/yaml": "8.1.*"
@@ -40,7 +40,7 @@
         "squizlabs/php_codesniffer": "^4.0",
         "symfony/css-selector": "8.1.*",
         "symfony/maker-bundle": "^1.51",
-        "symfony/phpunit-bridge": "8.0.*"
+        "symfony/phpunit-bridge": "8.1.*"
     },
     "config": {
         "allow-plugins": {
@@ -168,7 +168,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "8.0.*"
+            "require": "8.1.*"
         }
     }
 }
