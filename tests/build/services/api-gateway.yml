@@ -1,12 +1,13 @@
 services:
   api-gateway-service:
-    image: ghcr.io/smartassert/api-gateway:11.0
+    image: ghcr.io/smartassert/api-gateway:11.1
     container_name: api-gateway-service
     environment:
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/api?serverVersion=12&charset=utf8
       AUTHENTICATION_BASE_URL: http://users-http
       SOURCES_BASE_URL: http://sources-http
       JOB_COORDINATOR_BASE_URL: http://job-coordinator-http
+      RESULTS_BASE_URL: http://results-http
     depends_on:
       - postgres
 
