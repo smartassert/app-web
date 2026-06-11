@@ -13,6 +13,8 @@ use App\Tests\Services\SessionHandler;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use SmartAssert\ApiClient\Exception\ClientException;
 use SmartAssert\ApiClient\Exception\UnauthorizedException;
+use SmartAssert\ApiClient\Request\RequestSpecification;
+use SmartAssert\ApiClient\Request\RouteRequirements;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -59,9 +61,11 @@ class UnauthorizedExceptionTest extends WebTestCase
         \assert($requestStack instanceof RequestStack);
         $requestStack->push($request);
 
+        $requestSpecification = new RequestSpecification('GET', new RouteRequirements('route_name'));
+
         $exception = new ApiException(
             ApiService::USERS,
-            new ClientException(md5((string) rand()), new UnauthorizedException())
+            new ClientException($requestSpecification, new UnauthorizedException())
         );
 
         $this->event = new ExceptionEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, $exception);

@@ -9,7 +9,7 @@ use App\Exception\ApiException;
 use App\Response\RedirectResponse;
 use App\Security\ApiKey;
 use SmartAssert\ApiClient\Data\JobCoordinator\Job\MetaState;
-use SmartAssert\ApiClient\Exception\ClientException;
+use SmartAssert\ApiClient\Exception\ClientExceptionInterface;
 use SmartAssert\ApiClient\JobCoordinatorClient;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -37,7 +37,7 @@ readonly class JobController
     {
         try {
             $job = $this->jobCoordinatorClient->create($apiKey->key, $suiteId, 600);
-        } catch (ClientException $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new ApiException(ApiService::SOURCES, $e);
         }
 
@@ -57,7 +57,7 @@ readonly class JobController
     {
         try {
             $job = $this->jobCoordinatorClient->get($apiKey->key, $id);
-        } catch (ClientException $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new ApiException(ApiService::SOURCES, $e);
         }
 

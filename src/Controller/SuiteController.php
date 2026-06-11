@@ -12,7 +12,7 @@ use App\Request\SuiteUpdateRequest;
 use App\Response\RedirectResponse;
 use App\Security\ApiKey;
 use App\SessionStore\RequestPayloadStore;
-use SmartAssert\ApiClient\Exception\ClientException;
+use SmartAssert\ApiClient\Exception\ClientExceptionInterface;
 use SmartAssert\ApiClient\JobCoordinatorClient;
 use SmartAssert\ApiClient\SourceClient;
 use SmartAssert\ApiClient\SuiteClient;
@@ -47,7 +47,7 @@ readonly class SuiteController
         try {
             $sources = $this->sourceClient->list($apiKey->key);
             $suites = $this->suiteClient->list($apiKey->key);
-        } catch (ClientException $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new ApiException(ApiService::SOURCES, $e);
         }
 
@@ -96,7 +96,7 @@ readonly class SuiteController
             $sources = $this->sourceClient->list($apiKey->key);
             $suite = $this->suiteClient->get($apiKey->key, $id);
             $jobs = $this->jobCoordinatorClient->list($apiKey->key, $id);
-        } catch (ClientException $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new ApiException(ApiService::SOURCES, $e);
         }
 

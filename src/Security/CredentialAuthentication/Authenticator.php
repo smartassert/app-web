@@ -17,7 +17,7 @@ use App\Response\RedirectResponseFactory;
 use App\Security\ApiKeyBadge;
 use App\Security\User;
 use App\SessionStore\ErrorStore;
-use SmartAssert\ApiClient\Exception\ClientException;
+use SmartAssert\ApiClient\Exception\ClientExceptionInterface;
 use SmartAssert\ApiClient\Exception\ForbiddenException;
 use SmartAssert\ApiClient\Exception\UnauthorizedException;
 use SmartAssert\ApiClient\UsersClient;
@@ -78,7 +78,7 @@ readonly class Authenticator implements AuthenticatorInterface
             $token = $this->usersClient->createToken($userIdentifier, $password);
             $apiKey = $this->usersClient->getApiKey($token->token);
             $user = new User($userIdentifier, $token);
-        } catch (ClientException $clientException) {
+        } catch (ClientExceptionInterface $clientException) {
             $innerException = $clientException->getInnerException();
 
             if ($innerException instanceof UnauthorizedException || $innerException instanceof ForbiddenException) {
