@@ -11,7 +11,7 @@ use App\FormError\Factory;
 use App\Request\FileSourceCreateRequest;
 use App\Security\ApiKey;
 use App\SessionStore\RequestPayloadStore;
-use SmartAssert\ApiClient\Exception\ClientException;
+use SmartAssert\ApiClient\Exception\ClientExceptionInterface;
 use SmartAssert\ApiClient\SourceClient;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -39,7 +39,7 @@ readonly class SourceController
     {
         try {
             $sources = $this->sourceClient->list($apiKey->key);
-        } catch (ClientException $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new ApiException(ApiService::SOURCES, $e);
         }
 

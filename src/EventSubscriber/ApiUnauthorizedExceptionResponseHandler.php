@@ -10,7 +10,7 @@ use App\Exception\ApiException;
 use App\RedirectRoute\Factory;
 use App\Response\RedirectResponseFactory;
 use App\SessionStore\ErrorStore;
-use SmartAssert\ApiClient\Exception\ClientException;
+use SmartAssert\ApiClient\Exception\ClientExceptionInterface;
 use SmartAssert\ApiClient\Exception\ForbiddenException;
 use SmartAssert\ApiClient\Exception\UnauthorizedException;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -48,7 +48,7 @@ readonly class ApiUnauthorizedExceptionResponseHandler implements EventSubscribe
         }
 
         $clientException = $throwable->exception;
-        if (!$clientException instanceof ClientException) {
+        if (!$clientException instanceof ClientExceptionInterface) {
             return;
         }
 

@@ -8,7 +8,7 @@ use App\Enum\ApiService;
 use App\Enum\Routes;
 use App\Exception\ApiException;
 use App\Security\ApiKey;
-use SmartAssert\ApiClient\Exception\ClientException;
+use SmartAssert\ApiClient\Exception\ClientExceptionInterface;
 use SmartAssert\ApiClient\SourceClient;
 use SmartAssert\ApiClient\SuiteClient;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,7 +38,7 @@ readonly class DashboardController
         try {
             $sources = $this->sourceClient->list($apiKey->key);
             $suites = $this->suiteClient->list($apiKey->key);
-        } catch (ClientException $clientException) {
+        } catch (ClientExceptionInterface $clientException) {
             throw new ApiException(ApiService::SOURCES, $clientException);
         }
 

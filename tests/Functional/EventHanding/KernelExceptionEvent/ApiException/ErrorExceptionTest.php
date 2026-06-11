@@ -13,6 +13,8 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use SmartAssert\ApiClient\Exception\ClientException;
 use SmartAssert\ApiClient\Exception\Error\ErrorException;
+use SmartAssert\ApiClient\Request\RequestSpecification;
+use SmartAssert\ApiClient\Request\RouteRequirements;
 use SmartAssert\ServiceRequest\Error\ErrorInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -60,10 +62,14 @@ class ErrorExceptionTest extends WebTestCase
             ->andReturn(400)
         ;
 
-        $exceptionRequestName = md5((string) rand());
         $error = \Mockery::mock(ErrorInterface::class);
 
-        $clientException = new ClientException($exceptionRequestName, new ErrorException($error));
+        $requestMethod = substr(md5((string) rand()), 0, 3);
+        $requestRoute = substr(md5((string) rand()), 0, 6);
+        $requestSpecification = new RequestSpecification($requestMethod, new RouteRequirements($requestRoute));
+
+        $clientException = new ClientException($requestSpecification, new ErrorException($error));
+
         $exception = new ApiException(ApiService::SOURCES, $clientException);
 
         $event = new ExceptionEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, $exception);
@@ -72,7 +78,7 @@ class ErrorExceptionTest extends WebTestCase
         $namedError = $session->get('error');
         self::assertInstanceOf(NamedError::class, $namedError);
 
-        self::assertSame($exceptionRequestName, $namedError->name);
+        self::assertSame($requestMethod . '_' . $requestRoute, $namedError->name);
         self::assertSame($error, $namedError->error);
     }
 
@@ -111,12 +117,15 @@ class ErrorExceptionTest extends WebTestCase
             ->andReturn(400)
         ;
 
-        $exceptionRequestName = md5((string) rand());
         $error = \Mockery::mock(ErrorInterface::class);
 
         $redirectResponse = new RedirectResponse(md5((string) rand()));
 
-        $clientException = new ClientException($exceptionRequestName, new ErrorException($error));
+        $requestMethod = substr(md5((string) rand()), 0, 3);
+        $requestRoute = substr(md5((string) rand()), 0, 6);
+        $requestSpecification = new RequestSpecification($requestMethod, new RouteRequirements($requestRoute));
+
+        $clientException = new ClientException($requestSpecification, new ErrorException($error));
         $exception = new ApiException(ApiService::SOURCES, $clientException, $redirectResponse);
 
         $event = new ExceptionEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, $exception);

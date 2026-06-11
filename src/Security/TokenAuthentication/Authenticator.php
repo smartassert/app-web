@@ -11,7 +11,7 @@ use App\RefreshableToken\Encrypter;
 use App\Response\RedirectResponseFactory;
 use App\Security\RequestTokenExtractor;
 use App\Security\User;
-use SmartAssert\ApiClient\Exception\ClientException;
+use SmartAssert\ApiClient\Exception\ClientExceptionInterface;
 use SmartAssert\ApiClient\Exception\ForbiddenException;
 use SmartAssert\ApiClient\Exception\UnauthorizedException;
 use SmartAssert\ApiClient\UsersClient;
@@ -70,7 +70,7 @@ readonly class Authenticator implements AuthenticatorInterface
         try {
             $remoteUser = $this->usersClient->verifyToken($token->token);
             $user = new User($remoteUser->userIdentifier, $token);
-        } catch (ClientException $clientException) {
+        } catch (ClientExceptionInterface $clientException) {
             $innerException = $clientException->getInnerException();
 
             if ($innerException instanceof UnauthorizedException) {
@@ -79,7 +79,7 @@ readonly class Authenticator implements AuthenticatorInterface
                     $request->cookies->set('token', $this->tokenEncrypter->encrypt($newToken));
 
                     return $this->authenticate($request);
-                } catch (ClientException $clientException) {
+                } catch (ClientExceptionInterface $clientException) {
                     $innerException = $clientException->getInnerException();
 
                     if (

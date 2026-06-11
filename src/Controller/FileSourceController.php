@@ -12,7 +12,7 @@ use App\Request\FileSourceFileRequest;
 use App\Response\RedirectResponse;
 use App\Security\ApiKey;
 use App\SessionStore\RequestPayloadStore;
-use SmartAssert\ApiClient\Exception\ClientException;
+use SmartAssert\ApiClient\Exception\ClientExceptionInterface;
 use SmartAssert\ApiClient\FileSourceClient;
 use SmartAssert\ApiClient\SourceClient;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,7 +47,7 @@ readonly class FileSourceController
         try {
             $source = $this->sourceClient->get($apiKey->key, $id);
             $files = $this->fileSourceClient->list($apiKey->key, $id);
-        } catch (ClientException $e) {
+        } catch (ClientExceptionInterface $e) {
             throw new ApiException(ApiService::SOURCES, $e);
         }
 
