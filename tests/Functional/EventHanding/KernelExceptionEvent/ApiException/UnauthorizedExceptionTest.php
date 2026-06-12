@@ -11,7 +11,6 @@ use App\Error\NamedError;
 use App\Exception\ApiException;
 use App\Tests\Services\SessionHandler;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use SmartAssert\ApiClient\Exception\ClientException;
 use SmartAssert\ApiClient\Exception\UnauthorizedException;
 use SmartAssert\ApiClient\Request\RequestSpecification;
 use SmartAssert\ApiClient\Request\RouteRequirements;
@@ -65,7 +64,7 @@ class UnauthorizedExceptionTest extends WebTestCase
 
         $exception = new ApiException(
             ApiService::USERS,
-            new ClientException($requestSpecification, new UnauthorizedException())
+            new UnauthorizedException($requestSpecification)
         );
 
         $this->event = new ExceptionEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, $exception);
