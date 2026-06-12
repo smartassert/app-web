@@ -11,7 +11,6 @@ use App\Response\RedirectResponse;
 use App\Tests\Services\SessionHandler;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
-use SmartAssert\ApiClient\Exception\ClientException;
 use SmartAssert\ApiClient\Exception\Error\ErrorException;
 use SmartAssert\ApiClient\Request\RequestSpecification;
 use SmartAssert\ApiClient\Request\RouteRequirements;
@@ -68,9 +67,9 @@ class ErrorExceptionTest extends WebTestCase
         $requestRoute = substr(md5((string) rand()), 0, 6);
         $requestSpecification = new RequestSpecification($requestMethod, new RouteRequirements($requestRoute));
 
-        $clientException = new ClientException($requestSpecification, new ErrorException($error));
+        $errorException = new ErrorException($requestSpecification, $error);
 
-        $exception = new ApiException(ApiService::SOURCES, $clientException);
+        $exception = new ApiException(ApiService::SOURCES, $errorException);
 
         $event = new ExceptionEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, $exception);
         $eventDispatcher->dispatch($event, 'kernel.exception');
@@ -125,8 +124,8 @@ class ErrorExceptionTest extends WebTestCase
         $requestRoute = substr(md5((string) rand()), 0, 6);
         $requestSpecification = new RequestSpecification($requestMethod, new RouteRequirements($requestRoute));
 
-        $clientException = new ClientException($requestSpecification, new ErrorException($error));
-        $exception = new ApiException(ApiService::SOURCES, $clientException, $redirectResponse);
+        $errorException = new ErrorException($requestSpecification, $error);
+        $exception = new ApiException(ApiService::SOURCES, $errorException, $redirectResponse);
 
         $event = new ExceptionEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, $exception);
         $eventDispatcher->dispatch($event, 'kernel.exception');
