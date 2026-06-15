@@ -69,6 +69,7 @@
         <li>Succeeded: {{ results_job.metaState.succeeded ? 'true' : 'false' }}</li>
         <li>State: {{ results_job.state }}</li>
         <li>End state: {{ results_job.endState ?? 'none' }}</li>
+        <li>Has events: {{ results_job.hasEvents ? 'true' : 'false' }}</li>
     </ul>
 
     <h4>Preparation: {{ results_job.preparation.state }}</h4>
