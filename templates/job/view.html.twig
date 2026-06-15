@@ -70,6 +70,7 @@
         <li>State: {{ results_job.state }}</li>
         <li>End state: {{ results_job.endState ?? 'none' }}</li>
         <li>Has events: {{ results_job.hasEvents ? 'true' : 'false' }}</li>
+        <li>Event count: {{ events | length }}</li>
     </ul>
 
     <h4>Preparation: {{ results_job.preparation.state }}</h4>
