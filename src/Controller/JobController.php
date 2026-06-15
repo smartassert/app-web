@@ -11,6 +11,7 @@ use App\Security\ApiKey;
 use SmartAssert\ApiClient\Data\JobCoordinator\Job\MetaState;
 use SmartAssert\ApiClient\Exception\ClientExceptionInterface;
 use SmartAssert\ApiClient\JobCoordinatorClient;
+use SmartAssert\ApiClient\ResultsEventClient;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -53,12 +54,31 @@ readonly class JobController
      * @throws ApiException
      */
     #[Route('/job/{id<[A-Z90-9]{26}>}', name: 'job_view', methods: ['GET'])]
-    public function view(ApiKey $apiKey, string $id): Response
-    {
+    public function view(
+        ResultsEventClient $resultsEventClient,
+        ApiKey $apiKey,
+        string $id
+    ): Response {
         try {
             $job = $this->jobCoordinatorClient->get($apiKey->key, $id);
-        } catch (ClientExceptionInterface $e) {
+        } catch (\Throwable $e) {
             throw new ApiException(ApiService::SOURCES, $e);
+        }
+
+        $events = null;
+
+        $resultsJob = $job->getResultsJob();
+        if ($resultsJob?->hasEvents) {
+            try {
+                $events = $resultsEventClient->list(
+                    apiKey: $apiKey->key,
+                    label: $id,
+                    reference: null,
+                    type: null,
+                );
+            } catch (\Throwable $e) {
+                throw new ApiException(ApiService::SOURCES, $e);
+            }
         }
 
         return new Response($this->twig->render(
@@ -66,10 +86,11 @@ readonly class JobController
             [
                 'job' => $job,
                 'ended_failed_metastate' => new MetaState(ended: true, succeeded: false, pending: false),
-                'results_job' => $job->getResultsJob(),
+                'results_job' => $resultsJob,
                 'serialized_suite' => $job->getSerializedSuite(),
                 'machine' => $job->getMachine(),
                 'worker_job' => $job->getWorkerJob(),
+                'events' => $events,
             ]
         ));
     }

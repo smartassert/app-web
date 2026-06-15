@@ -137,3 +137,11 @@ services:
         factory: ['@SmartAssert\ApiClient\Factory\JobCoordinator\FactoryFactory', 'createJobFactory']
 
     SmartAssert\ApiClient\JobCoordinatorClient: ~
+
+    SmartAssert\ApiClient\Factory\Results\ResourceReferenceFactory: ~
+
+    SmartAssert\ApiClient\Factory\Results\ResourceReferenceCollectionFactory: ~
+
+    SmartAssert\ApiClient\Factory\Results\EventFactory: ~
+
+    SmartAssert\ApiClient\ResultsEventClient:
