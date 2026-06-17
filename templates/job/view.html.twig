@@ -61,6 +61,18 @@
     <p id="summary_suite_id">Suite: <a href="{{ path('suite_view', {id: job.summary.suiteId}) }}">{{ job.summary.suiteId }}</a></p>
     <p id="summary_maximum_duration">Maximum duration (in seconds): {{ job.summary.maximumDurationInSeconds }}</p>
 
+    <h3>Events: {{ events | length }}</h3>
+
+    {% if results_job.hasEvents %}
+        <ol>
+            {% for event in events %}
+                <li >
+                    <p>Type: {{ event.type }}</p>
+                </li>
+            {% endfor %}
+        </ol>
+    {% endif %}
+
     <h3>Preparation: {{ job.preparation.state }}</h3>
 
     <h3>Results Job</h3>
@@ -70,7 +82,6 @@
         <li>State: {{ results_job.state }}</li>
         <li>End state: {{ results_job.endState ?? 'none' }}</li>
         <li>Has events: {{ results_job.hasEvents ? 'true' : 'false' }}</li>
-        <li>Event count: {{ events | length }}</li>
     </ul>
 
     <h4>Preparation: {{ results_job.preparation.state }}</h4>
