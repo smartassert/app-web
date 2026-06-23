@@ -68,6 +68,14 @@
             {% for event in events %}
                 <li >
                     <p>Type: {{ event.type }}</p>
+
+                    {% if 'job/started' == event.type %}
+                        <ul>
+                            {% for test in event.tests %}
+                                <li>{{ test.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ol>
