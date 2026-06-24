@@ -89,6 +89,10 @@
                     %}
                         <p>Job: {{event.job.label }}</p>
                     {% endif %}
+
+                    {% if 'compilation/started' == event.type %}
+                        <p>Test: {{event.test.name }}</p>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ol>
