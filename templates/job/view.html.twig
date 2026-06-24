@@ -84,7 +84,7 @@
                     {% if
                         'lifecycle/compilation-started' == event.type or
                         'lifecycle/compilation-completed' == event.type or
-                        'lifecycle/compilation-started' == event.type or
+                        'lifecycle/execution-started' == event.type or
                         'lifecycle/execution-completed' == event.type
                     %}
                         <p>Job: {{event.job.label }}</p>
