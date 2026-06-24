@@ -70,6 +70,10 @@
                     <p>Type: {{ event.type }}</p>
 
                     {% if 'job/started' == event.type %}
+                        <p>Job: {{event.job.label }}</p>
+
+                        <p>Tests:</p>
+
                         <ul>
                             {% for test in event.tests %}
                                 <li>{{ test.name }}</li>
