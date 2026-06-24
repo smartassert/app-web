@@ -80,6 +80,15 @@
                             {% endfor %}
                         </ul>
                     {% endif %}
+
+                    {% if
+                        'lifecycle/compilation-started' == event.type or
+                        'lifecycle/compilation-completed' == event.type or
+                        'lifecycle/compilation-started' == event.type or
+                        'lifecycle/execution-completed' == event.type
+                    %}
+                        <p>Job: {{event.job.label }}</p>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ol>
