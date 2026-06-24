@@ -93,6 +93,17 @@
                     {% if 'compilation/started' == event.type %}
                         <p>Test: {{event.test.name }}</p>
                     {% endif %}
+
+                    {% if 'compilation/passed' == event.type %}
+                        <p>Test: {{event.test.name }}</p>
+                        <p>Steps:</p>
+
+                        <ul>
+                            {% for step in event.steps %}
+                                <li>"{{ step.name }}"</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ol>
