@@ -70,12 +70,12 @@
                     <p>Type: {{ event.type }}</p>
 
                     {% if 'job/started' == event.type %}
-                        <p>Job: {{event.job.label }}</p>
+                        <p>Job: {{event.jobMetadata.label }}</p>
 
                         <p>Tests:</p>
 
                         <ul>
-                            {% for test in event.tests %}
+                            {% for test in event.testMetadataCollection %}
                                 <li>{{ test.name }}</li>
                             {% endfor %}
                         </ul>
@@ -87,26 +87,26 @@
                         'lifecycle/execution-started' == event.type or
                         'lifecycle/execution-completed' == event.type
                     %}
-                        <p>Job: {{event.job.label }}</p>
+                        <p>Job: {{ event.jobMetadata.label }}</p>
                     {% endif %}
 
                     {% if 'compilation/started' == event.type %}
-                        <p>Test: {{event.test.name }}</p>
+                        <p>Test: {{ event.testMetadata.name }}</p>
                     {% endif %}
 
                     {% if 'compilation/passed' == event.type %}
-                        <p>Test: {{event.test.name }}</p>
+                        <p>Test: {{ event.testMetadata.name }}</p>
                         <p>Steps:</p>
 
                         <ul>
-                            {% for step in event.steps %}
+                            {% for step in event.stepMetadataCollection %}
                                 <li>"{{ step.name }}"</li>
                             {% endfor %}
                         </ul>
                     {% endif %}
 
                     {% if 'test/started' == event.type %}
-                        <p>Test: {{event.test.name }}</p>
+                        <p>Test: {{ event.testMetadata.name }}</p>
 
                         <p>Configuration:</p>
                         <ul>
@@ -116,7 +116,7 @@
 
                         <p>Steps:</p>
                         <ul>
-                            {% for step in event.steps %}
+                            {% for step in event.stepMetadataCollection %}
                                 <li>"{{ step.name }}"</li>
                             {% endfor %}
                         </ul>
