@@ -104,6 +104,23 @@
                             {% endfor %}
                         </ul>
                     {% endif %}
+
+                    {% if 'test/started' == event.type %}
+                        <p>Test: {{event.test.name }}</p>
+
+                        <p>Configuration:</p>
+                        <ul>
+                            <li>Browser: {{ event.configuration.browser }}</li>
+                            <li>URL: {{ event.configuration.url }}</li>
+                        </ul>
+
+                        <p>Steps:</p>
+                        <ul>
+                            {% for step in event.steps %}
+                                <li>"{{ step.name }}"</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ol>
