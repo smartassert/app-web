@@ -70,13 +70,13 @@
                     <p>Type: {{ event.type }}</p>
 
                     {% if 'job/started' == event.type %}
-                        <p>Job: {{event.jobMetadata.label }}</p>
+                        <p>Job: {{event.getJobReference.label }}</p>
 
                         <p>Tests:</p>
 
                         <ul>
-                            {% for test in event.testMetadataCollection %}
-                                <li>{{ test.name }}</li>
+                            {% for test in event.getTestReferences %}
+                                <li>{{ test.label }}</li>
                             {% endfor %}
                         </ul>
                     {% endif %}
@@ -87,26 +87,26 @@
                         'lifecycle/execution-started' == event.type or
                         'lifecycle/execution-completed' == event.type
                     %}
-                        <p>Job: {{ event.jobMetadata.label }}</p>
+                        <p>Job: {{ event.getJobReference.label }}</p>
                     {% endif %}
 
                     {% if 'compilation/started' == event.type %}
-                        <p>Test: {{ event.testMetadata.name }}</p>
+                        <p>Test: {{ event.getTestReference.label }}</p>
                     {% endif %}
 
                     {% if 'compilation/passed' == event.type %}
-                        <p>Test: {{ event.testMetadata.name }}</p>
+                        <p>Test: {{ event.getTestReference.label }}</p>
                         <p>Steps:</p>
 
                         <ul>
-                            {% for step in event.stepMetadataCollection %}
-                                <li>"{{ step.name }}"</li>
+                            {% for step in event.getStepReferences %}
+                                <li>"{{ step.label }}"</li>
                             {% endfor %}
                         </ul>
                     {% endif %}
 
                     {% if 'test/started' == event.type %}
-                        <p>Test: {{ event.testMetadata.name }}</p>
+                        <p>Test: {{ event.getTestReference.label }}</p>
 
                         <p>Configuration:</p>
                         <ul>
@@ -116,8 +116,8 @@
 
                         <p>Steps:</p>
                         <ul>
-                            {% for step in event.stepMetadataCollection %}
-                                <li>"{{ step.name }}"</li>
+                            {% for step in event.getStepReferences %}
+                                <li>"{{ step.label }}"</li>
                             {% endfor %}
                         </ul>
                     {% endif %}
