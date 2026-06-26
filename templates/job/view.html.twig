@@ -121,6 +121,25 @@
                             {% endfor %}
                         </ul>
                     {% endif %}
+
+                    {% if 'step/passed' == event.type %}
+                        <ul>
+                            <li>Name: "{{ event.step.name }}"</li>
+                            <li>Status: {{ event.step.status }}</li>
+                            <li>
+                                Statements:
+                                <ul>
+                                    {% for statement in event.step.statements %}
+                                        <li>
+                                            <p>Type: {{ statement.type }}</p>
+                                            <p>Source: {{ statement.source }}</p>
+                                            <p>Status: {{ statement.status }}</p>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        </ul>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ol>
