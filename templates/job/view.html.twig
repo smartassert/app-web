@@ -140,6 +140,16 @@
                             </li>
                         </ul>
                     {% endif %}
+
+                    {% if 'job/ended' == event.type %}
+                        <p>Job: {{event.getJobReference.label }}</p>
+
+                        <ul>
+                            <li>End state: {{ event.endState }}</li>
+                            <li>Succeeded: {{ event.isSuccess ? 'true' : 'false' }}</li>
+                            <li>Event count: {{ event.eventCount }}</li>
+                        </ul>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ol>
