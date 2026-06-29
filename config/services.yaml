@@ -142,7 +142,7 @@ services:
         class: webignition\BasilModels\Parser\Test\TestParser
         factory: ['webignition\BasilModels\Parser\Test\TestParser', 'create']
 
-    SmartAssert\ApiClient\Factory\Results\TestStartedEventFactory: ~
+    SmartAssert\ApiClient\Factory\Results\TestEventFactory: ~
 
     SmartAssert\ApiClient\Factory\Results\StepPassedEventFactory: ~
 

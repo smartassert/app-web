@@ -105,7 +105,7 @@
                         </ul>
                     {% endif %}
 
-                    {% if 'test/started' == event.type %}
+                    {% if 'test/started' == event.type or 'test/passed' == event.type %}
                         <p>Test: {{ event.getTestReference.label }}</p>
 
                         <p>Configuration:</p>
