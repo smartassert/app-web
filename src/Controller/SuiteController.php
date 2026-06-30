@@ -57,7 +57,10 @@ readonly class SuiteController
                 'form_error' => $formErrorFactory->create(),
                 'sources' => $sources,
                 'suites' => $suites,
-                'suite_create_request' => $this->requestPayloadStore->get(SuiteCreateRequest::class),
+                'suite_create_request' => $this->requestPayloadStore->get(
+                    SuiteCreateRequest::class,
+                    'suite_create_request',
+                ),
             ]
         ));
     }
@@ -73,7 +76,7 @@ readonly class SuiteController
         try {
             $this->suiteClient->create($apiKey->key, $request->sourceId, $request->label, $request->tests);
         } catch (\Throwable $e) {
-            $this->requestPayloadStore->set($request);
+            $this->requestPayloadStore->set($request, 'suite_create_request');
 
             throw new ApiException(ApiService::SOURCES, $e, $response);
         }
@@ -105,7 +108,10 @@ readonly class SuiteController
             [
                 'form_error' => $formErrorFactory->create(),
                 'sources' => $sources,
-                'suite_update_request' => $this->requestPayloadStore->get(SuiteUpdateRequest::class),
+                'suite_update_request' => $this->requestPayloadStore->get(
+                    SuiteUpdateRequest::class,
+                    'suite_update_request',
+                ),
                 'suite' => $suite,
                 'jobs' => $jobs,
             ]
@@ -129,7 +135,7 @@ readonly class SuiteController
                 $request->tests
             );
         } catch (\Throwable $e) {
-            $this->requestPayloadStore->set($request);
+            $this->requestPayloadStore->set($request, 'suite_update_request');
 
             throw new ApiException(ApiService::SOURCES, $e, $response);
         }

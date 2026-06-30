@@ -22,7 +22,11 @@ readonly class FileSourceFileAddDuplicateFilenameHandler implements TypeHandlerI
             return null;
         }
 
-        $fileSourceFileRequest = $this->requestPayloadStore->peek(FileSourceFileRequest::class);
+        $fileSourceFileRequest = $this->requestPayloadStore->peek(
+            FileSourceFileRequest::class,
+            'file_source_file_request',
+        );
+
         if (!$fileSourceFileRequest instanceof FileSourceFileRequest) {
             return null;
         }

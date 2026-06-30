@@ -58,7 +58,10 @@ readonly class FileSourceFileController
                 'filename' => $filename,
                 'content' => $content,
                 'form_error' => $formErrorFactory->create(),
-                'file_source_file_request' => $this->requestPayloadStore->get(FileSourceFileRequest::class),
+                'file_source_file_request' => $this->requestPayloadStore->get(
+                    FileSourceFileRequest::class,
+                    'file_source_file_request',
+                ),
             ]
         ));
     }
@@ -77,7 +80,7 @@ readonly class FileSourceFileController
         try {
             $this->fileClient->create($apiKey->key, $request->sourceId, $request->filename, $request->content);
         } catch (ClientExceptionInterface $e) {
-            $requestPayloadStore->set($request);
+            $requestPayloadStore->set($request, 'file_source_file_request');
 
             throw new ApiException(ApiService::SOURCES, $e, $response);
         }
@@ -99,7 +102,7 @@ readonly class FileSourceFileController
         try {
             $this->fileClient->update($apiKey->key, $request->sourceId, $request->filename, $request->content);
         } catch (ClientExceptionInterface $e) {
-            $requestPayloadStore->set($request);
+            $requestPayloadStore->set($request, 'file_source_file_request');
 
             throw new ApiException(ApiService::SOURCES, $e, $response);
         }

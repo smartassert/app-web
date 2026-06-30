@@ -48,7 +48,10 @@ readonly class SourceController
             [
                 'sources' => $sources,
                 'form_error' => $formErrorFactory->create(),
-                'file_source_create_request' => $this->payloadStore->get(FileSourceCreateRequest::class),
+                'file_source_create_request' => $this->payloadStore->get(
+                    FileSourceCreateRequest::class,
+                    'file_source_create_request',
+                ),
             ]
         ));
     }

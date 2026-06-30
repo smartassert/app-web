@@ -12,9 +12,9 @@ readonly class RequestPayloadStore
         private RequestStack $requestStack,
     ) {}
 
-    public function set(object $payload): void
+    public function set(object $payload, string $name): void
     {
-        $this->requestStack->getCurrentRequest()?->getSession()->set('payload', $payload);
+        $this->requestStack->getCurrentRequest()?->getSession()->set($name, $payload);
     }
 
     /**
@@ -24,12 +24,12 @@ readonly class RequestPayloadStore
      *
      * @return null|T
      */
-    public function get(string $expectedType): ?object
+    public function get(string $expectedType, string $name): ?object
     {
-        $payload = $this->peek($expectedType);
+        $payload = $this->peek($expectedType, $name);
 
         if (null !== $payload) {
-            $this->requestStack->getCurrentRequest()?->getSession()->remove('payload');
+            $this->requestStack->getCurrentRequest()?->getSession()->remove($name);
         }
 
         return $payload;
@@ -42,7 +42,7 @@ readonly class RequestPayloadStore
      *
      * @return null|T
      */
-    public function peek(string $expectedType): ?object
+    public function peek(string $expectedType, string $name): ?object
     {
         $request = $this->requestStack->getCurrentRequest();
         if (null === $request) {
@@ -50,7 +50,7 @@ readonly class RequestPayloadStore
         }
 
         $session = $request->getSession();
-        $payload = $session->get('payload');
+        $payload = $session->get($name);
 
         if (!$payload instanceof $expectedType) {
             return null;
