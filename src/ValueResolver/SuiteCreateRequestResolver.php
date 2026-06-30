@@ -25,6 +25,7 @@ readonly class SuiteCreateRequestResolver implements ValueResolverInterface
 
         $serializedTests = $request->request->getString('tests');
         $tests = explode("\n", $serializedTests);
+        $tests = array_map(fn (string $test) => trim($test), $tests);
 
         return [new SuiteCreateRequest($label, $sourceId, $tests)];
     }
