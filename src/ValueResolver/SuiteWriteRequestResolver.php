@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\ValueResolver;
 
-use App\Request\SuiteUpdateRequest;
 use App\Request\SuiteWriteRequest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
@@ -17,7 +16,7 @@ readonly class SuiteWriteRequestResolver implements ValueResolverInterface
      */
     public function resolve(Request $request, ArgumentMetadata $argument): array
     {
-        if (SuiteUpdateRequest::class !== $argument->getType()) {
+        if (SuiteWriteRequest::class !== $argument->getType()) {
             return [];
         }
 

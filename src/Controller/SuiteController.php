@@ -7,8 +7,8 @@ namespace App\Controller;
 use App\Enum\ApiService;
 use App\Exception\ApiException;
 use App\FormError\Factory;
-use App\Request\SuiteCreateRequest;
 use App\Request\SuiteUpdateRequest;
+use App\Request\SuiteWriteRequest;
 use App\Response\RedirectResponse;
 use App\Security\ApiKey;
 use App\SessionStore\RequestPayloadStore;
@@ -58,7 +58,7 @@ readonly class SuiteController
                 'sources' => $sources,
                 'suites' => $suites,
                 'suite_create_request' => $this->requestPayloadStore->get(
-                    SuiteCreateRequest::class,
+                    SuiteWriteRequest::class,
                     'suite_create_request',
                 ),
             ]
@@ -69,7 +69,7 @@ readonly class SuiteController
      * @throws ApiException
      */
     #[Route('/suites', name: 'suite_create', methods: ['POST'])]
-    public function create(ApiKey $apiKey, SuiteCreateRequest $request): Response
+    public function create(ApiKey $apiKey, SuiteWriteRequest $request): Response
     {
         $response = new RedirectResponse($this->urlGenerator->generate('suites'));
 
