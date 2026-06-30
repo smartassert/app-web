@@ -7,7 +7,6 @@ namespace App\Controller;
 use App\Enum\ApiService;
 use App\Exception\ApiException;
 use App\FormError\Factory;
-use App\Request\SuiteUpdateRequest;
 use App\Request\SuiteWriteRequest;
 use App\Response\RedirectResponse;
 use App\Security\ApiKey;
@@ -109,7 +108,7 @@ readonly class SuiteController
                 'form_error' => $formErrorFactory->create(),
                 'sources' => $sources,
                 'suite_update_request' => $this->requestPayloadStore->get(
-                    SuiteUpdateRequest::class,
+                    SuiteWriteRequest::class,
                     'suite_update_request',
                 ),
                 'suite' => $suite,
@@ -122,14 +121,14 @@ readonly class SuiteController
      * @throws ApiException
      */
     #[Route('/suite/{id<[A-Z90-9]{26}>}', name: 'suite_update', methods: ['POST'])]
-    public function update(ApiKey $apiKey, SuiteUpdateRequest $request): Response
+    public function update(ApiKey $apiKey, SuiteWriteRequest $request): Response
     {
         $response = new RedirectResponse($this->urlGenerator->generate('suite_view', ['id' => $request->id]));
 
         try {
             $this->suiteClient->update(
                 $apiKey->key,
-                $request->id,
+                (string) $request->id,
                 $request->sourceId,
                 $request->label,
                 $request->tests
