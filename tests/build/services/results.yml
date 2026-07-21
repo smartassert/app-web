@@ -1,11 +1,12 @@
 services:
   results-service:
-    image: ghcr.io/smartassert/results:8.1
+    image: ghcr.io/smartassert/results:10.1
     container_name: results-service
     environment:
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/results?serverVersion=12&charset=utf8
       AUTHENTICATION_BASE_URL: http://users-http
       SELF_URL: http://results-http
+      NOTIFY_SECRET: results_notify_secret
       IS_READY: 1
     depends_on:
       - postgres
