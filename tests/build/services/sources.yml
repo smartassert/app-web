@@ -10,7 +10,7 @@ services:
     restart: unless-stopped
 
   sources-service:
-    image: ghcr.io/smartassert/sources:23.2
+    image: ghcr.io/smartassert/sources:23.0
     container_name: sources-service
     environment:
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/sources?serverVersion=12&charset=utf8
